@@ -1,0 +1,1832 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>Student Photo & Registration System</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet"/>
+<style>
+/* ═══════════════════════════════════════════════════════════════
+   BASE
+   ═══════════════════════════════════════════════════════════════ */
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#0a0a1a; --card:rgba(255,255,255,.055); --card-h:rgba(255,255,255,.09);
+  --bdr:rgba(255,255,255,.12); --glow:rgba(99,102,241,.5);
+  --ac:#6366f1; --gr:linear-gradient(135deg,#6366f1,#8b5cf6,#ec4899);
+  --p:#f1f5f9; --s:#94a3b8; --m:#64748b; --ok:#10b981; --err:#ef4444;
+  --r:14px; --rs:10px; --sh:0 20px 50px rgba(0,0,0,.5);
+}
+body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--p);min-height:100vh;overflow-x:hidden}
+body::before{content:'';position:fixed;inset:0;pointer-events:none;z-index:0;background:
+  radial-gradient(ellipse 80% 50% at 15% 15%,rgba(99,102,241,.13) 0%,transparent 60%),
+  radial-gradient(ellipse 60% 40% at 85% 85%,rgba(139,92,246,.10) 0%,transparent 60%)}
+
+/* ═══════════════════════════════════════════════════════════════
+   HEADER
+   ═══════════════════════════════════════════════════════════════ */
+header{position:sticky;top:0;z-index:200;background:rgba(10,10,26,.92);
+  backdrop-filter:blur(24px);border-bottom:1px solid var(--bdr)}
+.hdr{max-width:1280px;margin:0 auto;height:62px;padding:0 20px;
+  display:flex;align-items:center;gap:14px}
+.brand{display:flex;align-items:center;gap:10px;flex-shrink:0}
+.brand-icon{width:36px;height:36px;background:var(--gr);border-radius:9px;
+  display:flex;align-items:center;justify-content:center;font-size:17px}
+.brand-name{font-size:15px;font-weight:800}
+.brand-sub{font-size:9px;color:var(--m);letter-spacing:.04em}
+
+/* ── MAIN TABS ── */
+.main-tabs{display:flex;gap:3px;margin-left:auto}
+.mtab{padding:7px 20px;border-radius:50px;font-family:inherit;font-size:13px;
+  font-weight:600;border:1px solid var(--bdr);background:transparent;
+  color:var(--s);cursor:pointer;transition:all .2s;white-space:nowrap}
+.mtab.active,.mtab:hover{background:rgba(99,102,241,.2);border-color:var(--ac);color:var(--p)}
+.mtab.active{box-shadow:0 0 16px rgba(99,102,241,.25)}
+
+/* ═══════════════════════════════════════════════════════════════
+   LAYOUT
+   ═══════════════════════════════════════════════════════════════ */
+.main-wrap{position:relative;z-index:1;max-width:1280px;margin:0 auto;
+  padding:32px 20px 80px}
+.tab-pane{display:none;animation:fadeUp .4s ease}
+.tab-pane.active{display:block}
+
+/* ═══════════════════════════════════════════════════════════════
+   SHARED COMPONENTS
+   ═══════════════════════════════════════════════════════════════ */
+.panel{background:var(--card);border:1px solid var(--bdr);border-radius:var(--r);
+  padding:28px;backdrop-filter:blur(20px);box-shadow:var(--sh)}
+.panel+.panel{margin-top:20px}
+.panel-hd{font-size:14px;font-weight:700;margin-bottom:20px;
+  display:flex;align-items:center;gap:10px}
+.panel-hd::before{content:'';width:3px;height:18px;background:var(--gr);
+  border-radius:2px;flex-shrink:0}
+
+/* Forms */
+.fg{display:flex;flex-direction:column;gap:7px}
+label.lbl{font-size:11px;font-weight:600;color:var(--s);
+  letter-spacing:.05em;text-transform:uppercase}
+input[type=text],input[type=password],input[type=color],select,textarea{
+  padding:11px 14px;background:rgba(255,255,255,.05);border:1px solid var(--bdr);
+  border-radius:var(--rs);color:var(--p);font-family:inherit;font-size:13px;
+  transition:all .2s;outline:none;width:100%}
+input[type=text]:focus,input[type=password]:focus,select:focus,textarea:focus{
+  border-color:var(--ac);box-shadow:0 0 0 3px rgba(99,102,241,.15)}
+select{appearance:none;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='11' height='11' fill='%2394a3b8' viewBox='0 0 16 16'%3E%3Cpath d='M7.247 11.14 2.451 5.658C1.885 5.013 2.345 4 3.204 4h9.592a1 1 0 0 1 .753 1.659l-4.796 5.48a1 1 0 0 1-1.506 0z'/%3E%3C/svg%3E");
+  background-repeat:no-repeat;background-position:right 13px center;
+  padding-right:36px;cursor:pointer}
+select option{background:#1e1e3a}
+select:disabled{opacity:.4;cursor:not-allowed}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+@media(max-width:680px){.grid2{grid-template-columns:1fr}}
+
+/* Buttons */
+.btn{padding:11px 22px;border-radius:var(--rs);font-family:inherit;font-size:13px;
+  font-weight:600;border:none;cursor:pointer;transition:all .2s;
+  display:inline-flex;align-items:center;justify-content:center;gap:7px}
+.btn-pr{background:var(--gr);color:#fff;box-shadow:0 6px 24px rgba(99,102,241,.35)}
+.btn-pr:hover:not(:disabled){transform:translateY(-1px);box-shadow:0 10px 32px rgba(99,102,241,.45)}
+.btn-pr:disabled{opacity:.5;cursor:not-allowed;transform:none}
+.btn-ol{background:transparent;border:1px solid var(--bdr);color:var(--s)}
+.btn-ol:hover{border-color:var(--ac);color:var(--p);background:rgba(99,102,241,.08)}
+.btn-ok{background:rgba(16,185,129,.18);border:1px solid rgba(16,185,129,.4);color:var(--ok)}
+.btn-ok:hover{background:rgba(16,185,129,.3)}
+.btn-full{width:100%;font-size:14px;padding:14px}
+.btn-grp{display:flex;gap:10px;flex-wrap:wrap;margin-top:18px}
+
+/* Hero */
+.hero{text-align:center;margin-bottom:36px}
+.hero-badge{display:inline-flex;align-items:center;gap:6px;padding:5px 14px;
+  background:rgba(99,102,241,.15);border:1px solid rgba(99,102,241,.3);border-radius:50px;
+  font-size:11px;font-weight:700;color:var(--ac);letter-spacing:.06em;
+  text-transform:uppercase;margin-bottom:14px}
+.hero h1{font-size:clamp(24px,4vw,38px);font-weight:800;background:var(--gr);
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
+  line-height:1.2;margin-bottom:10px}
+.hero p{color:var(--s);font-size:15px;line-height:1.6}
+
+/* Spinner */
+.spin{width:16px;height:16px;border:2px solid rgba(255,255,255,.25);
+  border-top-color:#fff;border-radius:50%;animation:rot .7s linear infinite;display:none}
+.spin-lg{width:32px;height:32px;border-width:3px;border-top-color:var(--ac)}
+
+/* Progress bar */
+.progbar{height:3px;background:var(--gr);border-radius:2px;width:0%;
+  transition:width .3s;display:none}
+
+/* ═══════════════════════════════════════════════════════════════
+   UPLOAD TAB
+   ═══════════════════════════════════════════════════════════════ */
+.photo-tabs{display:flex;gap:8px;margin-bottom:18px}
+.ptab{flex:1;padding:9px 14px;background:rgba(255,255,255,.04);
+  border:1px solid var(--bdr);border-radius:var(--rs);color:var(--s);
+  font-family:inherit;font-size:13px;font-weight:600;cursor:pointer;
+  transition:all .2s;display:flex;align-items:center;justify-content:center;gap:7px}
+.ptab.active,.ptab:hover{background:rgba(99,102,241,.2);border-color:var(--ac);color:var(--p)}
+
+.drop-zone{border:2px dashed var(--bdr);border-radius:var(--rs);
+  padding:40px 20px;text-align:center;cursor:pointer;transition:all .2s;position:relative}
+.drop-zone:hover,.drop-zone.over{border-color:var(--ac);background:rgba(99,102,241,.05)}
+.drop-zone input{position:absolute;inset:0;opacity:0;cursor:pointer;width:100%;height:100%}
+.drop-icon{font-size:38px;margin-bottom:10px;opacity:.55}
+.drop-txt{font-size:14px;color:var(--s)}
+.drop-hint{font-size:11px;color:var(--m);margin-top:5px}
+
+.vid-wrap{position:relative;width:100%;aspect-ratio:4/3;background:#000;
+  border-radius:var(--rs);overflow:hidden;border:1px solid var(--bdr)}
+#videoEl{width:100%;height:100%;object-fit:cover;transform:scaleX(-1)}
+.cam-overlay{position:absolute;inset:0;display:flex;align-items:center;
+  justify-content:center;flex-direction:column;gap:10px;
+  background:rgba(0,0,0,.6);font-size:13px;color:var(--s)}
+.cam-controls{display:flex;gap:10px;justify-content:center;margin-top:12px}
+.btn-capture{background:var(--gr);color:#fff;border:none;border-radius:50%;
+  width:54px;height:54px;font-size:22px;cursor:pointer;transition:all .2s;
+  display:flex;align-items:center;justify-content:center;
+  box-shadow:0 0 0 4px rgba(99,102,241,.3)}
+.btn-capture:hover{transform:scale(1.08)}
+.btn-capture:disabled{opacity:.4;cursor:not-allowed;transform:none}
+
+#previewSec{display:none;margin-top:18px}
+.prev-wrap{position:relative;display:inline-block;width:100%}
+#previewImg{width:100%;max-height:300px;object-fit:contain;border-radius:var(--rs);
+  border:1px solid var(--bdr);background:rgba(0,0,0,.3)}
+.prev-badge{position:absolute;top:10px;left:10px;padding:4px 12px;
+  background:rgba(16,185,129,.9);border-radius:50px;font-size:11px;font-weight:700;color:#fff}
+.clear-btn{display:block;margin-top:8px;font-size:12px;color:var(--m);
+  cursor:pointer;text-align:center;text-decoration:underline;
+  background:none;border:none;font-family:inherit}
+.clear-btn:hover{color:var(--err)}
+#canvasEl{display:none}
+
+/* ═══════════════════════════════════════════════════════════════
+   ADMIN TAB
+   ═══════════════════════════════════════════════════════════════ */
+.search-row{display:grid;grid-template-columns:1fr 1fr auto;gap:14px;align-items:end}
+@media(max-width:680px){.search-row{grid-template-columns:1fr;gap:10px}}
+.search-actions{display:flex;gap:8px}
+
+.stats-bar{display:flex;align-items:center;justify-content:space-between;
+  flex-wrap:wrap;gap:10px;margin-bottom:18px}
+.stats-bar h2{font-size:16px;font-weight:700}
+.count-badge{padding:4px 14px;background:rgba(99,102,241,.15);
+  border:1px solid rgba(99,102,241,.3);border-radius:50px;
+  font-size:12px;font-weight:700;color:var(--ac)}
+
+/* Photo Grid */
+.photo-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:18px}
+
+.photo-card{background:var(--card);border:1px solid var(--bdr);border-radius:var(--r);
+  overflow:hidden;transition:all .25s;animation:fadeUp .4s ease both}
+.photo-card:hover{border-color:var(--glow);transform:translateY(-3px);
+  box-shadow:0 12px 36px rgba(99,102,241,.2)}
+
+/* Thumbnail container - fixed aspect ratio */
+.thumb-container{position:relative;width:100%;padding-top:75%;/* 4:3 */background:#111}
+.thumb-img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;
+  display:block;transition:opacity .4s}
+.thumb-placeholder{position:absolute;inset:0;display:flex;flex-direction:column;
+  align-items:center;justify-content:center;gap:8px;background:#111;color:var(--m)}
+.thumb-spinner{width:24px;height:24px;border:2px solid rgba(255,255,255,.1);
+  border-top-color:var(--ac);border-radius:50%;animation:rot .8s linear infinite}
+.thumb-err-icon{font-size:32px;opacity:.3}
+.thumb-err-txt{font-size:11px}
+
+.photo-info{padding:12px 14px 8px}
+.photo-name{font-size:13px;font-weight:700;margin-bottom:3px;
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.photo-dept{font-size:11px;color:var(--ac);font-weight:600;margin-bottom:4px}
+.photo-time{font-size:10px;color:var(--m)}
+.photo-actions{display:flex;gap:7px;padding:0 12px 12px}
+.act-btn{flex:1;padding:6px 8px;background:rgba(255,255,255,.04);
+  border:1px solid var(--bdr);border-radius:7px;color:var(--s);font-family:inherit;
+  font-size:11px;font-weight:600;cursor:pointer;transition:all .2s;text-decoration:none;
+  display:inline-flex;align-items:center;justify-content:center;gap:4px}
+.act-btn:hover{background:rgba(99,102,241,.15);border-color:var(--ac);color:var(--p)}
+.act-btn.dl:hover{background:rgba(16,185,129,.15);border-color:var(--ok);color:var(--ok)}
+
+/* Empty/loading state box */
+.state-box{grid-column:1/-1;text-align:center;padding:60px 20px;color:var(--m)}
+.state-icon{font-size:44px;opacity:.35;margin-bottom:14px}
+.state-title{font-size:17px;font-weight:600;color:var(--s);margin-bottom:6px}
+.state-msg{font-size:13px}
+
+/* ═══════════════════════════════════════════════════════════════
+   LIGHTBOX
+   ═══════════════════════════════════════════════════════════════ */
+#lightbox{position:fixed;inset:0;z-index:9000;background:rgba(0,0,0,.94);
+  display:none;align-items:center;justify-content:center;padding:16px;
+  backdrop-filter:blur(10px)}
+#lightbox.open{display:flex;animation:fadeIn .2s ease}
+.lb-box{position:relative;max-width:860px;width:100%;background:#12122a;
+  border:1px solid var(--bdr);border-radius:var(--r);overflow:hidden;
+  animation:fadeUp .3s ease;box-shadow:var(--sh)}
+.lb-hdr{padding:14px 18px;display:flex;align-items:center;
+  justify-content:space-between;border-bottom:1px solid var(--bdr)}
+.lb-title{font-size:14px;font-weight:700}
+.lb-close{background:none;border:none;color:var(--m);font-size:22px;
+  cursor:pointer;transition:color .2s;padding:2px 6px}
+.lb-close:hover{color:var(--p)}
+#lbImg{width:100%;max-height:65vh;object-fit:contain;background:rgba(0,0,0,.5);display:block}
+.lb-loading{width:100%;height:200px;display:flex;align-items:center;
+  justify-content:center;flex-direction:column;gap:12px;color:var(--m);font-size:13px}
+.lb-ftr{padding:14px 18px;display:flex;gap:10px;align-items:center;
+  flex-wrap:wrap;border-top:1px solid var(--bdr)}
+.lb-meta{flex:1;min-width:0}
+.lb-name{font-weight:700;font-size:14px}
+.lb-dept{color:var(--ac);font-size:11px;font-weight:600;margin-top:2px}
+.lb-time{color:var(--m);font-size:10px;margin-top:2px}
+
+/* ═══════════════════════════════════════════════════════════════
+   TOAST
+   ═══════════════════════════════════════════════════════════════ */
+#toast{position:fixed;bottom:26px;left:50%;
+  transform:translateX(-50%) translateY(120px);
+  background:var(--card);border:1px solid var(--bdr);border-radius:var(--r);
+  padding:13px 22px;backdrop-filter:blur(20px);box-shadow:var(--sh);
+  transition:transform .35s cubic-bezier(.34,1.56,.64,1);z-index:9999;
+  display:flex;align-items:center;gap:10px;font-size:13px;min-width:240px}
+#toast.show{transform:translateX(-50%) translateY(0)}
+.t-icon{font-size:17px}
+
+/* ═══════════════════════════════════════════════════════════════
+   ANIMATIONS
+   ═══════════════════════════════════════════════════════════════ */
+@keyframes fadeUp{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:translateY(0)}}
+@keyframes fadeIn{from{opacity:0}to{opacity:1}}
+@keyframes rot{to{transform:rotate(360deg)}}
+
+/* Native camera shutter & responsive fixes */
+.native-cam-card {
+  background: linear-gradient(135deg, rgba(255,255,255,0.04) 0%, rgba(255,255,255,0.01) 100%);
+  border: 1px solid var(--bdr);
+  border-radius: var(--r);
+  padding: 42px 20px;
+  text-align: center;
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  position: relative;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  box-shadow: inset 0 1px 1px rgba(255,255,255,0.08);
+}
+.native-cam-card:hover {
+  border-color: var(--ac);
+  background: rgba(99,102,241,0.06);
+  transform: translateY(-2px);
+  box-shadow: 0 12px 30px rgba(99,102,241,0.18);
+}
+.native-cam-card:active {
+  transform: translateY(0);
+}
+.native-cam-icon {
+  font-size: 56px;
+  filter: drop-shadow(0 0 12px var(--glow));
+  z-index: 2;
+  transition: transform 0.2s;
+}
+.native-cam-card:hover .native-cam-icon {
+  transform: scale(1.08);
+}
+.native-cam-title {
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--p);
+  z-index: 2;
+  letter-spacing: 0.02em;
+}
+.native-cam-desc {
+  font-size: 12px;
+  color: var(--s);
+  z-index: 2;
+}
+.native-cam-pulse {
+  position: absolute;
+  width: 90px;
+  height: 90px;
+  border-radius: 50%;
+  background: rgba(99,102,241,0.16);
+  animation: pulseGlow 2s infinite ease-in-out;
+  z-index: 1;
+  top: 25px;
+}
+@keyframes pulseGlow {
+  0% { transform: scale(0.9); opacity: 0.6; }
+  50% { transform: scale(1.35); opacity: 0.12; }
+  100% { transform: scale(0.9); opacity: 0.6; }
+}
+.native-cam-info {
+  margin-top: 14px;
+  padding: 12px 16px;
+  border-radius: var(--rs);
+  background: rgba(99, 102, 241, 0.08);
+  border: 1px dashed rgba(99, 102, 241, 0.25);
+  font-size: 11px;
+  color: var(--s);
+  line-height: 1.5;
+  text-align: center;
+}
+
+@media(max-width: 600px) {
+  .hdr {
+    flex-direction: column;
+    height: auto;
+    padding: 12px 16px;
+    gap: 12px;
+  }
+  .brand {
+    align-self: flex-start;
+  }
+  .main-tabs {
+    width: 100%;
+    margin-left: 0;
+    overflow-x: auto;
+    padding-bottom: 4px;
+    gap: 6px;
+    scrollbar-width: none;
+  }
+  .main-tabs::-webkit-scrollbar {
+    display: none;
+  }
+  }
+}
+
+/* ──────────────────────────────────────────────────────────────
+   📈 REPORT CARD & TOPPERS CSS
+   ────────────────────────────────────────────────────────────── */
+.grid-report {
+  display: grid;
+  grid-template-columns: 1.1fr 0.9fr;
+  gap: 20px;
+}
+@media (max-width: 768px) {
+  .grid-report { grid-template-columns: 1fr; }
+}
+
+/* House Standings */
+.house-bar-row {
+  margin-bottom: 18px;
+}
+.house-bar-info {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 6px;
+  font-size: 13px;
+  font-weight: 700;
+}
+.house-bar-track {
+  height: 12px;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid var(--bdr);
+  border-radius: 99px;
+  overflow: hidden;
+}
+.house-bar-fill {
+  height: 100%;
+  border-radius: 99px;
+  transition: width 1.2s cubic-bezier(0.22, 1, 0.36, 1);
+  background-image: linear-gradient(90deg, rgba(255, 255, 255, 0.15), transparent);
+  box-shadow: 0 0 10px rgba(255,255,255,0.05);
+}
+
+/* Active Dept Box */
+.active-dept-display {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+  text-align: center;
+  background: rgba(236, 72, 153, 0.04);
+  border: 1px dashed rgba(236, 72, 153, 0.25);
+  border-radius: var(--rs);
+  box-shadow: inset 0 0 20px rgba(236, 72, 153, 0.02);
+}
+.active-dept-icon {
+  font-size: 38px;
+  margin-bottom: 8px;
+  filter: drop-shadow(0 0 12px rgba(236, 72, 153, 0.3));
+  animation: floatIcon 2s ease-in-out infinite alternate;
+}
+@keyframes floatIcon {
+  0% { transform: translateY(0); }
+  100% { transform: translateY(-6px); }
+}
+.active-dept-name-text {
+  font-size: 24px;
+  font-weight: 800;
+  color: #ec4899;
+  text-transform: uppercase;
+  margin-bottom: 4px;
+  text-shadow: 0 0 15px rgba(236, 72, 153, 0.2);
+}
+.active-dept-subtext {
+  font-size: 11px;
+  color: var(--s);
+  letter-spacing: 0.05em;
+}
+
+/* Star Teachers List */
+.teacher-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 14px;
+  background: rgba(255, 255, 255, 0.02);
+  border: 1px solid var(--bdr);
+  border-radius: var(--rs);
+  margin-bottom: 8px;
+}
+.teacher-rank {
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  background: var(--ac);
+  color: #fff;
+  font-size: 11px;
+  font-weight: 800;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.teacher-rank.rank-1 { background: #ffd700; color: #000; }
+.teacher-rank.rank-2 { background: #c0c0c0; color: #000; }
+.teacher-rank.rank-3 { background: #cd7f32; color: #000; }
+.teacher-name-text {
+  font-size: 13px;
+  font-weight: 700;
+  flex: 1;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.teacher-logs-count {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 1px;
+  color: var(--ac);
+  text-transform: uppercase;
+}
+
+/* Weekly Toppers Grid */
+.toppers-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+  gap: 18px;
+}
+
+/* Achievement Cards (Cinematic Certificate Poster Style) */
+.ach-card {
+  --glow-color: rgba(99, 102, 241, 0.15);
+  background: linear-gradient(135deg, #111122 0%, var(--house-glow, #181c3a) 100%);
+  border: 1.5px solid var(--house-color, var(--bdr));
+  border-radius: var(--r);
+  overflow: hidden;
+  padding: 24px 20px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  position: relative;
+  box-shadow: 0 15px 35px rgba(0, 0, 0, 0.4), inset 0 1px 2px rgba(255, 255, 255, 0.05);
+  transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1), box-shadow 0.3s;
+}
+.ach-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 20px 40px var(--glow-color), 0 0 15px rgba(255, 255, 255, 0.02);
+}
+.ach-card::before {
+  content: '';
+  position: absolute;
+  top: 0; left: -150%; width: 50%; height: 100%;
+  background: linear-gradient(to right, transparent, rgba(255, 255, 255, 0.03), transparent);
+  transform: skewX(-25deg);
+  animation: achShimmer 6s ease-in-out infinite;
+}
+@keyframes achShimmer {
+  0%, 80% { left: -150%; }
+  100% { left: 200%; }
+}
+.ach-card-badge {
+  font-size: 9px;
+  font-weight: 800;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: #ffd700;
+  border: 1px solid rgba(255, 215, 0, 0.3);
+  padding: 3px 12px;
+  border-radius: 99px;
+  background: rgba(0, 0, 0, 0.35);
+  margin-bottom: 16px;
+}
+.ach-card-photo-frame {
+  width: 120px;
+  height: 120px;
+  border-radius: 50%;
+  border: 3.5px solid var(--house-color, #fff);
+  box-shadow: 0 8px 20px rgba(0,0,0,0.6), 0 0 15px var(--house-color);
+  overflow: hidden;
+  margin-bottom: 16px;
+  background: #090915;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.ach-card-photo-frame img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+.ach-card-photo-fallback {
+  font-size: 50px;
+  opacity: 0.6;
+}
+.ach-card-name {
+  font-size: 18px;
+  font-weight: 800;
+  letter-spacing: 0.02em;
+  color: #fff;
+  text-transform: uppercase;
+  margin-bottom: 4px;
+  text-shadow: 0 2px 4px rgba(0,0,0,0.6);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  width: 100%;
+}
+.ach-card-details {
+  font-size: 11px;
+  color: var(--s);
+  margin-bottom: 16px;
+  line-height: 1.4;
+}
+.ach-card-house-pill {
+  font-size: 10px;
+  font-weight: 900;
+  letter-spacing: 0.05em;
+  padding: 3px 10px;
+  border-radius: 99px;
+  text-transform: uppercase;
+  background: var(--house-color);
+  color: #000;
+  display: inline-block;
+  margin-top: 4px;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.3);
+}
+.ach-card-score {
+  font-size: 30px;
+  font-weight: 800;
+  color: #ffd700;
+  line-height: 1;
+  text-shadow: 0 0 10px rgba(255, 215, 0, 0.3);
+}
+.ach-card-score-lbl {
+  font-size: 9px;
+  font-weight: 700;
+  color: var(--m);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  margin-bottom: 18px;
+}
+.ach-card-actions {
+  width: 100%;
+  margin-top: auto;
+}
+
+/* 🖨️ Document branding header for printed reports */
+.print-doc-header {
+  display: none;
+  border-bottom: 2px double #000;
+  padding-bottom: 12px;
+  margin-bottom: 24px;
+  text-align: center;
+  color: #000;
+}
+.print-doc-header h1 {
+  font-size: 24px;
+  font-weight: 800;
+  text-transform: uppercase;
+  margin-bottom: 3px;
+}
+.print-doc-header h2 {
+  font-size: 14px;
+  font-weight: 600;
+  text-transform: uppercase;
+  margin-bottom: 5px;
+  color: #222;
+}
+.print-doc-header .print-meta {
+  font-size: 11px;
+  color: #666;
+  font-style: italic;
+}
+
+/* ──────────────────────────────────────────────────────────────
+   🖨️ MEDIA PRINT STYLES
+   ────────────────────────────────────────────────────────────── */
+#print-container {
+  display: none;
+}
+
+@media print {
+  body {
+    background: #fff !important;
+    color: #000 !important;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+  
+  header, .main-wrap > :not(#tab-report), .search-row, .btn-grp, .mtab, .stats-bar, .act-btn, button, select, .lbl {
+    display: none !important;
+  }
+  
+  .panel {
+    background: none !important;
+    border: none !important;
+    box-shadow: none !important;
+    backdrop-filter: none !important;
+    padding: 0 !important;
+    margin: 0 !important;
+  }
+  
+  /* Format full report for documentation */
+  body.print-report-active .print-doc-header {
+    display: flex !important;
+    flex-direction: column;
+    align-items: center;
+  }
+  body.print-report-active .main-wrap {
+    padding: 0 !important;
+    margin: 0 !important;
+    max-width: 100% !important;
+  }
+  body.print-report-active #tab-report {
+    display: block !important;
+  }
+  body.print-report-active #report-content {
+    display: block !important;
+  }
+  body.print-report-active .grid-report {
+    display: grid !important;
+    grid-template-columns: 1.2fr 0.8fr !important;
+    gap: 30px !important;
+  }
+  body.print-report-active .active-dept-display {
+    border-color: #000 !important;
+    background: #f8f9fa !important;
+  }
+  body.print-report-active .teacher-row {
+    border-color: #ccc !important;
+    background: #f8f9fa !important;
+    color: #000 !important;
+  }
+  body.print-report-active .teacher-rank {
+    background: #000 !important;
+    color: #fff !important;
+  }
+  body.print-report-active .house-bar-track {
+    border-color: #aaa !important;
+    background: #eee !important;
+  }
+  body.print-report-active .house-bar-fill {
+    box-shadow: none !important;
+    border: 1px solid #000 !important;
+  }
+  body.print-report-active #r-dept, body.print-report-active .toppers-grid, body.print-report-active .panel:has(.toppers-grid) {
+    display: none !important;
+  }
+  
+  /* Format card alone for print */
+  body.print-card-active {
+    margin: 0 !important;
+    padding: 0 !important;
+  }
+  body.print-card-active .main-wrap, body.print-card-active header {
+    display: none !important;
+  }
+  body.print-card-active #print-container {
+    display: flex !important;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    width: 100vw;
+    background: #fff !important;
+  }
+  body.print-card-active .ach-card {
+    width: 440px !important;
+    height: 590px !important;
+    box-shadow: none !important;
+    border: 2px solid var(--house-color, #000) !important;
+    background: linear-gradient(135deg, #111122 0%, var(--house-glow, #181c3a) 100%) !important;
+    color: #fff !important;
+  }
+  body.print-card-active .ach-card button {
+    display: none !important;
+  }
+}
+</style>
+</head>
+<body>
+
+<!-- ═══════════════════════════════════════════════════════════
+     HEADER
+     ═══════════════════════════════════════════════════════════ -->
+<header>
+  <div class="hdr">
+    <div class="brand">
+      <div class="brand-icon">🎓</div>
+      <div>
+        <div class="brand-name">PhotoPortal</div>
+        <div class="brand-sub">STUDENT REGISTRATION SYSTEM</div>
+      </div>
+    </div>
+    <div class="main-tabs">
+      <button class="mtab active" onclick="switchMain('upload',this)">📸 Upload Photo</button>
+      <button class="mtab"        onclick="switchMain('admin',this)">📂 Admin &amp; Photos</button>
+      <button class="mtab"        onclick="switchMain('report',this)">📊 Report &amp; Toppers</button>
+    </div>
+  </div>
+</header>
+
+<!-- ═══════════════════════════════════════════════════════════
+     MAIN CONTENT
+     ═══════════════════════════════════════════════════════════ -->
+<div class="main-wrap">
+
+<!-- ╔═══════════════════════════════════════════════════════════
+     ║  TAB 1 — UPLOAD
+     ╚═══════════════════════════════════════════════════════════ -->
+<div id="tab-upload" class="tab-pane active">
+
+  <div class="hero">
+    <div class="hero-badge">📸 Student Photo Upload</div>
+    <h1>Register Your Photo</h1>
+    <p>Select your department and name, then capture or upload your photo.</p>
+  </div>
+
+  <!-- Student info -->
+  <div class="panel">
+    <div class="panel-hd">Student Information</div>
+    <div class="grid2">
+      <div class="fg"><label class="lbl">Department</label>
+        <select id="u-dept"><option value="">— Select Department —</option></select></div>
+      <div class="fg"><label class="lbl">Student Name</label>
+        <select id="u-name" disabled><option value="">— Select Name —</option></select></div>
+    </div>
+  </div>
+
+  <!-- Photo capture -->
+  <div class="panel">
+    <div class="panel-hd">Capture Photo</div>
+
+    <div class="photo-tabs">
+      <button class="ptab active" id="ptab-up"  onclick="switchPhotoTab('upload')">📁 Upload File</button>
+      <button class="ptab"        id="ptab-cam" onclick="switchPhotoTab('camera')">📷 Take Photo</button>
+    </div>
+
+    <!-- Upload -->
+    <div id="psec-upload">
+      <div class="drop-zone" id="dropZone">
+        <input type="file" id="fileInput" accept="image/png,image/jpeg,image/jpg"/>
+        <div class="drop-icon">🖼️</div>
+        <div class="drop-txt">Click to browse or drag &amp; drop here</div>
+        <div class="drop-hint">PNG and JPEG supported</div>
+      </div>
+    </div>
+
+    <!-- Camera -->
+    <div id="psec-camera" style="display:none">
+      <!-- WebRTC Webcam Section (Shown if supported & permitted) -->
+      <div id="webcamContainer" style="display:none">
+        <div class="vid-wrap">
+          <video id="videoEl" autoplay playsinline></video>
+          <div class="cam-overlay" id="camOverlay">
+            <div style="font-size:38px;opacity:.4">📷</div>
+            <div>Camera not started</div>
+            <button class="btn btn-ol" style="font-size:12px" onclick="startCamera()">🎬 Start Camera</button>
+          </div>
+        </div>
+        <div class="cam-controls">
+          <button class="btn btn-ol" onclick="stopCamera()">✕ Stop</button>
+          <button class="btn-capture" id="captureBtn" onclick="capturePhoto()" disabled>📸</button>
+          <button class="btn btn-ol" onclick="flipCamera()">🔄 Flip</button>
+        </div>
+      </div>
+
+      <!-- Mobile/Iframe Native Camera Fallback (Always works!) -->
+      <div id="nativeCameraFallback" style="display:none">
+        <div class="native-cam-card" onclick="triggerNativeCamera()">
+          <div class="native-cam-pulse"></div>
+          <div class="native-cam-icon">📸</div>
+          <div class="native-cam-title">Tap to Take Photo</div>
+          <div class="native-cam-desc">Uses your device's high-quality native camera</div>
+          <input type="file" id="nativeCamInput" accept="image/*" capture="user" style="display:none"/>
+        </div>
+        <div class="native-cam-info">
+          💡 <b>Notice:</b> Browser WebRTC webcam is restricted by security sandbox. We have activated the secure <b>Native Camera app</b> bypass.
+        </div>
+      </div>
+    </div>
+
+    <!-- Preview -->
+    <div id="previewSec">
+      <div class="prev-wrap">
+        <img id="previewImg" src="" alt="Preview"/>
+        <div class="prev-badge">✓ Ready</div>
+      </div>
+      <button class="clear-btn" onclick="clearPhoto()">✕ Remove photo</button>
+    </div>
+
+    <canvas id="canvasEl"></canvas>
+    <div class="progbar" id="uploadBar" style="margin-top:12px"></div>
+    <button class="btn btn-pr btn-full" id="submitBtn" onclick="submitPhoto()" disabled style="margin-top:16px">
+      <span class="spin" id="uploadSpin"></span>🚀 Submit Photo
+    </button>
+  </div>
+
+</div><!-- /tab-upload -->
+
+
+<!-- ╔═══════════════════════════════════════════════════════════
+     ║  TAB 2 — ADMIN
+     ╚═══════════════════════════════════════════════════════════ -->
+<div id="tab-admin" class="tab-pane">
+
+  <!-- Password Authentication Overlay -->
+  <div id="admin-auth-overlay" class="panel" style="display:none; max-width:400px; margin:40px auto; text-align:center; box-shadow:var(--sh);">
+    <div class="panel-hd" style="justify-content:center;">🔒 Admin Access Required</div>
+    <p style="font-size:13px; color:var(--s); margin-bottom:20px;">Please enter the admin password to view student records and photos.</p>
+    <div class="fg" style="margin-bottom:16px;">
+      <input type="password" id="admin-pass-input" placeholder="Password" style="text-align:center; padding:12px; font-size:15px;"/>
+    </div>
+    <div id="auth-error-msg" style="color:var(--err); font-size:12.5px; margin-bottom:14px; font-weight:600; display:none;"></div>
+    <button class="btn btn-pr btn-full" onclick="submitAdminPassword()">Unlock Photos</button>
+  </div>
+
+  <!-- Admin Panel Content Container -->
+  <div id="admin-content-wrap" style="display:none;">
+    <!-- Search bar -->
+    <div class="panel" style="margin-bottom:24px">
+      <div class="panel-hd">🔍 Search Photos</div>
+      <form class="search-row" onsubmit="event.preventDefault(); doAdminSearch();">
+        <div class="fg"><label class="lbl">Department</label>
+          <select id="a-dept"><option value="">All Departments</option></select></div>
+        <div class="fg"><label class="lbl">Student Name</label>
+          <input type="text" id="a-name" placeholder="Type name…"/></div>
+        <div class="search-actions">
+          <button type="button" class="btn btn-ol" onclick="clearAdminSearch()">✕</button>
+          <button type="submit" class="btn btn-pr">🔍 Search</button>
+        </div>
+      </form>
+    </div>
+
+    <!-- Stats -->
+    <div class="stats-bar">
+      <h2 id="adminTitle">All Photos</h2>
+      <div class="count-badge" id="adminCount">—</div>
+    </div>
+
+    <!-- Photo grid -->
+    <div class="photo-grid" id="photoGrid">
+      <div class="state-box">
+        <div class="state-icon">📂</div>
+        <div class="state-title">Click Search to load photos</div>
+      </div>
+    </div>
+  </div>
+
+</div><!-- /tab-admin -->
+
+<!-- ╔═══════════════════════════════════════════════════════════
+     ║  TAB 3 — REPORT & TOPPERS
+     ╚═══════════════════════════════════════════════════════════ -->
+<div id="tab-report" class="tab-pane">
+  
+  <!-- Printable Document Header (Branding) -->
+  <div class="print-doc-header">
+    <h1 id="print-college-name">Don Bosco Institution</h1>
+    <h2>Weekly Achievement &amp; Activities Report</h2>
+    <div class="print-meta" id="print-report-meta">Loading...</div>
+  </div>
+
+  <div class="hero">
+    <div class="hero-badge">📊 Weekly Reports &amp; Toppers</div>
+    <h1 id="report-title-main">Weekly Performance Report</h1>
+    <p>View weekly house standings, active department, star teachers, and top-performing students. Reset occurs every Thursday.</p>
+  </div>
+
+  <!-- Dashboard Overview Grid -->
+  <div class="grid-report" id="report-dashboard">
+    <!-- Left Column: House Standings -->
+    <div class="panel">
+      <div class="panel-hd" style="display:flex; justify-content:space-between; align-items:center;">
+        <span>🏆 House Standings</span>
+        <button class="btn btn-ol" onclick="printReport()" style="padding: 6px 12px; font-size: 12px;">🖨️ Print Report</button>
+      </div>
+      <div id="house-standings-container" style="margin-top: 15px;">
+        <div class="state-box">
+          <div class="spin spin-lg" style="display:block;margin:0 auto 14px"></div>
+          <div>Loading House Standings...</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Right Column: Active Dept & Star Teachers -->
+    <div style="display: flex; flex-direction: column; gap: 20px;">
+      <!-- Active Department -->
+      <div class="panel" style="flex: 1;">
+        <div class="panel-hd">🔥 Active Department</div>
+        <div class="active-dept-display" style="margin-top: 10px;">
+          <div class="active-dept-icon">⚡</div>
+          <div class="active-dept-name-text" id="active-dept-name">Loading...</div>
+          <div class="active-dept-subtext">MOST POINTS EARNED THIS WEEK</div>
+        </div>
+      </div>
+
+      <!-- Star Teachers -->
+      <div class="panel" style="flex: 2;">
+        <div class="panel-hd">⭐️ Star Teachers of the Week</div>
+        <div id="star-teachers-container" style="margin-top: 10px;">
+          <div class="state-box" style="padding: 10px;">
+            <div>Loading Star Teachers...</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Department Weekly Toppers Section -->
+  <div class="panel" style="margin-top:24px">
+    <div class="panel-hd" style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px;">
+      <span>🌟 Weekly Toppers Cards</span>
+      <select id="r-dept" style="padding:6px 12px; font-size:13px; border-radius:var(--rs); border:1px solid var(--bdr); background:var(--bg); color:#fff; cursor:pointer;" onchange="onReportDeptChange()">
+        <option value="">— Select Department —</option>
+      </select>
+    </div>
+    
+    <div class="toppers-grid" id="toppersGrid" style="margin-top: 20px;">
+      <div class="state-box">
+        <div class="state-icon">🎓</div>
+        <div class="state-title">Select a department to view toppers</div>
+        <div class="state-msg">Cards will be generated with student photos and achievement details.</div>
+      </div>
+    </div>
+  </div>
+
+</div><!-- /tab-report -->
+
+</div><!-- /main-wrap -->
+
+<!-- 🖨️ Isolated container for printing a single achievement card -->
+<div id="print-container"></div>
+
+<!-- ═══════════════════════════════════════════════════════════
+     LIGHTBOX
+     ═══════════════════════════════════════════════════════════ -->
+<div id="lightbox" onclick="lbBdClick(event)">
+  <div class="lb-box">
+    <div class="lb-hdr">
+      <div class="lb-title" id="lbTitle">Photo Preview</div>
+      <button class="lb-close" onclick="closeLb()">✕</button>
+    </div>
+    <div id="lbBody">
+      <div class="lb-loading"><div class="spin spin-lg" style="display:block"></div>Loading…</div>
+    </div>
+    <div class="lb-ftr">
+      <div class="lb-meta">
+        <div class="lb-name" id="lbName"></div>
+        <div class="lb-dept" id="lbDept"></div>
+        <div class="lb-time" id="lbTime"></div>
+      </div>
+      <a id="lbDl" href="#" class="btn btn-ok" style="font-size:12px" target="_blank">⬇️ Download</a>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════════
+     TOAST
+     ═══════════════════════════════════════════════════════════ -->
+<div id="toast"><div class="t-icon" id="tIcon">✅</div><div id="tMsg">Done</div></div>
+
+<!-- ═══════════════════════════════════════════════════════════
+     SCRIPT
+     ═══════════════════════════════════════════════════════════ -->
+<script>
+// Set your Google Apps Script Web App URL here when deploying the frontend on GitHub Pages
+const API_URL = 'https://script.google.com/macros/s/AKfycbwfXmUoK4IacFfPVqXyrUHgwg8JlfY0hdJGI-9dfeauNgzoDroLAPGp5Zn8nTgmZMIe/exec';
+
+// Automatically set by Apps Script when page is served inside GAS
+var GAS_WEB_APP_URL = '<?= ScriptApp.getService().getUrl() ?>';
+
+var INITIAL_PAGE = '<?= page ?>';
+
+// ════════════════════════════════════════════════════════════════
+//  API INTERACTION
+// ════════════════════════════════════════════════════════════════
+function getBackendURL() {
+  // If running inside Google Apps Script container:
+  if (typeof GAS_WEB_APP_URL !== 'undefined' && GAS_WEB_APP_URL && !GAS_WEB_APP_URL.includes('<?=') && !GAS_WEB_APP_URL.includes('webAppUrl')) {
+    return GAS_WEB_APP_URL;
+  }
+  return API_URL;
+}
+
+async function callAPI(action, data = {}) {
+  data.action = action;
+  data.password = localStorage.getItem('admin_password') || '';
+
+  const url = getBackendURL();
+  if (!url || url === 'YOUR_GOOGLE_APPS_SCRIPT_WEB_APP_URL') {
+    console.error("API_URL is not configured.");
+    toast('❌', 'Please set the API_URL variable in index.html to deploy on GitHub.');
+    return { success: false, error: 'API_URL not configured' };
+  }
+
+  try {
+    const response = await fetch(url, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'text/plain' // Simple request avoids CORS OPTIONS preflight block in GAS
+      },
+      body: JSON.stringify(data)
+    });
+
+    if (!response.ok) {
+      throw new Error('Network error ' + response.status);
+    }
+
+    const res = await response.json();
+    if (res && res.success === false && res.error && res.error.indexOf('Unauthorized') !== -1) {
+      // Clear password, force prompt
+      localStorage.removeItem('admin_password');
+      showAdminAuthPrompt(true, res.error);
+    }
+    return res;
+  } catch (err) {
+    console.error("API call error:", err);
+    return { success: false, error: 'Network Error: ' + err.message };
+  }
+}
+
+// ════════════════════════════════════════════════════════════════
+//  STATE
+// ════════════════════════════════════════════════════════════════
+var STUDENT_DATA  = {};   // {dept:[names]}
+var PHOTO_CACHE   = {};   // fileId → base64
+var adminResults  = [];
+
+// Upload state
+var photoDataUrl  = null;
+var photoMime     = 'image/jpeg';
+var camStream     = null;
+var camFacing     = 'environment';
+
+// ════════════════════════════════════════════════════════════════
+//  INIT
+// ════════════════════════════════════════════════════════════════
+window.onload = async function () {
+  // Populate student dropdowns via API
+  await loadStudentDropdowns();
+
+  // Upload tab: department change
+  document.getElementById('u-dept').addEventListener('change', function () {
+    var ns = document.getElementById('u-name');
+    ns.innerHTML = '<option value="">— Select Name —</option>';
+    if (!this.value) { ns.disabled = true; return; }
+    var dataDict = (STUDENT_DATA && STUDENT_DATA.data) ? STUDENT_DATA.data : {};
+    (dataDict[this.value] || []).sort().forEach(function(n) {
+      var o = document.createElement('option'); o.value = o.textContent = n; ns.appendChild(o);
+    });
+    ns.disabled = false; checkUploadReady();
+  });
+  document.getElementById('u-name').addEventListener('change', checkUploadReady);
+
+  // File input
+  document.getElementById('fileInput').addEventListener('change', function () {
+    var f = this.files[0];
+    if (!f) return;
+    if (!['image/png','image/jpeg','image/jpg'].includes(f.type)) { toast('❌','PNG/JPEG only'); return; }
+    photoMime = f.type;
+    var r = new FileReader();
+    r.onload = function(e) { setPreview(e.target.result); };
+    r.readAsDataURL(f);
+  });
+
+  // Native camera input
+  document.getElementById('nativeCamInput').addEventListener('change', function () {
+    var f = this.files[0];
+    if (!f) return;
+    if (!['image/png','image/jpeg','image/jpg'].includes(f.type) && !f.type.startsWith('image/')) {
+      toast('❌','Images only');
+      return;
+    }
+    photoMime = f.type || 'image/jpeg';
+    var r = new FileReader();
+    r.onload = function(e) { setPreview(e.target.result); };
+    r.readAsDataURL(f);
+  });
+
+  // Drag & drop
+  var dz = document.getElementById('dropZone');
+  dz.addEventListener('dragover', function(e) { e.preventDefault(); dz.classList.add('over'); });
+  dz.addEventListener('dragleave', function() { dz.classList.remove('over'); });
+  dz.addEventListener('drop', function(e) {
+    e.preventDefault(); dz.classList.remove('over');
+    if (e.dataTransfer.files[0]) {
+      document.getElementById('fileInput').files = e.dataTransfer.files;
+      document.getElementById('fileInput').dispatchEvent(new Event('change'));
+    }
+  });
+
+  // Admin: enter key
+  document.getElementById('a-name').addEventListener('keydown', function(e) {
+    if (e.key === 'Enter') doAdminSearch();
+  });
+  
+  // Admin password input: enter key
+  document.getElementById('admin-pass-input').addEventListener('keydown', function(e) {
+    if (e.key === 'Enter') submitAdminPassword();
+  });
+
+  // Auto-route tab from URL parameter
+  if (window.INITIAL_PAGE === 'admin') {
+    switchMain('admin', document.querySelectorAll('.mtab')[1]);
+  } else {
+    switchMain('upload', document.querySelectorAll('.mtab')[0]);
+  }
+};
+
+// ════════════════════════════════════════════════════════════════
+//  TAB SWITCHING
+// ════════════════════════════════════════════════════════════════
+function switchMain(name, btn) {
+  document.querySelectorAll('.tab-pane').forEach(function(p) { p.classList.remove('active'); });
+  document.getElementById('tab-' + name).classList.add('active');
+  document.querySelectorAll('.mtab').forEach(function(b) { b.classList.remove('active'); });
+  btn.classList.add('active');
+  if (name === 'admin') {
+    const savedPass = localStorage.getItem('admin_password');
+    if (!savedPass) {
+      showAdminAuthPrompt(true);
+    } else {
+      showAdminAuthPrompt(false);
+      doAdminSearch();
+    }
+  } else if (name === 'report') {
+    stopCamera();
+    loadReportData();
+  } else {
+    stopCamera();
+  }
+}
+
+// ════════════════════════════════════════════════════════════════
+//  ADMIN SECURITY CHECK
+// ════════════════════════════════════════════════════════════════
+function showAdminAuthPrompt(show, errorMsg = '') {
+  const overlay = document.getElementById('admin-auth-overlay');
+  const content = document.getElementById('admin-content-wrap');
+  const errDiv  = document.getElementById('auth-error-msg');
+
+  if (show) {
+    overlay.style.display = 'block';
+    content.style.display = 'none';
+    document.getElementById('admin-pass-input').value = '';
+    document.getElementById('admin-pass-input').focus();
+    if (errorMsg) {
+      errDiv.textContent = errorMsg;
+      errDiv.style.display = 'block';
+    } else {
+      errDiv.style.display = 'none';
+    }
+  } else {
+    overlay.style.display = 'none';
+    content.style.display = 'block';
+  }
+}
+
+async function submitAdminPassword() {
+  const val = document.getElementById('admin-pass-input').value.trim();
+  if (!val) {
+    toast('⚠️', 'Password cannot be empty');
+    return;
+  }
+  localStorage.setItem('admin_password', val);
+  showAdminAuthPrompt(false);
+  
+  // Test password with a search action
+  doAdminSearch();
+}
+
+// ════════════════════════════════════════════════════════════════
+//  UPLOAD TAB
+// ════════════════════════════════════════════════════════════════
+function switchPhotoTab(tab) {
+  document.getElementById('ptab-up').classList.toggle('active',  tab==='upload');
+  document.getElementById('ptab-cam').classList.toggle('active', tab==='camera');
+  document.getElementById('psec-upload').style.display  = tab==='upload'  ? 'block' : 'none';
+  document.getElementById('psec-camera').style.display  = tab==='camera' ? 'block' : 'none';
+  if (tab === 'camera') {
+    startCamera();
+  } else {
+    stopCamera();
+  }
+}
+
+async function startCamera() {
+  document.getElementById('webcamContainer').style.display = 'none';
+  document.getElementById('nativeCameraFallback').style.display = 'none';
+  
+  if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
+    document.getElementById('nativeCameraFallback').style.display = 'block';
+    return;
+  }
+  
+  try {
+    camStream = await navigator.mediaDevices.getUserMedia({video:{facingMode:camFacing},audio:false});
+    document.getElementById('videoEl').srcObject = camStream;
+    document.getElementById('camOverlay').style.display = 'none';
+    document.getElementById('captureBtn').disabled = false;
+    document.getElementById('webcamContainer').style.display = 'block';
+  } catch(e) {
+    console.log('Webcam blocked or failed, using native app fallback:', e);
+    document.getElementById('nativeCameraFallback').style.display = 'block';
+  }
+}
+
+function stopCamera() {
+  if (camStream) { camStream.getTracks().forEach(function(t){t.stop();}); camStream=null; }
+  document.getElementById('camOverlay').style.display = 'flex';
+  document.getElementById('captureBtn').disabled = true;
+}
+
+async function flipCamera() {
+  camFacing = camFacing==='user' ? 'environment' : 'user';
+  if (camStream) { stopCamera(); await startCamera(); }
+}
+
+function capturePhoto() {
+  var v = document.getElementById('videoEl');
+  var c = document.getElementById('canvasEl');
+  c.width = v.videoWidth; c.height = v.videoHeight;
+  var ctx = c.getContext('2d');
+  ctx.scale(-1,1); ctx.drawImage(v,-c.width,0,c.width,c.height);
+  photoMime = 'image/jpeg';
+  setPreview(c.toDataURL('image/jpeg', .92));
+  stopCamera();
+}
+
+function triggerNativeCamera() {
+  document.getElementById('nativeCamInput').click();
+}
+
+function compressImage(dataUrl, maxW, maxH, quality, callback) {
+  var img = new Image();
+  img.onload = function() {
+    var w = img.width;
+    var h = img.height;
+    if (w > maxW || h > maxH) {
+      if (w > h) {
+        h = Math.round((h * maxW) / w);
+        w = maxW;
+      } else {
+        w = Math.round((w * maxH) / h);
+        h = maxH;
+      }
+    }
+    var canvas = document.createElement('canvas');
+    canvas.width = w;
+    canvas.height = h;
+    var ctx = canvas.getContext('2d');
+    ctx.drawImage(img, 0, 0, w, h);
+    var compressedDataUrl = canvas.toDataURL('image/jpeg', quality);
+    callback(compressedDataUrl);
+  };
+  img.onerror = function() {
+    callback(dataUrl);
+  };
+  img.src = dataUrl;
+}
+
+function setPreview(url) {
+  document.getElementById('submitBtn').disabled = true;
+  compressImage(url, 1000, 1000, 0.8, function(compressedUrl) {
+    photoDataUrl = compressedUrl;
+    photoMime = 'image/jpeg';
+    document.getElementById('previewImg').src = compressedUrl;
+    document.getElementById('previewSec').style.display = 'block';
+    checkUploadReady();
+  });
+}
+
+function clearPhoto() {
+  photoDataUrl = null;
+  document.getElementById('previewSec').style.display = 'none';
+  document.getElementById('fileInput').value = '';
+  var nci = document.getElementById('nativeCamInput');
+  if (nci) nci.value = '';
+  checkUploadReady();
+}
+
+function checkUploadReady() {
+  var d = document.getElementById('u-dept').value;
+  var n = document.getElementById('u-name').value;
+  document.getElementById('submitBtn').disabled = !(d && n && photoDataUrl);
+}
+
+async function submitPhoto() {
+  var dept = document.getElementById('u-dept').value;
+  var name = document.getElementById('u-name').value;
+  if (!dept || !name || !photoDataUrl) return;
+  setUploadLoading(true);
+
+  // Sandboxed safety timeout: if browser blocks the return callback, auto-unlock UI after 6 seconds
+  var uploadTimeout = setTimeout(function() {
+    setUploadLoading(false);
+    clearPhoto();
+    document.getElementById('u-dept').value = '';
+    document.getElementById('u-name').innerHTML = '<option value="">— Select Name —</option>';
+    document.getElementById('u-name').disabled = true;
+    document.getElementById('submitBtn').disabled = true;
+    toast('✅', 'Upload processed! Selected student has been reset.');
+  }, 6000);
+
+  const r = await callAPI('savePhoto', {
+    base64Data: photoDataUrl,
+    studentName: name,
+    department: dept,
+    mimeType: photoMime
+  });
+
+  clearTimeout(uploadTimeout);
+  setUploadLoading(false);
+
+  if (r && r.success) {
+    toast('✅','Photo saved — ' + r.fileName);
+    clearPhoto();
+    document.getElementById('u-dept').value = '';
+    document.getElementById('u-name').innerHTML = '<option value="">— Select Name —</option>';
+    document.getElementById('u-name').disabled = true;
+    document.getElementById('submitBtn').disabled = true;
+    loadStudentDropdowns(); // Reload student list to remove the registered student
+  } else {
+    toast('❌', (r && r.error) || 'Upload failed');
+  }
+}
+
+function setUploadLoading(on) {
+  document.getElementById('uploadSpin').style.display = on ? 'block' : 'none';
+  document.getElementById('submitBtn').textContent = on ? 'Uploading…' : '🚀 Submit Photo';
+  document.getElementById('submitBtn').disabled = on;
+  document.getElementById('uploadBar').style.display = on ? 'block' : 'none';
+  if (on) animBar('uploadBar');
+}
+
+// ════════════════════════════════════════════════════════════════
+//  ADMIN TAB — SEARCH & THUMBNAILS
+// ════════════════════════════════════════════════════════════════
+async function doAdminSearch() {
+  var dept = document.getElementById('a-dept').value;
+  var name = document.getElementById('a-name').value.trim();
+  var title = (dept||name) ? 'Results: "'+[dept,name].filter(Boolean).join(' / ')+'"' : 'All Photos';
+  document.getElementById('adminTitle').textContent = title;
+  document.getElementById('adminCount').textContent = '…';
+
+  var grid = document.getElementById('photoGrid');
+  grid.innerHTML = '<div class="state-box"><div class="spin spin-lg" style="display:block;margin:0 auto 14px"></div><div class="state-title">Loading photos…</div></div>';
+
+  const res = await callAPI('searchPhotos', { department: dept, studentName: name });
+  if (res && res.success === false) {
+    if (res.error && res.error.indexOf('Unauthorized') !== -1) {
+      return; // Handled by callAPI auto-prompt
+    }
+    renderAdminError(res.error);
+    return;
+  }
+  
+  if (res && res.results) {
+    adminResults = res.results;
+    document.getElementById('adminCount').textContent = res.results.length + ' photo' + (res.results.length!==1?'s':'');
+    renderPhotoGrid(res.results);
+  } else {
+    renderAdminError("Unexpected API response");
+  }
+}
+
+function clearAdminSearch() {
+  document.getElementById('a-dept').value = '';
+  document.getElementById('a-name').value = '';
+  doAdminSearch();
+}
+
+function renderPhotoGrid(results) {
+  var grid = document.getElementById('photoGrid');
+  grid.innerHTML = '';
+  if (!results.length) {
+    grid.innerHTML = '<div class="state-box"><div class="state-icon">📭</div><div class="state-title">No photos found</div><div class="state-msg">Try a different filter.</div></div>';
+    return;
+  }
+  results.forEach(function(r, i) {
+    var card = document.createElement('div');
+    card.className = 'photo-card';
+    card.style.animationDelay = Math.min(i * 0.05, 0.5) + 's';
+    card.innerHTML =
+      '<div class="thumb-container" id="tc-'+r.fileId+'">' +
+        '<div class="thumb-placeholder" id="ph-'+r.fileId+'">' +
+          '<div class="thumb-spinner"></div>' +
+          '<div style="font-size:10px;color:var(--m)">Loading…</div>' +
+        '</div>' +
+        '<img class="thumb-img" id="ti-'+r.fileId+'" src="" alt="'+esc(r.name)+'" style="opacity:0"' +
+          ' onload="this.style.opacity=1;document.getElementById(\'ph-'+r.fileId+'\').style.display=\'none\'"' +
+          ' onerror="showThumbErr(\''+r.fileId+'\')" />' +
+      '</div>' +
+      '<div class="photo-info">' +
+        '<div class="photo-name" title="'+esc(r.name)+'">'+esc(r.name)+'</div>' +
+        '<div class="photo-dept">'+esc(r.department)+'</div>' +
+        '<div class="photo-time">🕐 '+r.timestamp+'</div>' +
+      '</div>' +
+      '<div class="photo-actions">' +
+        '<button class="act-btn" onclick="openLb(\''+r.fileId+'\',\''+esc(r.name)+'\',\''+esc(r.department)+'\',\''+r.timestamp+'\')">👁️ View</button>' +
+        '<button class="act-btn dl" onclick="dlPhoto(\''+r.fileId+'\',\''+esc(r.name)+'\')">⬇️ Download</button>' +
+      '</div>';
+    grid.appendChild(card);
+  });
+
+  // Load thumbnails in batches
+  loadThumbsBatch(results, 0);
+}
+
+async function loadThumbsBatch(results, start) {
+  var batch = results.slice(start, start + 6);
+  if (!batch.length) return;
+  var ids = batch.map(function(r){ return r.fileId; });
+
+  const photos = await callAPI('getPhotosBatch', { fileIds: ids });
+  if (photos && photos.success !== false) {
+    Object.keys(photos).forEach(function(id) {
+      if (photos[id]) {
+        var img = document.getElementById('ti-' + id);
+        if (img) img.src = photos[id];
+        PHOTO_CACHE[id] = photos[id];
+      }
+    });
+    // Next batch
+    setTimeout(function(){ loadThumbsBatch(results, start + 6); }, 100);
+  } else {
+    batch.forEach(function(r){ showThumbErr(r.fileId); });
+    setTimeout(function(){ loadThumbsBatch(results, start + 6); }, 100);
+  }
+}
+
+function showThumbErr(fileId) {
+  var ph = document.getElementById('ph-' + fileId);
+  if (ph) ph.innerHTML = '<div class="thumb-err-icon">🖼️</div><div class="thumb-err-txt">No preview</div>';
+}
+
+function renderAdminError(msg) {
+  document.getElementById('photoGrid').innerHTML =
+    '<div class="state-box"><div class="state-icon">⚠️</div><div class="state-title">Error</div><div class="state-msg">'+esc(msg)+'</div></div>';
+  document.getElementById('adminCount').textContent = '—';
+}
+
+// Lightbox
+async function openLb(fileId, name, dept, ts) {
+  document.getElementById('lbTitle').textContent = name;
+  document.getElementById('lbName').textContent  = name;
+  document.getElementById('lbDept').textContent  = dept;
+  document.getElementById('lbTime').textContent  = '🕐 ' + ts;
+  document.getElementById('lbBody').innerHTML =
+    '<div class="lb-loading"><div class="spin spin-lg" style="display:block"></div>Loading full image…</div>';
+  document.getElementById('lightbox').classList.add('open');
+  document.body.style.overflow = 'hidden';
+
+  // Fetch full image as base64
+  var cached = PHOTO_CACHE[fileId];
+  if (cached) {
+    showLbImage(cached, fileId);
+  } else {
+    const res = await callAPI('getStudentPhotoBase64', { fileId: fileId });
+    const b64 = (res && res.success !== false) ? res.base64Data || res : null;
+    if (b64) {
+      PHOTO_CACHE[fileId] = b64;
+    }
+    showLbImage(b64, fileId);
+  }
+}
+
+function showLbImage(b64, fileId) {
+  if (b64) {
+    document.getElementById('lbBody').innerHTML = '<img id="lbImg" src="'+b64+'" alt="Student Photo" style="width:100%;max-height:65vh;object-fit:contain;background:rgba(0,0,0,.5);display:block"/>';
+  } else {
+    document.getElementById('lbBody').innerHTML = '<div class="lb-loading"><div style="font-size:40px;opacity:.3">🖼️</div><div>Image unavailable</div></div>';
+  }
+  document.getElementById('lbDl').href = b64 || '#';
+  document.getElementById('lbDl').download = 'photo_'+fileId+'.jpg';
+  document.getElementById('lbDl').textContent = '⬇️ Download';
+}
+
+function closeLb() {
+  document.getElementById('lightbox').classList.remove('open');
+  document.body.style.overflow = '';
+}
+
+function lbBdClick(e) { if (e.target===document.getElementById('lightbox')) closeLb(); }
+document.addEventListener('keydown', function(e){ if(e.key==='Escape') closeLb(); });
+
+async function dlPhoto(fileId, name) {
+  var cached = PHOTO_CACHE[fileId];
+  function doDownload(b64) {
+    if (!b64) { toast('❌','No photo data available'); return; }
+    var a = document.createElement('a');
+    a.href = b64; a.download = name.replace(/\s+/g,'_')+'_photo.jpg'; a.click();
+    toast('✅','Downloaded: '+name);
+  }
+  if (cached) { doDownload(cached); return; }
+  
+  const res = await callAPI('getStudentPhotoBase64', { fileId: fileId });
+  const b64 = (res && res.success !== false) ? res.base64Data || res : null;
+  if (b64) {
+    PHOTO_CACHE[fileId] = b64;
+    doDownload(b64);
+  } else {
+    toast('❌', 'Could not fetch photo data');
+  }
+}
+
+// ════════════════════════════════════════════════════════════════
+//  UTILITIES
+// ════════════════════════════════════════════════════════════════
+var _tt;
+function toast(icon,msg){ document.getElementById('tIcon').textContent=icon; document.getElementById('tMsg').textContent=msg; var el=document.getElementById('toast'); el.classList.add('show'); clearTimeout(_tt); _tt=setTimeout(function(){el.classList.remove('show');},3500); }
+function esc(s){ return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
+function animBar(id){ var b=document.getElementById(id); if(!b)return; b.style.width='0%'; var p=0,iv=setInterval(function(){ p=Math.min(p+Math.random()*14,90); b.style.width=p+'%'; if(p>=90)clearInterval(iv); },220); }
+
+// ════════════════════════════════════════════════════════════════
+//  STUDENT DATA DROPDOWNS LOADING
+// ════════════════════════════════════════════════════════════════
+async function loadStudentDropdowns() {
+  const d = await callAPI('getStudentData');
+  if (d && d.data) {
+    STUDENT_DATA = d;
+    var dataDict = d.data || {};
+    
+    // Upload tab dept dropdown
+    var sel = document.getElementById('u-dept');
+    sel.innerHTML = '<option value="">— Select Department —</option>';
+    Object.keys(dataDict).sort().forEach(function(dept) {
+      var o = document.createElement('option');
+      o.value = o.textContent = dept;
+      sel.appendChild(o);
+    });
+    
+    // Admin tab dept dropdown
+    var asel = document.getElementById('a-dept');
+    asel.innerHTML = '<option value="">All Departments</option>';
+    Object.keys(dataDict).sort().forEach(function(dept) {
+      var o = document.createElement('option');
+      o.value = o.textContent = dept;
+      asel.appendChild(o);
+    });
+  }
+}
+
+// ════════════════════════════════════════════════════════════════
+//  REPORT CARD & TOPPERS
+// ════════════════════════════════════════════════════════════════
+var REPORT_DATA = null;
+var HOUSE_COLORS = {
+  'bosco': '#ff0055',
+  'savio': '#00d4ff',
+  'rua': '#ffd700',
+  'rinaldi': '#10b981'
+};
+var HOUSE_GLOWS = {
+  'bosco': 'rgba(255, 0, 85, 0.2)',
+  'savio': 'rgba(0, 212, 255, 0.2)',
+  'rua': 'rgba(255, 215, 0, 0.2)',
+  'rinaldi': 'rgba(16, 185, 129, 0.2)'
+};
+
+function getHouseColor(houseName) {
+  if (!houseName) return '#888888';
+  const key = houseName.trim().toLowerCase();
+  return HOUSE_COLORS[key] || '#888888';
+}
+
+function getHouseGlow(houseName) {
+  if (!houseName) return 'rgba(255, 255, 255, 0.05)';
+  const key = houseName.trim().toLowerCase();
+  return HOUSE_GLOWS[key] || 'rgba(128, 128, 128, 0.15)';
+}
+
+async function loadReportData() {
+  const container = document.getElementById('house-standings-container');
+  const teachersContainer = document.getElementById('star-teachers-container');
+  const activeDeptEl = document.getElementById('active-dept-name');
+  
+  container.innerHTML = '<div class="state-box"><div class="spin spin-lg" style="display:block;margin:0 auto 14px"></div><div>Loading Standings...</div></div>';
+  teachersContainer.innerHTML = '<div>Loading Teachers...</div>';
+  activeDeptEl.textContent = 'Loading...';
+  
+  const res = await callAPI('getReportData');
+  if (!res || !res.success) {
+    container.innerHTML = `<div class="state-box"><div class="state-icon">⚠️</div><div class="state-title">Error</div><div class="state-msg">${esc((res && res.error) || 'Failed to fetch report data')}</div></div>`;
+    return;
+  }
+  
+  REPORT_DATA = res;
+  
+  // Update College Name in headers
+  if (res.collegeName) {
+    document.getElementById('print-college-name').textContent = res.collegeName;
+  }
+  
+  // Update dates
+  const dateStr = `Week ending: Thursday, ${formatDisplayDate(res.weekEnd)}`;
+  document.getElementById('print-report-meta').textContent = dateStr;
+  document.getElementById('report-title-main').textContent = `Weekly Report: ${formatDisplayDate(res.weekStart)} - ${formatDisplayDate(res.weekEnd)}`;
+  
+  // Update house config from response
+  if (res.houses) {
+    res.houses.forEach(h => {
+      const key = h.name.toLowerCase();
+      HOUSE_COLORS[key] = h.color;
+      if (h.color.startsWith('#')) {
+        const r = parseInt(h.color.slice(1, 3), 16) || 0;
+        const g = parseInt(h.color.slice(3, 5), 16) || 0;
+        const b = parseInt(h.color.slice(5, 7), 16) || 0;
+        HOUSE_GLOWS[key] = `rgba(${r}, ${g}, ${b}, 0.2)`;
+      } else {
+        HOUSE_GLOWS[key] = h.color;
+      }
+    });
+  }
+  
+  // Render House Standings
+  if (res.houses && res.houses.length > 0) {
+    container.innerHTML = '';
+    const maxPoints = Math.max(...res.houses.map(h => h.overallPoints), 1);
+    res.houses.forEach(h => {
+      const pct = Math.round((h.overallPoints / maxPoints) * 100);
+      const row = document.createElement('div');
+      row.className = 'house-bar-row';
+      row.innerHTML = `
+        <div class="house-bar-info">
+          <span style="color: ${h.color}">${h.name.toUpperCase()}</span>
+          <span>${h.overallPoints} pts <span style="font-size:11px; font-weight:normal; color:var(--s);">(${h.weeklyPoints} this week)</span></span>
+        </div>
+        <div class="house-bar-track">
+          <div class="house-bar-fill" style="width: ${pct}%; background-color: ${h.color}; box-shadow: 0 0 10px ${h.color}44;"></div>
+        </div>
+      `;
+      container.appendChild(row);
+    });
+  } else {
+    container.innerHTML = '<div class="state-box"><div class="state-icon">📭</div><div class="state-title">No House Data</div></div>';
+  }
+  
+  // Render Active Department
+  activeDeptEl.textContent = res.activeDept || 'N/A';
+  
+  // Render Star Teachers
+  if (res.starTeachers && res.starTeachers.length > 0) {
+    teachersContainer.innerHTML = '';
+    res.starTeachers.forEach((t, i) => {
+      const row = document.createElement('div');
+      row.className = 'teacher-row';
+      row.innerHTML = `
+        <div class="teacher-rank rank-${i + 1}">${i + 1}</div>
+        <div class="teacher-name-text">${esc(t.name)}</div>
+        <div class="teacher-logs-count">${t.logs} logs</div>
+      `;
+      teachersContainer.appendChild(row);
+    });
+  } else {
+    teachersContainer.innerHTML = '<div style="text-align:center; padding:20px; color:var(--m); font-size:13px;">No activity logged this week</div>';
+  }
+  
+  // Populate Department Dropdown for Toppers
+  const deptSel = document.getElementById('r-dept');
+  deptSel.innerHTML = '<option value="">— Select Department —</option>';
+  if (res.departments && res.departments.length > 0) {
+    res.departments.forEach(dept => {
+      const opt = document.createElement('option');
+      opt.value = opt.textContent = dept;
+      deptSel.appendChild(opt);
+    });
+  }
+  
+  // Render default toppers grid message
+  document.getElementById('toppersGrid').innerHTML = `
+    <div class="state-box">
+      <div class="state-icon">🎓</div>
+      <div class="state-title">Select a department to view toppers</div>
+      <div class="state-msg">Cards will be generated with student photos and achievement details.</div>
+    </div>
+  `;
+}
+
+function onReportDeptChange() {
+  const dept = document.getElementById('r-dept').value;
+  const grid = document.getElementById('toppersGrid');
+  
+  if (!dept) {
+    grid.innerHTML = `
+      <div class="state-box">
+        <div class="state-icon">🎓</div>
+        <div class="state-title">Select a department to view toppers</div>
+      </div>
+    `;
+    return;
+  }
+  
+  if (!REPORT_DATA || !REPORT_DATA.toppers || !REPORT_DATA.toppers[dept]) {
+    grid.innerHTML = `
+      <div class="state-box">
+        <div class="state-icon">📭</div>
+        <div class="state-title">No Toppers Found</div>
+        <div class="state-msg">No students in this department earned points this week.</div>
+      </div>
+    `;
+    return;
+  }
+  
+  const toppers = REPORT_DATA.toppers[dept];
+  grid.innerHTML = '';
+  
+  toppers.forEach((s, idx) => {
+    const cardId = `topper-card-${idx}`;
+    const houseColor = getHouseColor(s.house);
+    const houseGlow = getHouseGlow(s.house);
+    const photoHtml = s.fileId 
+      ? `<img src="https://drive.google.com/thumbnail?id=${s.fileId}&sz=w600" alt="${esc(s.name)}" />`
+      : `<div class="ach-card-photo-fallback">👤</div>`;
+      
+    const card = document.createElement('div');
+    card.className = 'ach-card';
+    card.id = cardId;
+    card.style.setProperty('--house-color', houseColor);
+    card.style.setProperty('--house-glow', houseGlow);
+    
+    card.innerHTML = `
+      <div class="ach-card-badge">Topper of the Week</div>
+      <div class="ach-card-photo-frame" style="border-color: ${houseColor}; box-shadow: 0 8px 20px rgba(0,0,0,0.6), 0 0 15px ${houseColor}88;">
+        ${photoHtml}
+      </div>
+      <div class="ach-card-name" title="${esc(s.name)}">${esc(s.name)}</div>
+      <div class="ach-card-house-pill" style="background: ${houseColor}; color: #000;">${s.house.toUpperCase()}</div>
+      <div class="ach-card-details" style="margin-top: 10px;">
+        <div style="font-weight: 700; color: #fff;">DEPARTMENT OF ${s.department.toUpperCase()}</div>
+      </div>
+      <div class="ach-card-score" style="color: ${houseColor}; text-shadow: 0 0 10px ${houseColor}66;">${s.points}</div>
+      <div class="ach-card-score-lbl">Points Earned</div>
+      <div class="ach-card-actions">
+        <button class="btn btn-pr btn-full" onclick="printCard('${cardId}')">🖨️ Print Card</button>
+      </div>
+    `;
+    grid.appendChild(card);
+  });
+}
+
+function printReport() {
+  document.body.classList.add('print-report-active');
+  window.print();
+  setTimeout(() => {
+    document.body.classList.remove('print-report-active');
+  }, 1000);
+}
+
+function printCard(cardId) {
+  const card = document.getElementById(cardId);
+  if (!card) return;
+  
+  const clone = card.cloneNode(true);
+  const actions = clone.querySelector('.ach-card-actions');
+  if (actions) actions.remove();
+  
+  const printContainer = document.getElementById('print-container');
+  printContainer.innerHTML = '';
+  printContainer.appendChild(clone);
+  
+  document.body.classList.add('print-card-active');
+  window.print();
+  
+  setTimeout(() => {
+    document.body.classList.remove('print-card-active');
+    printContainer.innerHTML = '';
+  }, 1000);
+}
+
+function formatDisplayDate(dateStr) {
+  if (!dateStr) return '';
+  const parts = dateStr.split('-');
+  if (parts.length !== 3) return dateStr;
+  const date = new Date(parts[0], parts[1] - 1, parts[2]);
+  return date.toLocaleDateString('en-US', { day: 'numeric', month: 'short', year: 'numeric' });
+}
+</script>
+</body>
+</html>

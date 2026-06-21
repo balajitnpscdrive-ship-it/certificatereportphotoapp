@@ -480,24 +480,25 @@ select:disabled{opacity:.4;cursor:not-allowed}
 }
 
 /* G.O.A.T. Social Media Card style */
+/* G.O.A.T. Social Media Card style */
 .ach-card {
   width: 440px;
   height: 590px;
-  background: radial-gradient(circle at 50% 30%, var(--house-glow, rgba(212,175,55,0.15)) 0%, #0c0905 100%) !important;
   border: 4px solid var(--house-color, #bf953f) !important;
-  border-radius: 12px;
-  padding: 20px;
+  border-radius: 16px;
+  padding: 22px;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: space-between;
   box-sizing: border-box;
   color: #fff !important;
-  font-family: 'Inter', sans-serif;
-  box-shadow: 0 15px 40px rgba(0,0,0,0.6);
+  font-family: 'Poppins', 'Inter', sans-serif;
+  box-shadow: 0 20px 50px rgba(0,0,0,0.8), inset 0 0 25px rgba(255,255,255,0.05);
   position: relative;
   page-break-inside: avoid;
   break-inside: avoid;
+  overflow: hidden;
 }
 
 .ach-card-top-row {
@@ -506,6 +507,7 @@ select:disabled{opacity:.4;cursor:not-allowed}
   align-items: center;
   justify-content: space-between;
   gap: 8px;
+  z-index: 2;
 }
 
 .ach-card-logo-circle, .ach-card-founder-circle {
@@ -536,6 +538,7 @@ select:disabled{opacity:.4;cursor:not-allowed}
   font-weight: 800;
   letter-spacing: 0.05em;
   color: #fff;
+  text-shadow: 0 2px 4px rgba(0,0,0,0.6);
 }
 
 .ach-card-inst-sub {
@@ -544,6 +547,7 @@ select:disabled{opacity:.4;cursor:not-allowed}
   color: var(--house-color, #b38728);
   letter-spacing: 0.08em;
   margin-top: 1px;
+  text-shadow: 0 1px 2px rgba(0,0,0,0.6);
 }
 
 .ach-card-award-title {
@@ -552,7 +556,7 @@ select:disabled{opacity:.4;cursor:not-allowed}
   letter-spacing: 0.05em;
   color: #fff;
   margin-top: 4px;
-  text-shadow: 0 2px 4px rgba(0,0,0,0.5);
+  text-shadow: 0 2px 8px rgba(0,0,0,0.8), 0 0 10px rgba(255,255,255,0.2);
 }
 
 .ach-card-award-sub {
@@ -561,19 +565,21 @@ select:disabled{opacity:.4;cursor:not-allowed}
   color: var(--house-color, #d4af37);
   letter-spacing: 0.18em;
   margin-top: 1px;
+  text-shadow: 0 1px 2px rgba(0,0,0,0.6);
 }
 
 .ach-card-photo-frame {
   width: 170px;
   height: 170px;
   border-radius: 50%;
-  border: 5px solid var(--house-color, #d4af37);
+  border: 5px solid var(--house-color, #d4af37) !important;
   overflow: hidden;
-  box-shadow: 0 0 20px var(--house-glow, rgba(212,175,55,0.3)), 0 8px 16px rgba(0,0,0,0.5);
+  box-shadow: 0 0 25px var(--house-glow, rgba(212,175,55,0.4)), 0 8px 20px rgba(0,0,0,0.7);
   background: #111;
   display: flex;
   align-items: center;
   justify-content: center;
+  z-index: 2;
 }
 
 .ach-card-photo-frame img {
@@ -588,76 +594,66 @@ select:disabled{opacity:.4;cursor:not-allowed}
 }
 
 .ach-card-ribbon {
-  width: 75%;
-  background: linear-gradient(180deg, var(--house-color, #ffd700) 0%, var(--house-color, #d4af37) 100%);
-  padding: 6px 12px;
-  box-shadow: 0 4px 10px rgba(0,0,0,0.4);
+  width: 85%;
+  background: rgba(15, 23, 42, 0.75) !important;
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  border: 2px solid var(--house-color, #ffd700);
+  box-shadow: 0 0 15px var(--house-glow, rgba(255, 215, 0, 0.3));
+  border-radius: 12px;
+  padding: 10px 16px;
   text-align: center;
-  position: relative;
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 2px;
+  gap: 4px;
   margin: 12px 0;
   z-index: 5;
+  position: relative;
 }
-.ach-card-ribbon::before {
-  content: '';
-  position: absolute;
-  left: -12px;
-  top: 4px;
-  width: 12px;
-  height: 100%;
-  background: var(--house-color, #b38728);
-  filter: brightness(0.65);
-  clip-path: polygon(100% 0, 0 50%, 100% 100%);
-  z-index: -1;
-}
-.ach-card-ribbon::after {
-  content: '';
-  position: absolute;
-  right: -12px;
-  top: 4px;
-  width: 12px;
-  height: 100%;
-  background: var(--house-color, #b38728);
-  filter: brightness(0.65);
-  clip-path: polygon(0 0, 100% 50%, 0 100%);
-  z-index: -1;
+
+.ach-card-ribbon::before, .ach-card-ribbon::after {
+  display: none !important;
 }
 
 .ach-card-capsule {
-  background: #000;
-  color: var(--house-color, #ffd700);
-  font-size: 8px;
+  background: var(--house-color, #ffd700);
+  color: #000 !important;
+  font-size: 9px;
   font-weight: 800;
   letter-spacing: 0.1em;
-  padding: 2px 10px;
+  padding: 3px 12px;
   border-radius: 50px;
   text-transform: uppercase;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.3);
 }
 
 .ach-card-winner-name {
-  color: #000;
-  font-size: 15px;
-  font-weight: 800;
-  letter-spacing: 0.02em;
+  color: #fff !important;
+  font-family: 'Poppins', sans-serif;
+  font-size: 20px;
+  font-weight: 900;
+  letter-spacing: 0.05em;
   text-transform: uppercase;
+  text-shadow: 0 0 8px var(--house-color, #ffd700), 0 0 20px var(--house-color, #ffd700);
 }
 
 .ach-card-congrats {
-  font-size: 9.5px;
-  line-height: 1.5;
-  color: #dfdfdf;
+  font-size: 10px;
+  line-height: 1.6;
+  color: #e2e8f0;
   text-align: center;
-  padding: 0 10px;
+  padding: 0 15px;
   font-family: 'Inter', sans-serif;
   margin-top: 4px;
+  text-shadow: 0 1px 2px rgba(0,0,0,0.5);
+  z-index: 2;
 }
 
 .ach-card-congrats .highlight {
   color: var(--house-color, #ffd700);
-  font-weight: 700;
+  font-weight: 800;
+  text-shadow: 0 0 6px var(--house-glow);
 }
 
 /* 🖨️ Document branding header for printed reports */
@@ -1685,12 +1681,38 @@ body.print-cert-active .cert-page-break:last-child {
      ═══════════════════════════════════════════════════════════ -->
 <script>
 // Set your Google Apps Script Web App URL here when deploying the frontend on GitHub Pages
-const API_URL = 'https://script.google.com/macros/s/AKfycbwfXmUoK4IacFfPVqXyrUHgwg8JlfY0hdJGI-9dfeauNgzoDroLAPGp5Zn8nTgmZMIe/exec';
+const API_URL = 'https://script.google.com/macros/s/AKfycbzkgexIQKscScTWzba19p7n-4s1uOKkPMk1hOuMpxyCLTQO_8bFfK5KT1f7rG2hBe99uA/exec';
 
 // Automatically set by Apps Script when page is served inside GAS
 var GAS_WEB_APP_URL = '<?= ScriptApp.getService().getUrl() ?>';
 
 var INITIAL_PAGE = '<?= page ?>';
+
+// Safe localStorage wrapper for sandboxed environment
+var safeStorage = {
+  _cache: {},
+  getItem: function(key) {
+    try {
+      return localStorage.getItem(key);
+    } catch (e) {
+      return this._cache[key] || null;
+    }
+  },
+  setItem: function(key, value) {
+    try {
+      localStorage.setItem(key, value);
+    } catch (e) {
+      this._cache[key] = value;
+    }
+  },
+  removeItem: function(key) {
+    try {
+      localStorage.removeItem(key);
+    } catch (e) {
+      delete this._cache[key];
+    }
+  }
+};
 
 // ════════════════════════════════════════════════════════════════
 //  API INTERACTION
@@ -1705,7 +1727,7 @@ function getBackendURL() {
 
 async function callAPI(action, data = {}) {
   data.action = action;
-  data.password = localStorage.getItem('admin_password') || '';
+  data.password = safeStorage.getItem('admin_password') || '';
 
   const url = getBackendURL();
   if (!url || url === 'YOUR_GOOGLE_APPS_SCRIPT_WEB_APP_URL') {
@@ -1730,7 +1752,7 @@ async function callAPI(action, data = {}) {
     const res = await response.json();
     if (res && res.success === false && res.error && res.error.indexOf('Unauthorized') !== -1) {
       // Clear password, force prompt
-      localStorage.removeItem('admin_password');
+      safeStorage.removeItem('admin_password');
       showAdminAuthPrompt(true, res.error);
     }
     return res;
@@ -1849,7 +1871,7 @@ function switchMain(name, btn) {
   }
 
   ACTIVE_SECURED_TAB = name;
-  const savedPass = localStorage.getItem('admin_password');
+  const savedPass = safeStorage.getItem('admin_password');
   
   document.querySelectorAll('.mtab').forEach(function(b) { b.classList.remove('active'); });
   btn.classList.add('active');
@@ -1904,11 +1926,11 @@ async function submitAdminPassword() {
     toast('⚠️', 'Password cannot be empty');
     return;
   }
-  localStorage.setItem('admin_password', val);
+  safeStorage.setItem('admin_password', val);
   
   const testRes = await callAPI('getReportData');
   if (testRes && testRes.success === false && testRes.error && testRes.error.indexOf('Unauthorized') !== -1) {
-    localStorage.removeItem('admin_password');
+    safeStorage.removeItem('admin_password');
     showAdminAuthPrompt(true, 'Invalid admin password');
     return;
   }
@@ -2364,6 +2386,21 @@ function getHouseGlow(houseName) {
   return HOUSE_GLOWS[key] || 'rgba(128, 128, 128, 0.15)';
 }
 
+function getHouseBgGradient(houseName) {
+  if (!houseName) return 'radial-gradient(circle at 50% 30%, #1a1a24 0%, #0c0905 100%)';
+  const key = houseName.trim().toLowerCase();
+  if (key === 'nexus') {
+    return 'radial-gradient(circle at 50% 30%, #00d4ff 0%, #002b5c 50%, #001229 100%)';
+  } else if (key === 'novas') {
+    return 'radial-gradient(circle at 50% 30%, #ff0055 0%, #5c001e 50%, #29000d 100%)';
+  } else if (key === 'vertex') {
+    return 'radial-gradient(circle at 50% 30%, #10b981 0%, #05402a 50%, #021c12 100%)';
+  } else if (key === 'dynamos') {
+    return 'radial-gradient(circle at 50% 30%, #ffd700 0%, #5c4d00 50%, #292200 100%)';
+  }
+  return 'radial-gradient(circle at 50% 30%, #1a1a24 0%, #0c0905 100%)';
+}
+
 async function loadReportData() {
   const container = document.getElementById('house-standings-container');
   const teachersContainer = document.getElementById('star-teachers-container');
@@ -2508,14 +2545,14 @@ function onReportDeptChange() {
       : `<div class="ach-card-photo-fallback">👤</div>`;
       
     const card = document.createElement('div');
-    card.className = 'ach-card';
+    card.className = 'ach-card ' + s.house.toLowerCase();
     card.id = cardId;
     card.style.setProperty('--house-color', houseColor);
     card.style.setProperty('--house-glow', houseGlow);
-    card.style.background = `radial-gradient(circle at 50% 30%, ${houseGlow} 0%, #0c0905 100%)`;
+    card.style.background = getHouseBgGradient(s.house);
     card.style.borderColor = houseColor;
     
-    const congratsWording = `Congratulations on your brilliant achievement! You have proven to be an outstanding student, demonstrating excellence and commitment. Your monumental contribution for <span class="highlight" style="color:${houseColor}; font-weight:700;">${s.house.toUpperCase()} HOUSE</span> &amp; the DEPARTMENT OF <span class="highlight" style="color:${houseColor}; font-weight:700;">${s.department.toUpperCase()}</span> securing a massive <span class="highlight" style="color:${houseColor}; font-weight:700;">${s.points} POINTS</span> validates you as a true asset to this institution.`;
+    const congratsWording = `Congratulations on your brilliant achievement! Securing a massive <span class="highlight">${s.points} POINTS</span> validates you as a true G.O.A.T. of our institution.`;
     
     card.innerHTML = `
       <div class="ach-card-top-row">
@@ -2537,9 +2574,19 @@ function onReportDeptChange() {
         ${photoHtml}
       </div>
       
-      <div class="ach-card-ribbon" style="background: linear-gradient(180deg, ${houseColor}cc 0%, ${houseColor} 100%);">
-        <div class="ach-card-capsule" style="color: ${houseColor};">WEEKLY CHAMPION</div>
+      <div class="ach-card-ribbon">
+        <div class="ach-card-capsule">WEEKLY CHAMPION</div>
         <div class="ach-card-winner-name">${esc(s.name)}</div>
+      </div>
+      
+      <!-- Colorful, glowing badges for Department and House -->
+      <div style="display: flex; gap: 8px; justify-content: center; width: 90%; margin-top: 4px; z-index: 2;">
+        <span style="background: rgba(0,0,0,0.4); border: 1.5px solid ${houseColor}; border-radius: 20px; padding: 4px 12px; font-size: 10px; font-weight: 800; color: ${houseColor}; text-shadow: 0 0 5px ${houseColor}; text-transform: uppercase; white-space: nowrap;">
+          🏛️ ${s.department.toUpperCase()}
+        </span>
+        <span style="background: rgba(0,0,0,0.4); border: 1.5px solid ${houseColor}; border-radius: 20px; padding: 4px 12px; font-size: 10px; font-weight: 800; color: ${houseColor}; text-shadow: 0 0 5px ${houseColor}; text-transform: uppercase; white-space: nowrap;">
+          🏰 ${s.house.toUpperCase()} HOUSE
+        </span>
       </div>
       
       <div class="ach-card-congrats">
@@ -2606,21 +2653,21 @@ function printBulkTopperCards() {
       : `<div class="ach-card-photo-fallback" style="font-size:50px; opacity:0.4;">👤</div>`;
       
     const card = document.createElement('div');
-    card.className = 'ach-card';
+    card.className = 'ach-card ' + s.house.toLowerCase();
     card.style.cssText = `
       width: 440px !important;
       height: 590px !important;
-      background: radial-gradient(circle at 50% 30%, ${houseGlow} 0%, #0c0905 100%) !important;
+      background: ${getHouseBgGradient(s.house)} !important;
       border: 4px solid ${houseColor} !important;
-      border-radius: 12px !important;
-      padding: 20px !important;
+      border-radius: 16px !important;
+      padding: 22px !important;
       display: flex !important;
       flex-direction: column !important;
       align-items: center !important;
       justify-content: space-between !important;
       box-sizing: border-box !important;
       color: #fff !important;
-      font-family: 'Inter', sans-serif !important;
+      font-family: 'Poppins', 'Inter', sans-serif !important;
       box-shadow: none !important;
       page-break-after: always !important;
       break-after: page !important;
@@ -2629,12 +2676,12 @@ function printBulkTopperCards() {
       print-color-adjust: exact !important;
     `;
     
-    const congratsWording = `Congratulations on your brilliant achievement! You have proven to be an outstanding student, demonstrating excellence and commitment. Your monumental contribution for <span class="highlight" style="color:${houseColor}; font-weight:700;">${s.house.toUpperCase()} HOUSE</span> &amp; the DEPARTMENT OF <span class="highlight" style="color:${houseColor}; font-weight:700;">${s.department.toUpperCase()}</span> securing a massive <span class="highlight" style="color:${houseColor}; font-weight:700;">${s.points} POINTS</span> validates you as a true asset to this institution.`;
+    const congratsWording = `Congratulations on your brilliant achievement! Securing a massive <span class="highlight">${s.points} POINTS</span> validates you as a true G.O.A.T. of our institution.`;
     
     card.innerHTML = `
       <div class="ach-card-top-row" style="display:flex; width:100%; align-items:center; justify-content:space-between; gap:8px;">
         <div class="ach-card-logo-circle" style="width:46px; height:46px; border-radius:50%; border:1.5px solid ${houseColor}; overflow:hidden; background:#000; display:flex; align-items:center; justify-content:center;">
-          <img src="${BRANDING_DATA.collegeLogo}" style="width:100%; height:100%; object-fit:contain;"/>
+          <img src="${BRANDING_DATA.collegeLogo}" style="width:100%; height:100%; object-fit:cover;"/>
         </div>
         <div class="ach-card-header-titles" style="text-align:center; flex:1;">
           <div class="ach-card-inst-name" style="font-size:11.5px; font-weight:800; letter-spacing:0.05em; color:#fff;">${BRANDING_DATA.collegeName}</div>
@@ -2651,12 +2698,22 @@ function printBulkTopperCards() {
         ${photoHtml}
       </div>
       
-      <div class="ach-card-ribbon" style="width:90%; background:linear-gradient(180deg, ${houseColor}cc 0%, ${houseColor} 100%); border-radius:6px; padding:6px 12px; box-shadow:0 4px 10px rgba(0,0,0,0.4); text-align:center; display:flex; flex-direction:column; align-items:center; gap:2px;">
-        <div class="ach-card-capsule" style="background:#000; color:${houseColor}; font-size:8px; font-weight:800; letter-spacing:0.1em; padding:2px 10px; border-radius:50px; text-transform:uppercase;">WEEKLY CHAMPION</div>
-        <div class="ach-card-winner-name" style="color:#000; font-size:15px; font-weight:800; letter-spacing:0.02em; text-transform:uppercase;">${esc(s.name)}</div>
+      <div class="ach-card-ribbon">
+        <div class="ach-card-capsule">WEEKLY CHAMPION</div>
+        <div class="ach-card-winner-name">${esc(s.name)}</div>
       </div>
       
-      <div class="ach-card-congrats" style="font-size:9.5px; line-height:1.5; color:#dfdfdf; text-align:center; padding:0 10px; font-family:'Inter',sans-serif; margin-top:10px;">
+      <!-- Colorful, glowing badges for Department and House -->
+      <div style="display: flex; gap: 8px; justify-content: center; width: 90%; margin-top: 4px; z-index: 2;">
+        <span style="background: rgba(0,0,0,0.4); border: 1.5px solid ${houseColor}; border-radius: 20px; padding: 4px 12px; font-size: 10px; font-weight: 800; color: ${houseColor}; text-shadow: 0 0 5px ${houseColor}; text-transform: uppercase; white-space: nowrap;">
+          🏛️ ${s.department.toUpperCase()}
+        </span>
+        <span style="background: rgba(0,0,0,0.4); border: 1.5px solid ${houseColor}; border-radius: 20px; padding: 4px 12px; font-size: 10px; font-weight: 800; color: ${houseColor}; text-shadow: 0 0 5px ${houseColor}; text-transform: uppercase; white-space: nowrap;">
+          🏰 ${s.house.toUpperCase()} HOUSE
+        </span>
+      </div>
+      
+      <div class="ach-card-congrats">
         ${congratsWording}
       </div>
     `;
@@ -2841,8 +2898,7 @@ function printReport() {
         </tr>
       </tbody>
     </table>
-  `;
-  page1.appendChild(inchargesSection);
+  // Do not append inchargesSection to page1 to prevent duplicate signatures; only the one on page 2 will be kept.
   printContainer.appendChild(page1);
   
   // Page 2: Department Toppers Tables (Optimized for exactly 790px x 1120px A4 size)
@@ -2978,7 +3034,7 @@ function formatDisplayDate(dateStr) {
 //  EVENT CERTIFICATE GENERATOR
 // ════════════════════════════════════════════════════════════════
 async function loadCertGeneratorData() {
-  const savedPass = localStorage.getItem('admin_password');
+  const savedPass = safeStorage.getItem('admin_password');
   if (!savedPass) {
     showAdminAuthPrompt(true);
     return;
@@ -3157,7 +3213,7 @@ async function printBulkCertificates() {
     return;
   }
   
-  const savedPass = localStorage.getItem('admin_password');
+  const savedPass = safeStorage.getItem('admin_password');
   if (!savedPass) {
     showAdminAuthPrompt(true);
     return;
@@ -3364,7 +3420,7 @@ function renderPrintReportToppers(res) {
         : `<div class="ach-card-photo-fallback">👤</div>`;
         
       const card = document.createElement('div');
-      card.className = 'ach-card';
+      card.className = 'ach-card ' + s.house.toLowerCase();
       card.style.setProperty('--house-color', houseColor);
       card.style.setProperty('--house-glow', houseGlow);
       card.style.padding = '18px 14px';
@@ -3372,15 +3428,15 @@ function renderPrintReportToppers(res) {
       card.style.minHeight = '340px';
       card.style.boxShadow = 'none';
       card.style.border = `2px solid ${houseColor}`;
-      card.style.background = `linear-gradient(135deg, #111122 0%, ${houseGlow} 100%)`;
+      card.style.background = getHouseBgGradient(s.house);
       
       card.innerHTML = `
-        <div class="ach-card-badge">Topper of the Week</div>
-        <div class="ach-card-photo-frame" style="width: 85px; height: 85px; border-color: ${houseColor}; box-shadow: 0 4px 10px rgba(0,0,0,0.4), 0 0 8px ${houseColor}66;">
+        <div class="ach-card-badge" style="background: rgba(0,0,0,0.5); border: 1px solid ${houseColor}; color: ${houseColor}; font-size: 8px; padding: 2px 8px; border-radius: 10px; font-weight: 800; text-transform: uppercase;">Topper of the Week</div>
+        <div class="ach-card-photo-frame" style="width: 85px; height: 85px; border-color: ${houseColor}; box-shadow: 0 4px 10px rgba(0,0,0,0.4), 0 0 8px ${houseColor}66; margin-top: 8px;">
           ${photoHtml}
         </div>
-        <div class="ach-card-name" style="font-size: 15px;" title="${esc(s.name)}">${esc(s.name)}</div>
-        <div class="ach-card-house-pill" style="background: ${houseColor}; color: #000; font-size: 8px; padding: 2px 8px;">${s.house.toUpperCase()}</div>
+        <div class="ach-card-name" style="font-size: 15px; font-weight: 900; color: #fff; text-shadow: 0 0 5px ${houseColor}; margin-top: 8px;" title="${esc(s.name)}">${esc(s.name)}</div>
+        <div class="ach-card-house-pill" style="background: rgba(0,0,0,0.5); border: 1px solid ${houseColor}; color: ${houseColor}; font-size: 8px; padding: 2px 8px; border-radius: 10px; font-weight: 800; margin-top: 4px;">${s.house.toUpperCase()} HOUSE</div>
         <div class="cert-wording" style="font-size: 10px; line-height: 1.4; margin-top: 8px; margin-bottom: 8px; font-family:'Georgia',serif; font-style:italic; color:#e2e8f0;">
           for securing <span class="gold-text" style="color:#ffd700; font-weight:700;">TOP PERFORMANCE</span> in the department of <span style="color:#fff; font-weight:700;">${s.department.toUpperCase()}</span>.
         </div>
@@ -3428,15 +3484,25 @@ function updateBrandingImages() {
   const sFounder = document.getElementById('s-founder-preview');
   if (sFounder) sFounder.src = founderUrl;
   
-  // Update certificate preview document logo & founder
-  const certLogo = document.querySelector('#cert-document .cert-logo-wrap img');
+  // Update certificate preview document logo & founder using direct IDs
+  const certLogo = document.getElementById('cert-logo-img');
   if (certLogo) certLogo.src = logoUrl;
   
-  const certFounder = document.querySelector('#cert-document .cert-founder-wrap img');
+  const certFounder = document.getElementById('cert-founder-img');
   if (certFounder) certFounder.src = founderUrl;
   
-  const certWatermark = document.querySelector('#cert-document .cert-watermark-logo');
+  const certWatermark = document.getElementById('cert-watermark-logo-el');
   if (certWatermark) certWatermark.style.backgroundImage = 'url("' + logoUrl + '")';
+  
+  // Update certificate specific college name and signatures
+  const displayCollegeName = document.getElementById('cert-display-college-name');
+  if (displayCollegeName) displayCollegeName.textContent = BRANDING_DATA.collegeName;
+
+  const displaySecCollege = document.getElementById('cert-sig-sub-secretary');
+  if (displaySecCollege) displaySecCollege.textContent = BRANDING_DATA.collegeName;
+
+  const displayPrinCollege = document.getElementById('cert-sig-sub-principal');
+  if (displayPrinCollege) displayPrinCollege.textContent = BRANDING_DATA.collegeName;
   
   // Also update college name in settings, reports, certificates, and headers
   const cNameElements = [

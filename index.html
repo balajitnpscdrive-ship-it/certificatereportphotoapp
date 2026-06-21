@@ -1312,13 +1312,29 @@ body.print-cert-active .cert-page-break:last-child {
      ╚═══════════════════════════════════════════════════════════ -->
 <div id="tab-admin" class="tab-pane">
 
+  <!-- Admin Panel Content Container (always shown after auth) -->
+  <div id="admin-content-wrap">
 
-
-  <!-- Admin Panel Content Container -->
-  <div id="admin-content-wrap" style="display:none;">
-    <!-- Search bar -->
+    <!-- Photo Status Panel: Shows all students and photo upload status -->
     <div class="panel" style="margin-bottom:24px">
-      <div class="panel-hd">🔍 Search Photos</div>
+      <div class="panel-hd" style="justify-content:space-between; flex-wrap:wrap; gap:8px;">
+        <span>📋 Student Photo Status</span>
+        <div style="display:flex; gap:8px; align-items:center; flex-wrap:wrap;">
+          <select id="ps-dept" onchange="loadPhotoStatus()" style="font-size:12px; padding:6px 10px; border-radius:6px; background:var(--card); color:var(--t); border:1px solid var(--bdr);">
+            <option value="">All Departments</option>
+          </select>
+          <span id="ps-stat-has" style="background:rgba(34,197,94,0.15); border:1px solid #22c55e; border-radius:16px; padding:3px 12px; font-size:11px; font-weight:700; color:#22c55e;">✅ 0 Have Photo</span>
+          <span id="ps-stat-no" style="background:rgba(239,68,68,0.15); border:1px solid #ef4444; border-radius:16px; padding:3px 12px; font-size:11px; font-weight:700; color:#ef4444;">❌ 0 Missing</span>
+        </div>
+      </div>
+      <div id="photo-status-grid" style="margin-top:14px; display:grid; grid-template-columns:repeat(auto-fill,minmax(200px,1fr)); gap:10px;">
+        <div class="state-box"><div class="spin spin-lg" style="display:block;margin:0 auto 10px"></div><div>Loading...</div></div>
+      </div>
+    </div>
+
+    <!-- Search Uploaded Photos -->
+    <div class="panel" style="margin-bottom:24px">
+      <div class="panel-hd">🔍 Search Uploaded Photos</div>
       <form class="search-row" onsubmit="event.preventDefault(); doAdminSearch();">
         <div class="fg"><label class="lbl">Department</label>
           <select id="a-dept"><option value="">All Departments</option></select></div>
@@ -1883,6 +1899,7 @@ function switchMain(name, btn) {
   } else {
     showAdminAuthPrompt(false);
     if (name === 'admin') {
+      loadPhotoStatus();
       doAdminSearch();
     } else if (name === 'report') {
       loadReportData();
@@ -1939,6 +1956,7 @@ async function submitAdminPassword() {
   showAdminAuthPrompt(false);
   
   if (ACTIVE_SECURED_TAB === 'admin') {
+    loadPhotoStatus();
     doAdminSearch();
   } else if (ACTIVE_SECURED_TAB === 'report') {
     loadReportData();
@@ -2155,9 +2173,110 @@ function setUploadLoading(on) {
 }
 
 // ════════════════════════════════════════════════════════════════
+//  ADMIN TAB — PHOTO STATUS (All Students Has/No Photo)
+// ════════════════════════════════════════════════════════════════
+var PHOTO_STATUS_CACHE = null; // { dept: [{ name, hasPhoto }] }
+
+async function loadPhotoStatus() {
+  const grid = document.getElementById('photo-status-grid');
+  const statHas = document.getElementById('ps-stat-has');
+  const statNo  = document.getElementById('ps-stat-no');
+  const deptSel = document.getElementById('ps-dept');
+
+  grid.innerHTML = '<div class="state-box"><div class="spin spin-lg" style="display:block;margin:0 auto 10px"></div><div>Loading status…</div></div>';
+
+  // Load student list (allData has ALL students, data has those without photos)
+  const res = await callAPI('getStudentData');
+  if (!res || !res.allData) {
+    grid.innerHTML = '<div class="state-box"><div class="state-icon">⚠️</div><div class="state-title">Could not load student list</div></div>';
+    return;
+  }
+
+  // Load uploaded photos list
+  const photoRes = await callAPI('searchPhotos', { department: '', studentName: '' });
+  const uploadedSet = {};
+  if (photoRes && photoRes.results) {
+    photoRes.results.forEach(function(r) {
+      uploadedSet[(r.name + '|' + r.department).toLowerCase()] = true;
+    });
+  }
+
+  // Build status map
+  PHOTO_STATUS_CACHE = {};
+  const allData = res.allData;
+  Object.keys(allData).sort().forEach(function(dept) {
+    PHOTO_STATUS_CACHE[dept] = allData[dept].map(function(name) {
+      const cleanName = name.replace(/\s*\(.*?\)\s*$/, '').trim();
+      const key = (cleanName + '|' + dept).toLowerCase();
+      return { name: cleanName, hasPhoto: !!uploadedSet[key] };
+    });
+  });
+
+  // Populate dept filter
+  const currentVal = deptSel.value;
+  deptSel.innerHTML = '<option value="">All Departments</option>';
+  Object.keys(PHOTO_STATUS_CACHE).sort().forEach(function(dept) {
+    const opt = document.createElement('option');
+    opt.value = opt.textContent = dept;
+    deptSel.appendChild(opt);
+  });
+  if (currentVal) deptSel.value = currentVal;
+
+  renderPhotoStatusGrid();
+}
+
+function renderPhotoStatusGrid() {
+  const grid = document.getElementById('photo-status-grid');
+  const statHas = document.getElementById('ps-stat-has');
+  const statNo  = document.getElementById('ps-stat-no');
+  const dept = document.getElementById('ps-dept').value;
+
+  if (!PHOTO_STATUS_CACHE) return;
+
+  let allStudents = [];
+  if (dept) {
+    allStudents = (PHOTO_STATUS_CACHE[dept] || []).map(function(s) { return Object.assign({dept: dept}, s); });
+  } else {
+    Object.keys(PHOTO_STATUS_CACHE).sort().forEach(function(d) {
+      PHOTO_STATUS_CACHE[d].forEach(function(s) {
+        allStudents.push(Object.assign({dept: d}, s));
+      });
+    });
+  }
+
+  const hasCount  = allStudents.filter(function(s) { return s.hasPhoto; }).length;
+  const missCount = allStudents.length - hasCount;
+
+  statHas.textContent = '✅ ' + hasCount + ' Have Photo';
+  statNo.textContent  = '❌ ' + missCount + ' Missing';
+
+  if (!allStudents.length) {
+    grid.innerHTML = '<div class="state-box"><div class="state-icon">📭</div><div class="state-title">No students found</div></div>';
+    return;
+  }
+
+  grid.innerHTML = '';
+  allStudents.forEach(function(s) {
+    const card = document.createElement('div');
+    card.style.cssText = 'display:flex; align-items:center; gap:10px; padding:10px 14px; border-radius:10px; background:var(--card); border:1px solid ' + (s.hasPhoto ? 'rgba(34,197,94,0.3)' : 'rgba(239,68,68,0.3)') + '; transition:transform 0.15s;';
+    card.innerHTML =
+      '<div style="width:32px; height:32px; border-radius:50%; background:' + (s.hasPhoto ? 'rgba(34,197,94,0.15)' : 'rgba(239,68,68,0.1)') + '; display:flex; align-items:center; justify-content:center; font-size:16px; flex-shrink:0;">' +
+        (s.hasPhoto ? '✅' : '❌') +
+      '</div>' +
+      '<div style="flex:1; min-width:0;">' +
+        '<div style="font-size:12px; font-weight:700; color:var(--t); white-space:nowrap; overflow:hidden; text-overflow:ellipsis;" title="' + esc(s.name) + '">' + esc(s.name) + '</div>' +
+        '<div style="font-size:10px; color:var(--m); white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">' + esc(s.dept) + '</div>' +
+      '</div>' +
+      '<div style="font-size:10px; font-weight:700; flex-shrink:0; color:' + (s.hasPhoto ? '#22c55e' : '#ef4444') + ';">' + (s.hasPhoto ? 'UPLOADED' : 'MISSING') + '</div>';
+    grid.appendChild(card);
+  });
+}
+
+// ════════════════════════════════════════════════════════════════
 //  ADMIN TAB — SEARCH & THUMBNAILS
 // ════════════════════════════════════════════════════════════════
 async function doAdminSearch() {
+
   var dept = document.getElementById('a-dept').value;
   var name = document.getElementById('a-name').value.trim();
   var title = (dept||name) ? 'Results: "'+[dept,name].filter(Boolean).join(' / ')+'"' : 'All Photos';
@@ -2351,10 +2470,11 @@ async function loadStudentDropdowns() {
       sel.appendChild(o);
     });
     
-    // Admin tab dept dropdown
+    // Admin tab dept dropdown — use allData so all departments are shown
     var asel = document.getElementById('a-dept');
     asel.innerHTML = '<option value="">All Departments</option>';
-    Object.keys(dataDict).sort().forEach(function(dept) {
+    var adminDepts = d.allData || dataDict;
+    Object.keys(adminDepts).sort().forEach(function(dept) {
       var o = document.createElement('option');
       o.value = o.textContent = dept;
       asel.appendChild(o);
@@ -2919,7 +3039,7 @@ function printReport() {
     if (toppers.length === 0) return;
     
     let topperRows = '';
-    toppers.slice(0, 5).forEach((s, idx) => {
+    toppers.forEach((s, idx) => {
       topperRows += `
         <tr>
           <td style="border:1px solid #000; padding:4px; text-align:center; font-weight:700;">${idx+1}</td>
@@ -2962,7 +3082,7 @@ function printReport() {
   page2.innerHTML = `
     <div style="display:flex; align-items:center; justify-content:space-between; border-bottom:2px solid #000; padding-bottom:6px; margin-bottom:15px;">
       <h3 style="font-family:'Cinzel',serif; font-size:13px; font-weight:800; text-transform:uppercase; margin:0; color:#000;">
-        📊 Department Topper Standings (Top 5 of the Week)
+        📊 Department Topper Standings (Top Marks — All Ties Included)
       </h3>
       <span style="font-size:10px; color:#555;">Report Period: ${formatDisplayDate(REPORT_DATA.weekStart)} — ${formatDisplayDate(REPORT_DATA.weekEnd)}</span>
     </div>

@@ -4,7 +4,7 @@
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
 <title>Student Photo & Registration System</title>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Cinzel:wght@400;700;900&family=Great+Vibes&display=swap" rel="stylesheet"/>
 <style>
 /* ═══════════════════════════════════════════════════════════════
    BASE
@@ -695,8 +695,41 @@ select:disabled{opacity:.4;cursor:not-allowed}
     box-shadow: none !important;
     border: 1px solid #000 !important;
   }
-  body.print-report-active #r-dept, body.print-report-active .toppers-grid, body.print-report-active .panel:has(.toppers-grid) {
+  body.print-report-active #r-dept, body.print-report-active #toppersGrid, body.print-report-active .panel:has(#toppersGrid) {
     display: none !important;
+  }
+  body.print-report-active #report-print-toppers-section {
+    display: block !important;
+  }
+  body.print-report-active .report-print-footer {
+    display: flex !important;
+    justify-content: flex-end;
+    margin-top: 50px;
+    page-break-inside: avoid;
+  }
+  .report-sig-box {
+    width: 180px;
+    text-align: center;
+  }
+  .report-sig-img {
+    height: 45px;
+    font-family: 'Great Vibes', cursive;
+    font-size: 22px;
+    color: #000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .report-sig-line {
+    border-top: 1.5px solid #000;
+    margin-top: 2px;
+  }
+  .report-lbl {
+    font-size: 9px;
+    font-weight: 700;
+    color: #333;
+    padding-top: 4px;
+    letter-spacing: 0.1em;
   }
   
   /* Format card alone for print */
@@ -727,6 +760,358 @@ select:disabled{opacity:.4;cursor:not-allowed}
     display: none !important;
   }
 }
+
+/* ──────────────────────────────────────────────────────────────
+   🎓 CERTIFICATE GENERATOR CSS
+   ────────────────────────────────────────────────────────────── */
+.cert-preview-container {
+  overflow: auto;
+  padding: 10px;
+  background: #111;
+  border-radius: var(--rs);
+  border: 1px solid var(--bdr);
+  width: 100%;
+  display: flex;
+  justify-content: center;
+}
+.cert-card {
+  --gold: linear-gradient(135deg, #bf953f 0%, #fcf6ba 25%, #b38728 50%, #fbf5b7 75%, #aa771c 100%);
+  position: relative;
+  width: 950px;
+  height: 670px;
+  min-width: 950px;
+  background: linear-gradient(135deg, #18192a 0%, #0d0e19 100%);
+  color: #fff;
+  font-family: 'Cinzel', 'Georgia', serif;
+  padding: 40px;
+  box-sizing: border-box;
+  box-shadow: 0 20px 50px rgba(0,0,0,0.6);
+  border-radius: 4px;
+  overflow: hidden;
+}
+.cert-border-outer {
+  position: absolute;
+  inset: 12px;
+  border: 2px solid;
+  border-image: var(--gold) 1;
+}
+.cert-border-inner {
+  position: absolute;
+  inset: 22px;
+  border: 1px dashed rgba(212, 175, 55, 0.4);
+}
+.cert-corner {
+  position: absolute;
+  width: 40px;
+  height: 40px;
+  border: 4px solid transparent;
+}
+.cert-corner-tl { top: 12px; left: 12px; border-top-color: #d4af37; border-left-color: #d4af37; }
+.cert-corner-tr { top: 12px; right: 12px; border-top-color: #d4af37; border-right-color: #d4af37; }
+.cert-corner-bl { bottom: 12px; left: 12px; border-bottom-color: #d4af37; border-left-color: #d4af37; }
+.cert-corner-br { bottom: 12px; right: 12px; border-bottom-color: #d4af37; border-right-color: #d4af37; }
+
+.cert-watermark {
+  position: absolute;
+  inset: 0;
+  background: url('./college_logo.png') no-repeat center/45%;
+  opacity: 0.04;
+  pointer-events: none;
+}
+
+.cert-layout {
+  display: flex;
+  height: 100%;
+  gap: 30px;
+  position: relative;
+  z-index: 10;
+}
+
+.cert-left-bar {
+  width: 170px;
+  border-right: 1px solid rgba(212, 175, 55, 0.25);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-between;
+  padding-right: 20px;
+  box-sizing: border-box;
+}
+.cert-logo-container {
+  width: 110px;
+  height: 110px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(255, 255, 255, 0.02);
+  border-radius: 50%;
+  border: 1px solid rgba(212, 175, 55, 0.15);
+  padding: 10px;
+  box-sizing: border-box;
+}
+.cert-logo-img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+.cert-founder-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+}
+.cert-founder-img {
+  width: 90px;
+  height: 110px;
+  border: 2px solid #d4af37;
+  border-radius: 4px;
+  object-fit: cover;
+  background: #090915;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.5);
+  filter: grayscale(100%);
+}
+.cert-founder-lbl {
+  font-size: 8px;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  color: #c0c0c0;
+  text-align: center;
+}
+
+.cert-main-area {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+.cert-header-sec {
+  text-align: center;
+  margin-top: 5px;
+}
+.cert-college-name {
+  font-size: 26px;
+  font-weight: 800;
+  letter-spacing: 0.05em;
+  color: #fff;
+  text-shadow: 0 2px 4px rgba(0,0,0,0.6);
+  background: var(--gold);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+.cert-college-sub {
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 0.2em;
+  color: var(--s);
+  margin-top: 4px;
+}
+.cert-title {
+  font-size: 24px;
+  font-weight: 900;
+  letter-spacing: 0.15em;
+  color: #ffd700;
+  text-align: center;
+  margin-top: 12px;
+  text-shadow: 0 0 10px rgba(255, 215, 0, 0.2);
+}
+.cert-prestigious-subtitle {
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 0.18em;
+  color: var(--m);
+  text-align: center;
+  margin-top: 5px;
+}
+
+.cert-student-highlight {
+  display: flex;
+  align-items: center;
+  gap: 24px;
+  margin: 18px auto;
+  max-width: 440px;
+  width: 100%;
+  background: rgba(255, 255, 255, 0.02);
+  border: 1px solid rgba(212, 175, 55, 0.15);
+  border-radius: 6px;
+  padding: 12px 20px;
+  box-sizing: border-box;
+}
+.cert-photo-frame {
+  width: 80px;
+  height: 100px;
+  border-radius: 4px;
+  border: 2px solid #d4af37;
+  overflow: hidden;
+  background: #090915;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.cert-photo-frame img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+.cert-photo-placeholder {
+  font-size: 38px;
+  opacity: 0.4;
+}
+.cert-student-details {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+.cert-student-name {
+  font-size: 22px;
+  font-weight: 800;
+  letter-spacing: 0.02em;
+  color: #fff;
+  text-transform: uppercase;
+}
+.cert-student-dept {
+  font-size: 11px;
+  color: #d4af37;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+
+.cert-wording {
+  font-size: 13.5px;
+  line-height: 1.7;
+  color: #e2e8f0;
+  text-align: center;
+  max-width: 620px;
+  margin: 0 auto;
+  font-style: italic;
+  font-family: 'Georgia', serif;
+}
+.cert-wording .gold-text {
+  color: #ffd700;
+  font-weight: bold;
+  font-style: normal;
+}
+.cert-wording .white-text {
+  color: #fff;
+  font-weight: bold;
+  font-style: normal;
+}
+
+.cert-footer {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  margin-top: 15px;
+  padding: 0 10px;
+}
+.cert-date-sec {
+  width: 130px;
+  text-align: center;
+}
+.cert-date-line {
+  font-size: 11.5px;
+  font-weight: 700;
+  padding-bottom: 6px;
+  color: #fff;
+}
+.cert-lbl {
+  font-size: 8px;
+  font-weight: 700;
+  color: var(--s);
+  border-top: 1px solid rgba(255,255,255,0.15);
+  padding-top: 6px;
+  letter-spacing: 0.08em;
+}
+
+.cert-seal-sec {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.cert-seal {
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  background: radial-gradient(circle, #ffe894 0%, #bf953f 60%, #8a6421 100%);
+  border: 2px solid #ffd700;
+  box-shadow: 0 0 15px rgba(212, 175, 55, 0.4), 0 4px 10px rgba(0,0,0,0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  transform: rotate(-10deg);
+}
+.cert-seal::before {
+  content: '';
+  position: absolute;
+  width: 68px;
+  height: 68px;
+  border-radius: 50%;
+  border: 1px dashed #7a5214;
+}
+.cert-seal-inner {
+  font-size: 8px;
+  font-weight: 900;
+  color: #7a5214;
+  letter-spacing: 0.05em;
+  text-align: center;
+}
+
+.cert-sigs {
+  display: flex;
+  gap: 20px;
+}
+.cert-sig-box {
+  width: 110px;
+  text-align: center;
+}
+.cert-sig-img {
+  height: 40px;
+  font-family: 'Great Vibes', 'Brush Script MT', cursive;
+  font-size: 19px;
+  color: #d4af37;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0.85;
+}
+.cert-sig-line {
+  /* Underline */
+}
+
+/* Printable Certificate View */
+body.print-cert-active {
+  margin: 0 !important;
+  padding: 0 !important;
+  background: #fff !important;
+}
+body.print-cert-active .main-wrap, 
+body.print-cert-active header, 
+body.print-cert-active #lightbox, 
+body.print-cert-active #toast {
+  display: none !important;
+}
+body.print-cert-active #print-container {
+  display: flex !important;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  width: 100vw;
+  background: #fff !important;
+}
+body.print-cert-active .cert-card {
+  width: 1120px !important;
+  height: 790px !important;
+  min-width: 1120px !important;
+  box-shadow: none !important;
+  border: 2px solid #000 !important;
+  box-sizing: border-box !important;
+  background: #0d0e19 !important;
+  -webkit-print-color-adjust: exact;
+  print-color-adjust: exact;
+}
 </style>
 </head>
 <body>
@@ -747,6 +1132,7 @@ select:disabled{opacity:.4;cursor:not-allowed}
       <button class="mtab active" onclick="switchMain('upload',this)">📸 Upload Photo</button>
       <button class="mtab"        onclick="switchMain('admin',this)">📂 Admin &amp; Photos</button>
       <button class="mtab"        onclick="switchMain('report',this)">📊 Report &amp; Toppers</button>
+      <button class="mtab"        onclick="switchMain('cert-generator',this)">🎓 Certificates</button>
     </div>
   </div>
 </header>
@@ -976,7 +1362,180 @@ select:disabled{opacity:.4;cursor:not-allowed}
     </div>
   </div>
 
+  <!-- Print-Only All Department Toppers Section -->
+  <div id="report-print-toppers-section"></div>
+
+  <!-- Principal Signature Line for printed report -->
+  <div class="report-print-footer">
+    <div class="report-sig-box">
+      <div class="report-sig-img">Principal</div>
+      <div class="report-sig-line"></div>
+      <div class="report-lbl">PRINCIPAL SIGNATURE</div>
+    </div>
+  </div>
+
 </div><!-- /tab-report -->
+
+<!-- ╔═══════════════════════════════════════════════════════════
+     ║  TAB 4 — CERTIFICATE GENERATOR
+     ╚═══════════════════════════════════════════════════════════ -->
+<div id="tab-cert-generator" class="tab-pane">
+
+  <div class="hero">
+    <div class="hero-badge">🎓 Prestigious Credentials</div>
+    <h1>Event Certificate Generator</h1>
+    <p>Design and print professional achievement credentials with student photo, college branding, and digital signatures.</p>
+  </div>
+
+  <div class="grid-report">
+    <!-- Left Column: Settings Panel -->
+    <div class="panel">
+      <div class="panel-hd">🎨 Certificate Configurations</div>
+      <div style="display: flex; flex-direction: column; gap: 14px; margin-top: 15px;">
+        <div class="fg">
+          <label class="lbl">Select Department</label>
+          <select id="cert-dept" onchange="onCertDeptChange()"><option value="">— Select Department —</option></select>
+        </div>
+        <div class="fg">
+          <label class="lbl">Select Student</label>
+          <select id="cert-name" disabled onchange="onCertStudentChange()"><option value="">— Select Name —</option></select>
+        </div>
+        <div class="fg">
+          <label class="lbl">Program Name</label>
+          <input type="text" id="cert-program" value="Annual College Festival 2026" placeholder="e.g. Annual Sports Meet 2026" oninput="updateCertPreview()"/>
+        </div>
+        <div class="fg">
+          <label class="lbl">Event Name</label>
+          <input type="text" id="cert-event" value="100m Athletics Sprint" placeholder="e.g. Solo Classical Dance" oninput="updateCertPreview()"/>
+        </div>
+        <div class="grid2" style="gap: 10px;">
+          <div class="fg">
+            <label class="lbl">Category</label>
+            <select id="cert-category" onchange="updateCertPreview()">
+              <option value="sports">Sports</option>
+              <option value="academic">Academic</option>
+              <option value="cultural" selected>Cultural</option>
+              <option value="activity">Activity</option>
+            </select>
+          </div>
+          <div class="fg">
+            <label class="lbl">Standing/Award</label>
+            <select id="cert-standing" onchange="updateCertPreview()">
+              <option value="first" selected>First Place</option>
+              <option value="second">Second Place</option>
+              <option value="third">Third Place</option>
+              <option value="participation">Participation</option>
+            </select>
+          </div>
+        </div>
+        <div class="fg">
+          <label class="lbl">Certificate Date</label>
+          <input type="date" id="cert-date" onchange="updateCertPreview()"/>
+        </div>
+        <div style="display:flex; flex-direction:column; gap:8px; margin-top:10px;">
+          <button class="btn btn-pr btn-full" onclick="printCertificate()">
+            🖨️ Print Certificate
+          </button>
+          <button class="btn btn-ol btn-full" onclick="printBulkCertificates()">
+            🗂️ Bulk Print Department
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Right Column: Live Preview Panel -->
+    <div class="panel" style="display: flex; flex-direction: column; align-items: center; justify-content: center; overflow-x: auto;">
+      <div class="panel-hd" style="width: 100%;">👁️ Live Certificate Preview</div>
+      
+      <!-- Certificate Wrapper for scaling/rendering -->
+      <div class="cert-preview-container" style="margin-top: 15px;">
+        
+        <!-- The actual landscape certificate structure -->
+        <div id="cert-document" class="cert-card">
+          <!-- Ornate borders -->
+          <div class="cert-border-outer"></div>
+          <div class="cert-border-inner"></div>
+          <div class="cert-corner cert-corner-tl"></div>
+          <div class="cert-corner cert-corner-tr"></div>
+          <div class="cert-corner cert-corner-bl"></div>
+          <div class="cert-corner cert-corner-br"></div>
+          
+          <!-- Background watermark crest -->
+          <div class="cert-watermark"></div>
+
+          <!-- Certificate Content Layout -->
+          <div class="cert-layout">
+            <!-- Left bar: Founder portrait + Logo + Watermark -->
+            <div class="cert-left-bar">
+              <div class="cert-logo-container">
+                <img src="./college_logo.png" alt="College Logo" class="cert-logo-img"/>
+              </div>
+              <div class="cert-founder-container">
+                <img src="./founder_portrait.png" alt="Founder Portrait" class="cert-founder-img"/>
+                <div class="cert-founder-lbl">REV. FR. FOUNDER</div>
+              </div>
+            </div>
+
+            <!-- Main right area: wording + student photo + signatures -->
+            <div class="cert-main-area">
+              <div class="cert-header-sec">
+                <div class="cert-college-name" id="cert-view-college">Don Bosco Institution</div>
+                <div class="cert-college-sub">AFFILIATED TO UNIVERSITY &amp; ACCREDITED</div>
+              </div>
+              
+              <div class="cert-title" id="cert-view-title">CERTIFICATE OF ACHIEVEMENT</div>
+              <div class="cert-prestigious-subtitle">THIS PRESTIGIOUS ACCRUAL IS CONFERRED UPON</div>
+              
+              <!-- Student Highlight Layout (Photo on left, details on right) -->
+              <div class="cert-student-highlight">
+                <div class="cert-photo-frame" id="cert-view-photo-frame">
+                  <div class="cert-photo-placeholder">👤</div>
+                </div>
+                <div class="cert-student-details">
+                  <div class="cert-student-name" id="cert-view-name">Select Student</div>
+                  <div class="cert-student-dept" id="cert-view-dept">Department of CS</div>
+                </div>
+              </div>
+
+              <div class="cert-wording" id="cert-view-wording">
+                for demonstrating exceptional caliber and securing <span class="gold-text">FIRST PLACE</span> in <span class="gold-text">100m Athletics Sprint</span> during the <span class="white-text">Annual College Festival 2026</span> program.
+              </div>
+
+              <!-- Footer: signatures + date + seal -->
+              <div class="cert-footer">
+                <div class="cert-date-sec">
+                  <div class="cert-date-line" id="cert-view-date">21 June 2026</div>
+                  <div class="cert-lbl">DATE OF AWARD</div>
+                </div>
+                <div class="cert-seal-sec">
+                  <div class="cert-seal">
+                    <div class="cert-seal-inner">★ OFFICIAL ★</div>
+                  </div>
+                </div>
+                <div class="cert-sigs">
+                  <div class="cert-sig-box">
+                    <div class="cert-sig-img sig-secretary">Secretary</div>
+                    <div class="cert-sig-line"></div>
+                    <div class="cert-lbl">SECRETARY</div>
+                  </div>
+                  <div class="cert-sig-box">
+                    <div class="cert-sig-img sig-principal">Principal</div>
+                    <div class="cert-sig-line"></div>
+                    <div class="cert-lbl">PRINCIPAL</div>
+                  </div>
+                </div>
+              </div>
+
+            </div>
+          </div>
+          
+        </div>
+        
+      </div>
+    </div>
+  </div>
+
+</div><!-- /tab-cert-generator -->
 
 </div><!-- /main-wrap -->
 
@@ -1154,6 +1713,10 @@ window.onload = async function () {
   // Auto-route tab from URL parameter
   if (window.INITIAL_PAGE === 'admin') {
     switchMain('admin', document.querySelectorAll('.mtab')[1]);
+  } else if (window.INITIAL_PAGE === 'report') {
+    switchMain('report', document.querySelectorAll('.mtab')[2]);
+  } else if (window.INITIAL_PAGE === 'certificate' || window.INITIAL_PAGE === 'cert-generator') {
+    switchMain('cert-generator', document.querySelectorAll('.mtab')[3]);
   } else {
     switchMain('upload', document.querySelectorAll('.mtab')[0]);
   }
@@ -1178,6 +1741,9 @@ function switchMain(name, btn) {
   } else if (name === 'report') {
     stopCamera();
     loadReportData();
+  } else if (name === 'cert-generator') {
+    stopCamera();
+    loadCertGeneratorData();
   } else {
     stopCamera();
   }
@@ -1217,8 +1783,12 @@ async function submitAdminPassword() {
   localStorage.setItem('admin_password', val);
   showAdminAuthPrompt(false);
   
-  // Test password with a search action
-  doAdminSearch();
+  // Refresh active tab data
+  if (document.getElementById('tab-cert-generator').classList.contains('active')) {
+    loadCertGeneratorData();
+  } else {
+    doAdminSearch();
+  }
 }
 
 // ════════════════════════════════════════════════════════════════
@@ -1339,7 +1909,8 @@ function checkUploadReady() {
 
 async function submitPhoto() {
   var dept = document.getElementById('u-dept').value;
-  var name = document.getElementById('u-name').value;
+  var rawName = document.getElementById('u-name').value;
+  var name = rawName.replace(/\s*\(.*?\)\s*$/, '').trim();
   if (!dept || !name || !photoDataUrl) return;
   setUploadLoading(true);
 
@@ -1727,6 +2298,9 @@ async function loadReportData() {
       <div class="state-msg">Cards will be generated with student photos and achievement details.</div>
     </div>
   `;
+  
+  // Render Print-Only Toppers for all departments
+  renderPrintReportToppers(res);
 }
 
 function onReportDeptChange() {
@@ -1826,6 +2400,406 @@ function formatDisplayDate(dateStr) {
   if (parts.length !== 3) return dateStr;
   const date = new Date(parts[0], parts[1] - 1, parts[2]);
   return date.toLocaleDateString('en-US', { day: 'numeric', month: 'short', year: 'numeric' });
+}
+
+// ════════════════════════════════════════════════════════════════
+//  EVENT CERTIFICATE GENERATOR
+// ════════════════════════════════════════════════════════════════
+async function loadCertGeneratorData() {
+  const savedPass = localStorage.getItem('admin_password');
+  if (!savedPass) {
+    showAdminAuthPrompt(true);
+    return;
+  }
+  showAdminAuthPrompt(false);
+  
+  // Set default date to today
+  const today = new Date().toISOString().split('T')[0];
+  document.getElementById('cert-date').value = today;
+  
+  const deptSel = document.getElementById('cert-dept');
+  deptSel.innerHTML = '<option value="">— Select Department —</option>';
+  
+  if (!STUDENT_DATA || !STUDENT_DATA.data) {
+    await loadStudentDropdowns();
+  }
+  
+  const dataDict = (STUDENT_DATA && STUDENT_DATA.data) ? STUDENT_DATA.data : {};
+  Object.keys(dataDict).sort().forEach(function(dept) {
+    var o = document.createElement('option');
+    o.value = o.textContent = dept;
+    deptSel.appendChild(o);
+  });
+  
+  updateCertPreview();
+}
+
+function onCertDeptChange() {
+  const dept = document.getElementById('cert-dept').value;
+  const ns = document.getElementById('cert-name');
+  ns.innerHTML = '<option value="">— Select Name —</option>';
+  if (!dept) { ns.disabled = true; return; }
+  const dataDict = (STUDENT_DATA && STUDENT_DATA.data) ? STUDENT_DATA.data : {};
+  (dataDict[dept] || []).sort().forEach(function(n) {
+    var o = document.createElement('option'); o.value = o.textContent = n; ns.appendChild(o);
+  });
+  ns.disabled = false;
+  updateCertPreview();
+}
+
+async function onCertStudentChange() {
+  const dept = document.getElementById('cert-dept').value;
+  const rawName = document.getElementById('cert-name').value;
+  const name = rawName.replace(/\s*\(.*?\)\s*$/, '').trim();
+  
+  const frame = document.getElementById('cert-view-photo-frame');
+  frame.innerHTML = '<div style="display:flex; justify-content:center; align-items:center; width:100%; height:100%;"><div class="spin" style="display:block;"></div></div>';
+  
+  document.getElementById('cert-view-name').textContent = name || 'Select Student';
+  document.getElementById('cert-view-dept').textContent = dept ? `Department of ${dept}` : '';
+  
+  if (!name || !dept) {
+    frame.innerHTML = '<div class="cert-photo-placeholder">👤</div>';
+    updateCertPreview();
+    return;
+  }
+  
+  const res = await callAPI('searchPhotos', { department: dept, studentName: name });
+  if (res && res.results && res.results.length > 0) {
+    const match = res.results.find(r => r.name.toLowerCase() === name.toLowerCase() && r.department.toLowerCase() === dept.toLowerCase());
+    if (match) {
+      frame.innerHTML = `<img src="https://drive.google.com/thumbnail?id=${match.fileId}&sz=w600" alt="${esc(name)}"/>`;
+    } else {
+      frame.innerHTML = '<div class="cert-photo-placeholder">👤</div>';
+    }
+  } else {
+    frame.innerHTML = '<div class="cert-photo-placeholder">👤</div>';
+  }
+  
+  updateCertPreview();
+}
+
+function updateCertPreview() {
+  const dept = document.getElementById('cert-dept').value;
+  const name = document.getElementById('cert-name').value || 'Select Student';
+  const program = document.getElementById('cert-program').value || 'Annual College Festival 2026';
+  const event = document.getElementById('cert-event').value || 'Event Name';
+  const category = document.getElementById('cert-category').value;
+  const standing = document.getElementById('cert-standing').value;
+  const dateVal = document.getElementById('cert-date').value;
+  
+  document.getElementById('cert-view-name').textContent = name;
+  document.getElementById('cert-view-dept').textContent = dept ? `Department of ${dept}` : 'SELECT DEPARTMENT & STUDENT';
+  
+  let formattedDate = 'DATE OF AWARD';
+  if (dateVal) {
+    const parts = dateVal.split('-');
+    if (parts.length === 3) {
+      const date = new Date(parts[0], parts[1] - 1, parts[2]);
+      formattedDate = date.toLocaleDateString('en-US', { day: 'numeric', month: 'long', year: 'numeric' });
+    }
+  } else {
+    const date = new Date();
+    formattedDate = date.toLocaleDateString('en-US', { day: 'numeric', month: 'long', year: 'numeric' });
+  }
+  document.getElementById('cert-view-date').textContent = formattedDate;
+
+  let title = 'CERTIFICATE OF ACHIEVEMENT';
+  let awardText = '';
+  let prestigiousWord = '';
+  
+  if (standing === 'first') {
+    title = 'CERTIFICATE OF EXCELLENCE';
+    awardText = '<span class="gold-text">FIRST PLACE</span>';
+    prestigiousWord = 'exemplary caliber and securing';
+  } else if (standing === 'second') {
+    title = 'CERTIFICATE OF DISTINCTION';
+    awardText = '<span class="gold-text">SECOND PLACE</span>';
+    prestigiousWord = 'outstanding merit and securing';
+  } else if (standing === 'third') {
+    title = 'CERTIFICATE OF MERIT';
+    awardText = '<span class="gold-text">THIRD PLACE</span>';
+    prestigiousWord = 'commendable performance and securing';
+  } else {
+    title = 'CERTIFICATE OF PARTICIPATION';
+    awardText = '<span class="white-text">HONORABLE PARTICIPATION</span>';
+    prestigiousWord = 'active dedication and valuable contribution';
+  }
+  
+  document.getElementById('cert-view-title').textContent = title;
+  
+  let categoryLabel = 'competition';
+  if (category === 'sports') {
+    categoryLabel = 'athletic championship';
+  } else if (category === 'academic') {
+    categoryLabel = 'academic symposium';
+  } else if (category === 'cultural') {
+    categoryLabel = 'cultural showcase';
+  } else if (category === 'activity') {
+    categoryLabel = 'co-curricular activity';
+  }
+  
+  const wording = `for demonstrating ${prestigiousWord} ${awardText} in the <span class="gold-text">${esc(event)}</span> ${categoryLabel} during the <span class="white-text">${esc(program)}</span> program.`;
+  document.getElementById('cert-view-wording').innerHTML = wording;
+}
+
+function printCertificate() {
+  const cert = document.getElementById('cert-document');
+  if (!cert) return;
+  
+  const clone = cert.cloneNode(true);
+  
+  const printContainer = document.getElementById('print-container');
+  printContainer.innerHTML = '';
+  printContainer.appendChild(clone);
+  
+  document.body.classList.add('print-cert-active');
+  window.print();
+  
+  setTimeout(() => {
+    document.body.classList.remove('print-cert-active');
+    printContainer.innerHTML = '';
+  }, 1000);
+}
+
+async function printBulkCertificates() {
+  const dept = document.getElementById('cert-dept').value;
+  if (!dept) {
+    toast('⚠️', 'Please select a department first');
+    return;
+  }
+  
+  const savedPass = localStorage.getItem('admin_password');
+  if (!savedPass) {
+    showAdminAuthPrompt(true);
+    return;
+  }
+  
+  toast('⏳', 'Generating bulk certificates, please wait...');
+  
+  const res = await callAPI('searchPhotos', { department: dept, studentName: '' });
+  const photoMap = {};
+  if (res && res.results) {
+    res.results.forEach(r => {
+      if (r.name && r.fileId) {
+        photoMap[r.name.toLowerCase()] = r.fileId;
+      }
+    });
+  }
+  
+  const dataDict = (STUDENT_DATA && STUDENT_DATA.data) ? STUDENT_DATA.data : {};
+  const students = dataDict[dept] || [];
+  
+  if (students.length === 0) {
+    toast('⚠️', 'No students found in this department');
+    return;
+  }
+  
+  const program = document.getElementById('cert-program').value || 'Annual College Festival 2026';
+  const event = document.getElementById('cert-event').value || 'Event Name';
+  const category = document.getElementById('cert-category').value;
+  const standing = document.getElementById('cert-standing').value;
+  const dateVal = document.getElementById('cert-date').value;
+  
+  let formattedDate = 'DATE OF AWARD';
+  if (dateVal) {
+    const parts = dateVal.split('-');
+    if (parts.length === 3) {
+      const date = new Date(parts[0], parts[1] - 1, parts[2]);
+      formattedDate = date.toLocaleDateString('en-US', { day: 'numeric', month: 'long', year: 'numeric' });
+    }
+  } else {
+    formattedDate = new Date().toLocaleDateString('en-US', { day: 'numeric', month: 'long', year: 'numeric' });
+  }
+
+  let title = 'CERTIFICATE OF ACHIEVEMENT';
+  let awardText = '';
+  let prestigiousWord = '';
+  
+  if (standing === 'first') {
+    title = 'CERTIFICATE OF EXCELLENCE';
+    awardText = '<span class="gold-text">FIRST PLACE</span>';
+    prestigiousWord = 'exemplary caliber and securing';
+  } else if (standing === 'second') {
+    title = 'CERTIFICATE OF DISTINCTION';
+    awardText = '<span class="gold-text">SECOND PLACE</span>';
+    prestigiousWord = 'outstanding merit and securing';
+  } else if (standing === 'third') {
+    title = 'CERTIFICATE OF MERIT';
+    awardText = '<span class="gold-text">THIRD PLACE</span>';
+    prestigiousWord = 'commendable performance and securing';
+  } else {
+    title = 'CERTIFICATE OF PARTICIPATION';
+    awardText = '<span class="white-text">HONORABLE PARTICIPATION</span>';
+    prestigiousWord = 'active dedication and valuable contribution';
+  }
+  
+  let categoryLabel = 'competition';
+  if (category === 'sports') {
+    categoryLabel = 'athletic championship';
+  } else if (category === 'academic') {
+    categoryLabel = 'academic symposium';
+  } else if (category === 'cultural') {
+    categoryLabel = 'cultural showcase';
+  } else if (category === 'activity') {
+    categoryLabel = 'co-curricular activity';
+  }
+  
+  const printContainer = document.getElementById('print-container');
+  printContainer.innerHTML = '';
+  
+  students.forEach((name) => {
+    const fileId = photoMap[name.toLowerCase()];
+    const photoHtml = fileId 
+      ? `<img src="https://drive.google.com/thumbnail?id=${fileId}&sz=w600" alt="${esc(name)}"/>`
+      : `<div class="cert-photo-placeholder">👤</div>`;
+      
+    const wording = `for demonstrating ${prestigiousWord} ${awardText} in the <span class="gold-text">${esc(event)}</span> ${categoryLabel} during the <span class="white-text">${esc(program)}</span> program.`;
+    
+    const certDiv = document.createElement('div');
+    certDiv.className = 'cert-card';
+    certDiv.style.pageBreakAfter = 'always';
+    certDiv.style.breakAfter = 'page';
+    
+    certDiv.innerHTML = `
+      <div class="cert-border-outer"></div>
+      <div class="cert-border-inner"></div>
+      <div class="cert-corner cert-corner-tl"></div>
+      <div class="cert-corner cert-corner-tr"></div>
+      <div class="cert-corner cert-corner-bl"></div>
+      <div class="cert-corner cert-corner-br"></div>
+      <div class="cert-watermark"></div>
+      <div class="cert-layout">
+        <div class="cert-left-bar">
+          <div class="cert-logo-container">
+            <img src="./college_logo.png" alt="College Logo" class="cert-logo-img"/>
+          </div>
+          <div class="cert-founder-container">
+            <img src="./founder_portrait.png" alt="Founder Portrait" class="cert-founder-img"/>
+            <div class="cert-founder-lbl">REV. FR. FOUNDER</div>
+          </div>
+        </div>
+        <div class="cert-main-area">
+          <div class="cert-header-sec">
+            <div class="cert-college-name">Don Bosco Institution</div>
+            <div class="cert-college-sub">AFFILIATED TO UNIVERSITY &amp; ACCREDITED</div>
+          </div>
+          <div class="cert-title">${title}</div>
+          <div class="cert-prestigious-subtitle">THIS PRESTIGIOUS ACCRUAL IS CONFERRED UPON</div>
+          <div class="cert-student-highlight">
+            <div class="cert-photo-frame">
+              ${photoHtml}
+            </div>
+            <div class="cert-student-details">
+              <div class="cert-student-name">${esc(name)}</div>
+              <div class="cert-student-dept">Department of ${esc(dept)}</div>
+            </div>
+          </div>
+          <div class="cert-wording">
+            ${wording}
+          </div>
+          <div class="cert-footer">
+            <div class="cert-date-sec">
+              <div class="cert-date-line">${formattedDate}</div>
+              <div class="cert-lbl">DATE OF AWARD</div>
+            </div>
+            <div class="cert-seal-sec">
+              <div class="cert-seal">
+                <div class="cert-seal-inner">★ OFFICIAL ★</div>
+              </div>
+            </div>
+            <div class="cert-sigs">
+              <div class="cert-sig-box">
+                <div class="cert-sig-img sig-secretary">Secretary</div>
+                <div class="cert-sig-line"></div>
+                <div class="cert-lbl">SECRETARY</div>
+              </div>
+              <div class="cert-sig-box">
+                <div class="cert-sig-img sig-principal">Principal</div>
+                <div class="cert-sig-line"></div>
+                <div class="cert-lbl">PRINCIPAL</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    `;
+    printContainer.appendChild(certDiv);
+  });
+  
+  document.body.classList.add('print-cert-active');
+  window.print();
+  
+  setTimeout(() => {
+    document.body.classList.remove('print-cert-active');
+    printContainer.innerHTML = '';
+  }, 1000);
+}
+
+function renderPrintReportToppers(res) {
+  const container = document.getElementById('report-print-toppers-section');
+  container.innerHTML = '';
+  
+  if (!res.toppers || Object.keys(res.toppers).length === 0) {
+    container.innerHTML = '<p style="text-align:center; color:#666; font-style:italic; margin-top:20px;">No toppers recorded this week.</p>';
+    return;
+  }
+  
+  res.departments.forEach(dept => {
+    const toppers = res.toppers[dept] || [];
+    if (toppers.length === 0) return;
+    
+    const deptDiv = document.createElement('div');
+    deptDiv.style.pageBreakInside = 'avoid';
+    deptDiv.style.marginTop = '40px';
+    
+    deptDiv.innerHTML = `
+      <h3 style="border-bottom: 2px solid #bf953f; color: #000; padding-bottom: 6px; margin-bottom: 15px; font-family: 'Cinzel', serif; font-size: 16px; text-transform: uppercase; font-weight: 700;">
+        🏆 Department of ${dept} Toppers
+      </h3>
+      <div class="toppers-grid" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 15px;">
+        <!-- Toppers cards -->
+      </div>
+    `;
+    
+    const grid = deptDiv.querySelector('.toppers-grid');
+    
+    toppers.forEach(s => {
+      const houseColor = getHouseColor(s.house);
+      const houseGlow = getHouseGlow(s.house);
+      const photoHtml = s.fileId 
+        ? `<img src="https://drive.google.com/thumbnail?id=${s.fileId}&sz=w600" alt="${esc(s.name)}" />`
+        : `<div class="ach-card-photo-fallback">👤</div>`;
+        
+      const card = document.createElement('div');
+      card.className = 'ach-card';
+      card.style.setProperty('--house-color', houseColor);
+      card.style.setProperty('--house-glow', houseGlow);
+      card.style.padding = '18px 14px';
+      card.style.width = '100%';
+      card.style.minHeight = '340px';
+      card.style.boxShadow = 'none';
+      card.style.border = `2px solid ${houseColor}`;
+      card.style.background = `linear-gradient(135deg, #111122 0%, ${houseGlow} 100%)`;
+      
+      card.innerHTML = `
+        <div class="ach-card-badge">Topper of the Week</div>
+        <div class="ach-card-photo-frame" style="width: 85px; height: 85px; border-color: ${houseColor}; box-shadow: 0 4px 10px rgba(0,0,0,0.4), 0 0 8px ${houseColor}66;">
+          ${photoHtml}
+        </div>
+        <div class="ach-card-name" style="font-size: 15px;" title="${esc(s.name)}">${esc(s.name)}</div>
+        <div class="ach-card-house-pill" style="background: ${houseColor}; color: #000; font-size: 8px; padding: 2px 8px;">${s.house.toUpperCase()}</div>
+        <div class="cert-wording" style="font-size: 10px; line-height: 1.4; margin-top: 8px; margin-bottom: 8px; font-family:'Georgia',serif; font-style:italic; color:#e2e8f0;">
+          for securing <span class="gold-text" style="color:#ffd700; font-weight:700;">TOP PERFORMANCE</span> in the department of <span style="color:#fff; font-weight:700;">${s.department.toUpperCase()}</span>.
+        </div>
+        <div class="ach-card-score" style="font-size: 24px; color: ${houseColor}; text-shadow: 0 0 8px ${houseColor}66;">${s.points}</div>
+        <div class="ach-card-score-lbl" style="margin-bottom: 0; font-size:8px;">Points Earned</div>
+      `;
+      grid.appendChild(card);
+    });
+    
+    container.appendChild(deptDiv);
+  });
 }
 </script>
 </body>

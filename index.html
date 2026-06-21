@@ -676,6 +676,9 @@ select:disabled{opacity:.4;cursor:not-allowed}
     -webkit-print-color-adjust: exact;
     print-color-adjust: exact;
   }
+  #toast, #lightbox {
+    display: none !important;
+  }
 
   /* === REPORT PRINT MODE === */
   body.print-report-active * {
@@ -736,9 +739,7 @@ select:disabled{opacity:.4;cursor:not-allowed}
     background: #ffffff !important;
   }
   body.print-cert-active .main-wrap, 
-  body.print-cert-active header, 
-  body.print-cert-active #lightbox, 
-  body.print-cert-active #toast {
+  body.print-cert-active header {
     display: none !important;
   }
   body.print-cert-active #print-container {

@@ -1179,6 +1179,14 @@ select:disabled{opacity:.4;cursor:not-allowed}
     <button class="btn btn-pr btn-full" id="submitBtn" onclick="submitPhoto()" disabled style="margin-top:16px">
       <span class="spin" id="uploadSpin"></span>🚀 Submit Photo
     </button>
+    <!-- Background upload indicator -->
+    <div id="bgUploadBadge" style="display:none; margin-top:10px; background:linear-gradient(135deg,#1a1a3a,#0d1b2a); border:1px solid #6366f1; border-radius:8px; padding:10px 14px; display:none; align-items:center; gap:10px;">
+      <span class="spin" style="display:inline-block;"></span>
+      <div style="flex:1;">
+        <div style="font-size:12px; font-weight:700; color:#a5b4fc;">⬆️ Uploading in background…</div>
+        <div style="font-size:10px; color:var(--m); margin-top:2px;"><span id="bgUploadCount">0</span> upload(s) in progress — you can select the next student!</div>
+      </div>
+    </div>
   </div>
 
 </div><!-- /tab-upload -->
@@ -1855,45 +1863,89 @@ function checkUploadReady() {
   document.getElementById('submitBtn').disabled = !(d && n && photoDataUrl);
 }
 
-async function submitPhoto() {
-  var dept = document.getElementById('u-dept').value;
-  var rawName = document.getElementById('u-name').value;
-  var name = rawName.replace(/\s*\(.*?\)\s*$/, '').trim();
-  if (!dept || !name || !photoDataUrl) return;
-  setUploadLoading(true);
+// ════════════════════════════════════════════════════════════════
+//  BACKGROUND UPLOAD QUEUE
+// ════════════════════════════════════════════════════════════════
+var _bgUploadCount = 0;
 
-  // Sandboxed safety timeout: if browser blocks the return callback, auto-unlock UI after 6 seconds
-  var uploadTimeout = setTimeout(function() {
-    setUploadLoading(false);
-    clearPhoto();
-    document.getElementById('u-dept').value = '';
-    document.getElementById('u-name').innerHTML = '<option value="">— Select Name —</option>';
-    document.getElementById('u-name').disabled = true;
-    document.getElementById('submitBtn').disabled = true;
-    toast('✅', 'Upload processed! Selected student has been reset.');
-  }, 6000);
+function _incBgUpload() {
+  _bgUploadCount++;
+  var badge = document.getElementById('bgUploadBadge');
+  if (badge) { badge.style.display = 'flex'; }
+  var cnt = document.getElementById('bgUploadCount');
+  if (cnt) cnt.textContent = _bgUploadCount;
+}
 
-  const r = await callAPI('savePhoto', {
-    base64Data: photoDataUrl,
-    studentName: name,
-    department: dept,
-    mimeType: photoMime
-  });
-
-  clearTimeout(uploadTimeout);
-  setUploadLoading(false);
-
-  if (r && r.success) {
-    toast('✅','Photo saved — ' + r.fileName);
-    clearPhoto();
-    document.getElementById('u-dept').value = '';
-    document.getElementById('u-name').innerHTML = '<option value="">— Select Name —</option>';
-    document.getElementById('u-name').disabled = true;
-    document.getElementById('submitBtn').disabled = true;
-    loadStudentDropdowns(); // Reload student list to remove the registered student
-  } else {
-    toast('❌', (r && r.error) || 'Upload failed');
+function _decBgUpload() {
+  _bgUploadCount = Math.max(0, _bgUploadCount - 1);
+  var cnt = document.getElementById('bgUploadCount');
+  if (cnt) cnt.textContent = _bgUploadCount;
+  if (_bgUploadCount === 0) {
+    var badge = document.getElementById('bgUploadBadge');
+    if (badge) badge.style.display = 'none';
+    // Silently refresh the dropdown in background
+    loadStudentDropdowns();
   }
+}
+
+async function submitPhoto() {
+  var dept    = document.getElementById('u-dept').value;
+  var rawName = document.getElementById('u-name').value;
+  var name    = rawName.replace(/\s*\(.*?\)\s*$/, '').trim();
+  if (!dept || !name || !photoDataUrl) return;
+
+  // ── 1. Capture data needed for background upload BEFORE resetting form ──
+  var uploadBase64 = photoDataUrl;
+  var uploadMime   = photoMime;
+  var uploadDept   = dept;
+  var uploadName   = name;
+
+  // ── 2. OPTIMISTIC: Remove student from local data immediately ──
+  if (STUDENT_DATA && STUDENT_DATA.data && STUDENT_DATA.data[dept]) {
+    STUDENT_DATA.data[dept] = STUDENT_DATA.data[dept].filter(function(n) {
+      return n.replace(/\s*\(.*?\)\s*$/, '').trim().toLowerCase() !== name.toLowerCase();
+    });
+  }
+
+  // ── 3. Reset the form instantly so operator can pick next student ──
+  clearPhoto();
+  document.getElementById('u-dept').value = '';
+  var ns = document.getElementById('u-name');
+  ns.innerHTML = '<option value="">\u2014 Select Name \u2014</option>';
+  ns.disabled = true;
+  document.getElementById('submitBtn').disabled = true;
+  toast('\u23f3', 'Upload started! Select next student while this uploads in background.');
+
+  // ── 4. Fire upload in background (no await — does NOT block UI) ──
+  _incBgUpload();
+  (async function() {
+    try {
+      var r = await callAPI('savePhoto', {
+        base64Data : uploadBase64,
+        studentName: uploadName,
+        department : uploadDept,
+        mimeType   : uploadMime
+      });
+      if (r && r.success) {
+        toast('\u2705', 'Saved: ' + (r.fileName || uploadName));
+      } else {
+        toast('\u274c', 'Upload failed: ' + ((r && r.error) || 'Unknown error'));
+        // Restore student to local list on failure so they can retry
+        if (STUDENT_DATA && STUDENT_DATA.data) {
+          if (!STUDENT_DATA.data[uploadDept]) STUDENT_DATA.data[uploadDept] = [];
+          var displayName = rawName; // includes house in parens if present
+          if (STUDENT_DATA.data[uploadDept].indexOf(displayName) === -1) {
+            STUDENT_DATA.data[uploadDept].push(displayName);
+            STUDENT_DATA.data[uploadDept].sort();
+          }
+        }
+      }
+    } catch(e) {
+      toast('\u274c', 'Network error during upload');
+    } finally {
+      _decBgUpload();
+    }
+  })();
 }
 
 function setUploadLoading(on) {

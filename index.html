@@ -4,7 +4,7 @@
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
 <title>Student Photo & Registration System</title>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Cinzel:wght@400;700;900&family=Great+Vibes&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Cinzel:wght@400;700;900&family=Great+Vibes&family=Pinyon+Script&display=swap" rel="stylesheet"/>
 <style>
 /* ═══════════════════════════════════════════════════════════════
    BASE
@@ -786,10 +786,10 @@ select:disabled{opacity:.4;cursor:not-allowed}
   position: relative;
   width: 790px;
   height: 1120px;
-  background: #ffffff;
-  color: #000000;
-  font-family: 'Cinzel', 'Georgia', serif;
-  padding: 60px 48px;
+  background: radial-gradient(circle at center, #ffffff 0%, #fffdf4 75%, #fffbf0 100%) !important;
+  border: 3.5px solid #c9a054 !important;
+  color: #1a1a1a !important;
+  padding: 40px 36px;
   box-sizing: border-box;
   box-shadow: 0 20px 50px rgba(0,0,0,0.3);
   border-radius: 4px;
@@ -797,128 +797,113 @@ select:disabled{opacity:.4;cursor:not-allowed}
   display: flex;
   flex-direction: column;
   justify-content: space-between;
+  font-family: 'Inter', sans-serif;
+  text-align: center;
 }
 
-.cert-border-outer {
+.cert-card::before {
+  content: '';
   position: absolute;
-  inset: 16px;
-  border: 4px double #bf953f;
-}
-
-.cert-border-inner {
-  position: absolute;
-  inset: 28px;
-  border: 1px dashed rgba(191, 149, 63, 0.6);
-}
-
-.cert-corner {
-  position: absolute;
-  width: 50px;
-  height: 50px;
-  border: 5px solid transparent;
-}
-.cert-corner-tl { top: 16px; left: 16px; border-top-color: #bf953f; border-left-color: #bf953f; }
-.cert-corner-tr { top: 16px; right: 16px; border-top-color: #bf953f; border-right-color: #bf953f; }
-.cert-corner-bl { bottom: 16px; left: 16px; border-bottom-color: #bf953f; border-left-color: #bf953f; }
-.cert-corner-br { bottom: 16px; right: 16px; border-bottom-color: #bf953f; border-right-color: #bf953f; }
-
-/* Watermarks */
-.cert-watermark-logo {
-  position: absolute;
-  inset: 0;
-  background: url('./college_logo.png') no-repeat center/50%;
-  opacity: 0.05;
+  inset: 8px;
+  border: 1.5px solid rgba(201, 160, 84, 0.55);
   pointer-events: none;
   z-index: 1;
+  -webkit-print-color-adjust: exact !important;
+  print-color-adjust: exact !important;
 }
 
-.cert-watermark-text-left {
+.cert-watermark {
   position: absolute;
-  left: 40px;
   top: 50%;
-  transform: translateY(-50%) rotate(-90deg);
-  font-size: 80px;
-  font-weight: 900;
-  color: rgba(0,0,0,0.02);
-  font-family: 'Inter', sans-serif;
-  letter-spacing: 0.2em;
-  pointer-events: none;
-  z-index: 1;
-}
-
-.cert-watermark-text-right {
-  position: absolute;
-  right: 40px;
-  top: 50%;
-  transform: translateY(-50%) rotate(90deg);
-  font-size: 80px;
-  font-weight: 900;
-  color: rgba(0,0,0,0.02);
-  font-family: 'Inter', sans-serif;
-  letter-spacing: 0.2em;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 70%;
+  height: 50%;
+  opacity: 0.04;
+  background-size: contain;
+  background-position: center;
+  background-repeat: no-repeat;
   pointer-events: none;
   z-index: 1;
 }
 
 .cert-header {
   display: flex;
-  width: 100%;
   align-items: center;
   justify-content: space-between;
-  z-index: 5;
+  width: 100%;
+  z-index: 2;
 }
 
-.cert-logo-wrap {
-  width: 90px;
-  height: 90px;
+.cert-header-side {
+  flex-shrink: 0;
+  width: 88px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+}
+
+.cert-logo {
+  width: 88px;
+  height: 88px;
   border-radius: 50%;
-  border: 2px solid #bf953f;
+  border: 3px solid #c9a054;
   overflow: hidden;
   background: #fff;
   display: flex;
   align-items: center;
   justify-content: center;
+  flex-shrink: 0;
+  -webkit-print-color-adjust: exact !important;
+  print-color-adjust: exact !important;
 }
-.cert-logo-wrap img {
-  width: 85%;
-  height: 85%;
+
+.cert-logo img {
+  width: 100%;
+  height: 100%;
   object-fit: contain;
+  padding: 5px;
 }
 
 .cert-founder-wrap {
-  width: 80px;
-  height: 95px;
+  width: 88px;
+  height: 88px;
   border-radius: 50%;
-  border: 3px solid #bf953f;
+  border: 3px solid #c9a054;
   overflow: hidden;
   background: #fff;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+  flex-shrink: 0;
+  -webkit-print-color-adjust: exact !important;
+  print-color-adjust: exact !important;
 }
+
 .cert-founder-wrap img {
   width: 100%;
   height: 100%;
   object-fit: cover;
 }
 
-.cert-header-text {
+.cert-header-title {
   flex: 1;
-  text-align: center;
-  padding: 0 10px;
+  min-width: 0;
+  padding: 0 0.6rem;
 }
 
-.cert-inst-name {
-  font-size: 32px;
-  font-weight: 900;
-  color: #000;
-  letter-spacing: 0.05em;
+.cert-header-title h2 {
   font-family: 'Inter', sans-serif;
+  font-size: 2.25rem !important;
+  font-weight: 900;
+  color: #0a47a1 !important;
+  text-transform: uppercase;
+  margin-bottom: 0;
+  line-height: 1.2;
+  letter-spacing: 0.5px;
+  white-space: normal;
 }
 
 .cert-inst-sub {
-  font-size: 8px;
+  font-size: 0.85rem !important;
   font-weight: 700;
   color: #b38728;
   letter-spacing: 0.15em;
@@ -926,141 +911,258 @@ select:disabled{opacity:.4;cursor:not-allowed}
   font-family: 'Inter', sans-serif;
 }
 
-.cert-annual-day {
-  font-size: 22px;
-  font-weight: 800;
-  color: #b38728;
-  letter-spacing: 0.12em;
-  margin-top: 8px;
-  font-family: 'Cinzel', serif;
-}
-
-.cert-achievement-title {
-  font-size: 13px;
-  font-weight: 700;
-  color: #b38728;
-  letter-spacing: 0.2em;
-  margin-top: 4px;
-  font-family: 'Cinzel', serif;
-  border-top: 1px solid rgba(179,135,40,0.3);
-  border-bottom: 1px solid rgba(179,135,40,0.3);
-  padding: 3px 0;
-  display: inline-block;
-}
-
 .cert-body {
+  margin: 0.3rem 0;
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 15px;
-  z-index: 5;
-  margin: 15px 0;
+  gap: 0.45rem;
+  z-index: 2;
 }
 
-.cert-photo-circle {
-  width: 160px;
-  height: 160px;
-  border-radius: 50%;
-  border: 5px solid #bf953f;
-  overflow: hidden;
-  box-shadow: 0 6px 15px rgba(0,0,0,0.25);
-  background: #f3f4f6;
+.cert-event-block {
+  text-align: center;
+  z-index: 2;
+  margin: 0.25rem 0;
+}
+
+.cert-event-title {
+  font-family: 'Cinzel', serif;
+  font-size: 1.75rem !important;
+  font-weight: 900;
+  color: #d4a017;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  line-height: 1.1;
+  -webkit-print-color-adjust: exact !important;
+  print-color-adjust: exact !important;
+}
+
+.cert-award-text {
+  font-family: 'Cinzel', serif;
+  font-size: 1.05rem !important;
+  font-weight: 600;
+  color: #8b6914;
+  letter-spacing: 3.5px;
+  text-transform: uppercase;
+  margin-top: 0.2rem;
+}
+
+.cert-certify {
+  font-size: 1.05rem !important;
+  font-style: italic;
+  color: #555;
+  letter-spacing: 0.3px;
+}
+
+.cert-name-banner {
+  display: block;
+  width: 78%;
+  margin: 0.4rem auto;
+  padding: 0.55rem 2.5rem;
+  background: linear-gradient(135deg, #c9a02a 0%, #f0cc50 50%, #c9a02a 100%);
+  clip-path: polygon(4% 0%, 96% 0%, 100% 50%, 96% 100%, 4% 100%, 0% 50%);
+  font-family: 'Inter', sans-serif;
+  font-size: 1.55rem !important;
+  font-weight: 900;
+  color: #1a1205;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  text-align: center;
+  z-index: 2;
+  -webkit-print-color-adjust: exact !important;
+  print-color-adjust: exact !important;
+}
+
+.cert-dept-line {
+  font-family: 'Inter', sans-serif;
+  font-size: 1.2rem !important;
+  font-weight: 800;
+  color: #1a1a1a;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  line-height: 1.3;
+}
+
+.cert-house-line {
+  font-family: 'Inter', sans-serif;
+  font-size: 1.2rem !important;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 1.5px;
+  line-height: 1.3;
+  -webkit-print-color-adjust: exact !important;
+  print-color-adjust: exact !important;
+}
+
+.cert-achievement-line {
+  font-size: 1.2rem !important;
+  color: #111;
+  line-height: 1.4;
+  text-align: center;
+  max-width: 92%;
+}
+
+.cert-achievement-line strong {
+  font-weight: 900;
+  color: #111;
+}
+
+.cert-middle-section {
   display: flex;
   align-items: center;
   justify-content: center;
+  margin: 0.3rem 0;
+  width: 100%;
 }
 
-.cert-photo-circle img {
+.cert-photo-frame {
+  width: 230px;
+  height: 230px;
+  border: 3.5px solid #c9a054;
+  border-radius: 50%;
+  overflow: hidden;
+  background: #fdfdfd;
+  box-shadow: 0 6px 20px rgba(0,0,0,0.12);
+  flex-shrink: 0;
+  -webkit-print-color-adjust: exact !important;
+  print-color-adjust: exact !important;
+}
+
+.cert-photo-frame img {
   width: 100%;
   height: 100%;
   object-fit: cover;
 }
 
-.cert-name-ribbon {
-  width: 360px;
-  background: linear-gradient(180deg, #ffd700 0%, #d4af37 100%);
-  padding: 8px 24px;
-  box-shadow: 0 4px 10px rgba(0,0,0,0.15);
-  text-align: center;
-  font-size: 20px;
-  font-weight: 900;
-  color: #000;
-  letter-spacing: 0.05em;
-  text-transform: uppercase;
-  font-family: 'Cinzel', serif;
-  clip-path: polygon(5% 0%, 95% 0%, 100% 50%, 95% 100%, 5% 100%, 0% 50%);
+.cert-corner {
+  position: absolute;
+  width: 32px;
+  height: 32px;
+  z-index: 3;
+  pointer-events: none;
 }
+.cert-corner.top-left { top: 12px; left: 12px; }
+.cert-corner.top-right { top: 12px; right: 12px; }
+.cert-corner.bottom-left { bottom: 12px; left: 12px; }
+.cert-corner.bottom-right { bottom: 12px; right: 12px; }
 
-.cert-main-text {
-  font-size: 14.5px;
-  line-height: 1.8;
-  color: #222;
-  text-align: center;
-  max-width: 600px;
-  font-family: 'Georgia', serif;
-}
-
-.cert-main-text .bold-dept {
-  font-weight: 800;
-  color: #000;
-  font-family: 'Inter', sans-serif;
-  font-size: 13.5px;
-  letter-spacing: 0.02em;
-}
-
-.cert-main-text .bold-house {
-  font-weight: 900;
-  color: #ff0055;
-  font-family: 'Inter', sans-serif;
-  font-size: 14px;
-  letter-spacing: 0.03em;
-}
-
-.cert-main-text .bold-award {
-  font-weight: 800;
-  color: #000;
-}
-
-.cert-italic-quote {
-  font-size: 12px;
+.cert-prestigious-wording {
+  font-size: 1.05rem !important;
   font-style: italic;
-  color: #555;
-  text-align: center;
-  max-width: 520px;
-  margin-top: 5px;
-  line-height: 1.5;
+  color: #444;
+  max-width: 85%;
+  margin: 0.4rem auto 0;
+  line-height: 1.6;
+  border-top: 1px solid rgba(201, 160, 84, 0.2);
+  padding-top: 0.5rem;
 }
 
-.cert-footer-row {
+.cert-footer {
   display: flex;
-  width: 100%;
   align-items: flex-end;
   justify-content: space-between;
-  z-index: 5;
+  width: 100%;
+  margin-top: 1rem;
+  z-index: 2;
 }
 
 .cert-sig-block {
-  text-align: center;
   width: 200px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.cert-sig-name-cursive {
+  font-family: 'Pinyon Script', cursive;
+  font-size: 2.2rem !important;
+  color: #2c3e50;
+  line-height: 1;
+  height: 40px;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  user-select: none;
 }
 
 .cert-sig-line {
+  width: 100%;
   border-top: 1.5px solid #000;
-  margin-top: 50px;
-  padding-top: 4px;
-  font-size: 10px;
+  margin-top: 0.3rem;
+  padding-top: 0.3rem;
+  font-size: 0.95rem !important;
   font-weight: 700;
-  color: #000;
-  letter-spacing: 0.1em;
   text-transform: uppercase;
-  font-family: 'Inter', sans-serif;
+  color: #111;
+  letter-spacing: 1.2px;
 }
 
 .cert-sig-sub {
-  font-size: 8px;
+  font-size: 0.8rem !important;
   color: #555;
-  margin-top: 1px;
-  font-family: 'Inter', sans-serif;
+  font-style: italic;
+  margin-top: 0.2rem;
+  text-align: center;
+  max-width: 200px;
+}
+
+.cert-date-block {
+  text-align: center;
+}
+
+.cert-date-value {
+  font-size: 1.1rem !important;
+  font-weight: 700;
+  color: #111;
+  height: 40px;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+}
+
+.cert-date-label {
+  border-top: 1.5px solid #000;
+  margin-top: 0.3rem;
+  padding-top: 0.3rem;
+  font-size: 0.9rem !important;
+  font-weight: 700;
+  text-transform: uppercase;
+  color: #111;
+  letter-spacing: 1.2px;
+}
+
+.cert-page-break {
+  page-break-after: always;
+  page-break-inside: avoid;
+  display: block !important;
+  width: 210mm !important;
+  height: 297mm !important;
+  box-sizing: border-box !important;
+  padding: 6mm !important;
+  background: #fff !important;
+  position: relative !important;
+}
+
+.cert-page-break .cert-card {
+  display: flex !important;
+  flex-direction: column !important;
+  justify-content: space-between !important;
+  width: 100% !important;
+  height: 100% !important;
+  max-width: none !important;
+  border: 3.5px solid #c9a054 !important;
+  box-shadow: none !important;
+  background: radial-gradient(circle at center, #ffffff 0%, #fffdf4 75%, #fffbf0 100%) !important;
+  padding: 10mm 10mm 8mm 10mm !important;
+  box-sizing: border-box !important;
+  -webkit-print-color-adjust: exact !important;
+  print-color-adjust: exact !important;
+}
+
+body.print-cert-active .cert-page-break:last-child {
+  page-break-after: avoid !important;
+  break-after: avoid !important;
 }
 
 </style>
@@ -1418,66 +1520,80 @@ select:disabled{opacity:.4;cursor:not-allowed}
         
         <!-- The actual portrait certificate structure -->
         <div id="cert-document" class="cert-card">
-          <!-- Ornate borders -->
-          <div class="cert-border-outer"></div>
-          <div class="cert-border-inner"></div>
-          <div class="cert-corner cert-corner-tl"></div>
-          <div class="cert-corner cert-corner-tr"></div>
-          <div class="cert-corner cert-corner-bl"></div>
-          <div class="cert-corner cert-corner-br"></div>
+          <!-- Background watermark logo -->
+          <div class="cert-watermark" id="cert-watermark-logo-el"></div>
           
-          <!-- Background watermarks -->
-          <div class="cert-watermark-logo"></div>
-          <div class="cert-watermark-text-left" id="cert-view-watermark-left">NEXUS</div>
-          <div class="cert-watermark-text-right" id="cert-view-watermark-right">NOVAS</div>
+          <!-- Vector Ornamental Corners -->
+          <svg class="cert-corner top-left" viewBox="0 0 100 100" width="32" height="32"><path d="M 0 0 L 0 30 L 2 30 L 2 2 L 30 2 L 30 0 Z M 6 6 L 6 22 L 8 22 L 8 8 L 22 8 L 22 6 Z" fill="#c9a054"/></svg>
+          <svg class="cert-corner top-right" viewBox="0 0 100 100" width="32" height="32" style="transform: scaleX(-1);"><path d="M 0 0 L 0 30 L 2 30 L 2 2 L 30 2 L 30 0 Z M 6 6 L 6 22 L 8 22 L 8 8 L 22 8 L 22 6 Z" fill="#c9a054"/></svg>
+          <svg class="cert-corner bottom-left" viewBox="0 0 100 100" width="32" height="32" style="transform: scaleY(-1);"><path d="M 0 0 L 0 30 L 2 30 L 2 2 L 30 2 L 30 0 Z M 6 6 L 6 22 L 8 22 L 8 8 L 22 8 L 22 6 Z" fill="#c9a054"/></svg>
+          <svg class="cert-corner bottom-right" viewBox="0 0 100 100" width="32" height="32" style="transform: scale(-1);"><path d="M 0 0 L 0 30 L 2 30 L 2 2 L 30 2 L 30 0 Z M 6 6 L 6 22 L 8 22 L 8 8 L 22 8 L 22 6 Z" fill="#c9a054"/></svg>
 
           <!-- Header -->
           <div class="cert-header">
-            <div class="cert-logo-wrap">
-              <img src="./college_logo.png" alt="Logo"/>
+            <div class="cert-header-side">
+              <div class="cert-logo">
+                <img src="" alt="Logo" id="cert-logo-img"/>
+              </div>
             </div>
-            <div class="cert-header-text">
-              <div class="cert-inst-name">DON BOSCO POLYTECHNIC COLLEGE</div>
+            <div class="cert-header-title">
+              <h2 id="cert-display-college-name">DON BOSCO POLYTECHNIC COLLEGE</h2>
               <div class="cert-inst-sub">GIVERS OF ALL TALENTS STUDENTS</div>
-              <div class="cert-annual-day" id="cert-view-program">ANNUAL DAY</div>
-              <div class="cert-achievement-title" id="cert-view-title">CERTIFICATE OF ACHIEVEMENT</div>
             </div>
-            <div class="cert-founder-wrap">
-              <img src="./founder_portrait.png" alt="Founder"/>
+            <div class="cert-header-side">
+              <div class="cert-founder-wrap">
+                <img src="" alt="Founder" id="cert-founder-img"/>
+              </div>
+              <small style="font-size:8px;font-weight:bold;margin-top:4px;color:#333;text-transform:uppercase;">FOUNDER</small>
             </div>
           </div>
+
+          <!-- Event block -->
+          <div class="cert-event-block">
+            <div class="cert-event-title" id="cert-view-program">ANNUAL DAY</div>
+            <div class="cert-award-text" id="cert-view-title">CERTIFICATE OF ACHIEVEMENT</div>
+          </div>
+
+          <!-- Photo section -->
+          <div class="cert-middle-section">
+            <div class="cert-photo-frame" id="cert-view-photo-frame">
+              <div style="font-size:60px; opacity:0.3;">👤</div>
+            </div>
+          </div>
+
+          <!-- Gold Hexagon Name Banner -->
+          <div class="cert-name-banner" id="cert-view-name">Select Student</div>
 
           <!-- Body -->
           <div class="cert-body">
-            <div class="cert-photo-circle" id="cert-view-photo-frame">
-              <div style="font-size:60px; opacity:0.3;">👤</div>
-            </div>
-            <div class="cert-name-ribbon" id="cert-view-name">Select Student</div>
-            
-            <div class="cert-main-text" id="cert-view-wording">
-              This is to certify that the above mentioned student of
-              <br/>
-              <span class="bold-dept" id="cert-view-dept">MECHANICAL ENGINEERING DEPARTMENT</span>
-              <br/>
-              <span class="bold-house" id="cert-view-house">NOVAS HOUSE</span>
-              <br/>
-              has secured <span class="bold-award" id="cert-view-award">FIRST PLACE</span> in the event <span class="bold-award" id="cert-view-event">"100 METER"</span>
-            </div>
-            
-            <div class="cert-italic-quote">
-              Demonstrating exceptional athleticism and sportsmanship, your outstanding performance in this sporting arena has contributed immensely to the legacy of our institution.
+            <div class="cert-certify">This is to certify that the above mentioned student of</div>
+            <div class="cert-dept-line" id="cert-view-dept">MECHANICAL ENGINEERING DEPARTMENT</div>
+            <div class="cert-house-line" id="cert-view-house">NOVAS HOUSE</div>
+            <div class="cert-achievement-line" id="cert-view-wording">
+              has secured <strong>FIRST PLACE</strong> in the event <strong>"100 METER"</strong>
             </div>
           </div>
 
-          <!-- Footer -->
-          <div class="cert-footer-row">
+          <!-- Prestigious Wording / Quote -->
+          <div class="cert-prestigious-wording" id="cert-view-quote">
+            Demonstrating exceptional athleticism and sportsmanship, your outstanding performance in this sporting arena has contributed immensely to the legacy of our institution.
+          </div>
+
+          <!-- Footer with Cursive signatures and centered Date -->
+          <div class="cert-footer">
             <div class="cert-sig-block">
+              <div class="cert-sig-name-cursive">&nbsp;</div>
               <div class="cert-sig-line">SECRETARY</div>
-              <div class="cert-sig-sub">Don Bosco Polytechnic College</div>
+              <div class="cert-sig-sub" id="cert-sig-sub-secretary">Don Bosco Polytechnic College</div>
+            </div>
+            <div class="cert-date-block">
+              <div class="cert-date-value" id="cert-view-date-val">2026-06-21</div>
+              <div class="cert-date-label">DATE</div>
             </div>
             <div class="cert-sig-block">
+              <div class="cert-sig-name-cursive">&nbsp;</div>
               <div class="cert-sig-line">PRINCIPAL</div>
-              <div class="cert-sig-sub">Don Bosco Polytechnic College</div>
+              <div class="cert-sig-sub" id="cert-sig-sub-principal">Don Bosco Polytechnic College</div>
             </div>
           </div>
         </div>
@@ -1511,7 +1627,7 @@ select:disabled{opacity:.4;cursor:not-allowed}
           <label class="lbl">College Logo (PNG/JPEG)</label>
           <input type="file" id="s-logo-input" accept="image/png, image/jpeg, image/jpg"/>
           <div style="margin-top:8px; text-align:center;">
-            <img id="s-logo-preview" src="./college_logo.png" style="max-height:80px; max-width:100%; border:1px solid var(--bdr); border-radius:6px; background:#fff; padding:4px; object-fit:contain;"/>
+            <img id="s-logo-preview" src="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='100' height='100' viewBox='0 0 100 100'><rect width='100%25' height='100%25' fill='%231e1b4b'/><circle cx='50' cy='50' r='30' fill='%234f46e5'/><text x='50' y='55' font-size='20' font-family='sans-serif' font-weight='bold' fill='white' text-anchor='middle'>DB</text></svg>" style="max-height:80px; max-width:100%; border:1px solid var(--bdr); border-radius:6px; background:#fff; padding:4px; object-fit:contain;"/>
           </div>
         </div>
         
@@ -1519,7 +1635,7 @@ select:disabled{opacity:.4;cursor:not-allowed}
           <label class="lbl">Founder Portrait (PNG/JPEG)</label>
           <input type="file" id="s-founder-input" accept="image/png, image/jpeg, image/jpg"/>
           <div style="margin-top:8px; text-align:center;">
-            <img id="s-founder-preview" src="./founder_portrait.png" style="max-height:80px; max-width:100%; border:1px solid var(--bdr); border-radius:6px; background:#fff; padding:4px; object-fit:contain;"/>
+            <img id="s-founder-preview" src="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='100' height='100' viewBox='0 0 100 100'><rect width='100%25' height='100%25' fill='%231f2937'/><circle cx='50' cy='45' r='20' fill='%239ca3af'/><path d='M20,80 C20,60 80,60 80,80' fill='%239ca3af'/></svg>" style="max-height:80px; max-width:100%; border:1px solid var(--bdr); border-radius:6px; background:#fff; padding:4px; object-fit:contain;"/>
           </div>
         </div>
       </div>
@@ -1776,6 +1892,7 @@ function showAdminAuthPrompt(show, errorMsg = '') {
   } else {
     overlay.style.display = 'none';
     if (ACTIVE_SECURED_TAB) {
+      document.querySelectorAll('.tab-pane').forEach(function(p) { p.classList.remove('active'); });
       document.getElementById('tab-' + ACTIVE_SECURED_TAB).classList.add('active');
     }
   }
@@ -2940,6 +3057,7 @@ function updateCertPreview() {
   const standing = document.getElementById('cert-standing').value;
   const program = document.getElementById('cert-program').value || 'ANNUAL DAY';
   const category = document.getElementById('cert-category').value;
+  const dateVal = document.getElementById('cert-date').value;
   
   let cleanName = name.replace(/\s*\(.*?\)\s*$/, '').trim();
   let house = 'NEXUS';
@@ -2949,22 +3067,23 @@ function updateCertPreview() {
   }
 
   document.getElementById('cert-view-name').textContent = cleanName;
-  document.getElementById('cert-view-watermark-left').textContent = house.toUpperCase();
-  document.getElementById('cert-view-watermark-right').textContent = house.toUpperCase();
   document.getElementById('cert-view-program').textContent = program.toUpperCase();
+  
+  const formattedDate = formatDisplayDate(dateVal);
+  document.getElementById('cert-view-date-val').textContent = formattedDate;
 
   const houseColor = getHouseColor(house);
   document.getElementById('cert-view-photo-frame').style.borderColor = houseColor;
   
-  // Update watermark text colors (adding opacity)
-  document.getElementById('cert-view-watermark-left').style.color = houseColor + '11';
-  document.getElementById('cert-view-watermark-right').style.color = houseColor + '11';
-  
   // Update dynamic branding elements
-  document.querySelector('#cert-document .cert-watermark-logo').style.backgroundImage = 'url("' + BRANDING_DATA.collegeLogo + '")';
-  document.querySelector('#cert-document .cert-logo-wrap img').src = BRANDING_DATA.collegeLogo;
-  document.querySelector('#cert-document .cert-founder-wrap img').src = BRANDING_DATA.founderPortrait;
-  document.querySelector('#cert-document .cert-inst-name').textContent = BRANDING_DATA.collegeName;
+  document.getElementById('cert-watermark-logo-el').style.backgroundImage = 'url("' + BRANDING_DATA.collegeLogo + '")';
+  document.getElementById('cert-logo-img').src = BRANDING_DATA.collegeLogo;
+  document.getElementById('cert-founder-img').src = BRANDING_DATA.founderPortrait;
+  document.getElementById('cert-display-college-name').textContent = BRANDING_DATA.collegeName;
+  
+  // Update signature sub-labels
+  document.getElementById('cert-sig-sub-secretary').textContent = BRANDING_DATA.collegeName;
+  document.getElementById('cert-sig-sub-principal').textContent = BRANDING_DATA.collegeName;
   
   let title = 'CERTIFICATE OF ACHIEVEMENT';
   let awardText = '';
@@ -2985,14 +3104,13 @@ function updateCertPreview() {
   
   document.getElementById('cert-view-title').textContent = title;
   
-  const wording = `This is to certify that the above mentioned student of
-    <br/>
-    <span class="bold-dept">${dept ? dept.toUpperCase() : '—'} DEPARTMENT</span>
-    <br/>
-    <span class="bold-house" style="color: ${houseColor};">${house.toUpperCase()} HOUSE</span>
-    <br/>
-    has secured <span class="bold-award">${awardText}</span> in the event <span class="bold-award">"${event.toUpperCase()}"</span>`;
-    
+  document.getElementById('cert-view-dept').textContent = dept ? `${dept.toUpperCase()} DEPARTMENT` : '— DEPARTMENT';
+  
+  const houseEl = document.getElementById('cert-view-house');
+  houseEl.textContent = `${house.toUpperCase()} HOUSE`;
+  houseEl.style.color = houseColor;
+  
+  const wording = `has secured <strong>${awardText}</strong> in the event <strong>"${event.toUpperCase()}"</strong>`;
   document.getElementById('cert-view-wording').innerHTML = wording;
   
   let quote = '';
@@ -3005,7 +3123,7 @@ function updateCertPreview() {
   } else {
     quote = "Showcasing remarkable leadership, active engagement, and versatile talents, your dedication and participation have greatly contributed to the success of this event.";
   }
-  document.querySelector('#cert-document .cert-italic-quote').textContent = quote;
+  document.getElementById('cert-view-quote').textContent = quote;
 }
 
 function printCertificate() {
@@ -3014,9 +3132,14 @@ function printCertificate() {
   
   const clone = cert.cloneNode(true);
   
+  // Wrap in cert-page-break for correct printing layout on A4
+  const pageBreakDiv = document.createElement('div');
+  pageBreakDiv.className = 'cert-page-break';
+  pageBreakDiv.appendChild(clone);
+  
   const printContainer = document.getElementById('print-container');
   printContainer.innerHTML = '';
-  printContainer.appendChild(clone);
+  printContainer.appendChild(pageBreakDiv);
   
   document.body.classList.add('print-cert-active');
   window.print();
@@ -3109,71 +3232,87 @@ async function printBulkCertificates() {
     const fileId = photoMap[cleanName.toLowerCase()];
     const photoHtml = fileId 
       ? `<img src="https://drive.google.com/thumbnail?id=${fileId}&sz=w600" alt="${esc(cleanName)}"/>`
-      : '<div style="font-size:60px; opacity:0.3;">👤</div>';
+      : '<div style="font-size:60px; opacity:0.3; display:flex; align-items:center; justify-content:center; height:100%;">👤</div>';
       
-    const wording = `This is to certify that the above mentioned student of
-      <br/>
-      <span class="bold-dept">${dept.toUpperCase()} DEPARTMENT</span>
-      <br/>
-      <span class="bold-house" style="color: ${houseColor};">${house.toUpperCase()} HOUSE</span>
-      <br/>
-      has secured <span class="bold-award">${awardText}</span> in the event <span class="bold-award">"${event.toUpperCase()}"</span>`;
+    const formattedDate = formatDisplayDate(document.getElementById('cert-date').value);
+    
+    const pageBreakDiv = document.createElement('div');
+    pageBreakDiv.className = 'cert-page-break';
     
     const certDiv = document.createElement('div');
     certDiv.className = 'cert-card';
-    certDiv.style.pageBreakAfter = 'always';
-    certDiv.style.breakAfter = 'page';
     
     certDiv.innerHTML = `
-      <div class="cert-border-outer"></div>
-      <div class="cert-border-inner"></div>
-      <div class="cert-corner cert-corner-tl"></div>
-      <div class="cert-corner cert-corner-tr"></div>
-      <div class="cert-corner cert-corner-bl"></div>
-      <div class="cert-corner cert-corner-br"></div>
-      <div class="cert-watermark-logo" style="background-image: url('${BRANDING_DATA.collegeLogo}');"></div>
-      <div class="cert-watermark-text-left" style="color: ${houseColor}11;">${house.toUpperCase()}</div>
-      <div class="cert-watermark-text-right" style="color: ${houseColor}11;">${house.toUpperCase()}</div>
-      <div class="cert-layout">
-        <div class="cert-header">
-          <div class="cert-logo-wrap">
+      <div class="cert-watermark" style="background-image: url('${BRANDING_DATA.collegeLogo}');"></div>
+      
+      <svg class="cert-corner top-left" viewBox="0 0 100 100" width="32" height="32"><path d="M 0 0 L 0 30 L 2 30 L 2 2 L 30 2 L 30 0 Z M 6 6 L 6 22 L 8 22 L 8 8 L 22 8 L 22 6 Z" fill="#c9a054"/></svg>
+      <svg class="cert-corner top-right" viewBox="0 0 100 100" width="32" height="32" style="transform: scaleX(-1);"><path d="M 0 0 L 0 30 L 2 30 L 2 2 L 30 2 L 30 0 Z M 6 6 L 6 22 L 8 22 L 8 8 L 22 8 L 22 6 Z" fill="#c9a054"/></svg>
+      <svg class="cert-corner bottom-left" viewBox="0 0 100 100" width="32" height="32" style="transform: scaleY(-1);"><path d="M 0 0 L 0 30 L 2 30 L 2 2 L 30 2 L 30 0 Z M 6 6 L 6 22 L 8 22 L 8 8 L 22 8 L 22 6 Z" fill="#c9a054"/></svg>
+      <svg class="cert-corner bottom-right" viewBox="0 0 100 100" width="32" height="32" style="transform: scale(-1);"><path d="M 0 0 L 0 30 L 2 30 L 2 2 L 30 2 L 30 0 Z M 6 6 L 6 22 L 8 22 L 8 8 L 22 8 L 22 6 Z" fill="#c9a054"/></svg>
+
+      <div class="cert-header">
+        <div class="cert-header-side">
+          <div class="cert-logo">
             <img src="${BRANDING_DATA.collegeLogo}" alt="Logo"/>
           </div>
-          <div class="cert-header-text">
-            <div class="cert-inst-name">${BRANDING_DATA.collegeName}</div>
-            <div class="cert-inst-sub">GIVERS OF ALL TALENTS STUDENTS</div>
-            <div class="cert-annual-day">${programName.toUpperCase()}</div>
-            <div class="cert-achievement-title">${title}</div>
-          </div>
+        </div>
+        <div class="cert-header-title">
+          <h2>${BRANDING_DATA.collegeName}</h2>
+          <div class="cert-inst-sub">GIVERS OF ALL TALENTS STUDENTS</div>
+        </div>
+        <div class="cert-header-side">
           <div class="cert-founder-wrap">
             <img src="${BRANDING_DATA.founderPortrait}" alt="Founder"/>
           </div>
+          <small style="font-size:8px;font-weight:bold;margin-top:4px;color:#333;text-transform:uppercase;">FOUNDER</small>
         </div>
-        <div class="cert-body">
-          <div class="cert-photo-circle" style="border-color: ${houseColor};">
-            ${photoHtml}
-          </div>
-          <div class="cert-name-ribbon">${esc(cleanName)}</div>
-          <div class="cert-main-text">
-            ${wording}
-          </div>
-          <div class="cert-italic-quote">
-            ${quote}
-          </div>
+      </div>
+
+      <div class="cert-event-block">
+        <div class="cert-event-title">${programName.toUpperCase()}</div>
+        <div class="cert-award-text">${title}</div>
+      </div>
+
+      <div class="cert-middle-section">
+        <div class="cert-photo-frame" style="border-color: ${houseColor} !important;">
+          ${photoHtml}
         </div>
-        <div class="cert-footer-row">
-          <div class="cert-sig-block">
-            <div class="cert-sig-line">SECRETARY</div>
-            <div class="cert-sig-sub">Don Bosco Polytechnic College</div>
-          </div>
-          <div class="cert-sig-block">
-            <div class="cert-sig-line">PRINCIPAL</div>
-            <div class="cert-sig-sub">Don Bosco Polytechnic College</div>
-          </div>
+      </div>
+
+      <div class="cert-name-banner">${esc(cleanName)}</div>
+
+      <div class="cert-body">
+        <div class="cert-certify">This is to certify that the above mentioned student of</div>
+        <div class="cert-dept-line">${dept.toUpperCase()} DEPARTMENT</div>
+        <div class="cert-house-line" style="color: ${houseColor} !important;">${house.toUpperCase()} HOUSE</div>
+        <div class="cert-achievement-line">
+          has secured <strong>${awardText}</strong> in the event <strong>"${event.toUpperCase()}"</strong>
+        </div>
+      </div>
+
+      <div class="cert-prestigious-wording">
+        ${quote}
+      </div>
+
+      <div class="cert-footer">
+        <div class="cert-sig-block">
+          <div class="cert-sig-name-cursive">&nbsp;</div>
+          <div class="cert-sig-line">SECRETARY</div>
+          <div class="cert-sig-sub">${BRANDING_DATA.collegeName}</div>
+        </div>
+        <div class="cert-date-block">
+          <div class="cert-date-value">${formattedDate}</div>
+          <div class="cert-date-label">DATE</div>
+        </div>
+        <div class="cert-sig-block">
+          <div class="cert-sig-name-cursive">&nbsp;</div>
+          <div class="cert-sig-line">PRINCIPAL</div>
+          <div class="cert-sig-sub">${BRANDING_DATA.collegeName}</div>
         </div>
       </div>
     `;
-    printContainer.appendChild(certDiv);
+    pageBreakDiv.appendChild(certDiv);
+    printContainer.appendChild(pageBreakDiv);
   });
   
   if (printContainer.lastChild) {
@@ -3272,15 +3411,34 @@ async function loadBrandingData() {
 }
 
 function updateBrandingImages() {
-  // Update all static instances in HTML
-  document.querySelectorAll('img[src*="college_logo.png"]').forEach(img => {
-    img.src = BRANDING_DATA.collegeLogo;
-  });
-  document.querySelectorAll('img[src*="founder_portrait.png"]').forEach(img => {
-    img.src = BRANDING_DATA.founderPortrait;
-  });
+  const defaultLogo = "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='100' height='100' viewBox='0 0 100 100'><rect width='100%25' height='100%25' fill='%231e1b4b'/><circle cx='50' cy='50' r='30' fill='%234f46e5'/><text x='50' y='55' font-size='20' font-family='sans-serif' font-weight='bold' fill='white' text-anchor='middle'>DB</text></svg>";
+  const defaultFounder = "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='100' height='100' viewBox='0 0 100 100'><rect width='100%25' height='100%25' fill='%231f2937'/><circle cx='50' cy='45' r='20' fill='%239ca3af'/><path d='M20,80 C20,60 80,60 80,80' fill='%239ca3af'/></svg>";
+
+  const logoUrl = (!BRANDING_DATA.collegeLogo || BRANDING_DATA.collegeLogo.indexOf('college_logo.png') !== -1) ? defaultLogo : BRANDING_DATA.collegeLogo;
+  const founderUrl = (!BRANDING_DATA.founderPortrait || BRANDING_DATA.founderPortrait.indexOf('founder_portrait.png') !== -1) ? defaultFounder : BRANDING_DATA.founderPortrait;
+
+  // Store resolved URLs back to BRANDING_DATA so prints can use them
+  BRANDING_DATA.collegeLogo = logoUrl;
+  BRANDING_DATA.founderPortrait = founderUrl;
+
+  // Update settings page previews
+  const sLogo = document.getElementById('s-logo-preview');
+  if (sLogo) sLogo.src = logoUrl;
   
-  // Update college name in settings, reports, certificates, and headers
+  const sFounder = document.getElementById('s-founder-preview');
+  if (sFounder) sFounder.src = founderUrl;
+  
+  // Update certificate preview document logo & founder
+  const certLogo = document.querySelector('#cert-document .cert-logo-wrap img');
+  if (certLogo) certLogo.src = logoUrl;
+  
+  const certFounder = document.querySelector('#cert-document .cert-founder-wrap img');
+  if (certFounder) certFounder.src = founderUrl;
+  
+  const certWatermark = document.querySelector('#cert-document .cert-watermark-logo');
+  if (certWatermark) certWatermark.style.backgroundImage = 'url("' + logoUrl + '")';
+  
+  // Also update college name in settings, reports, certificates, and headers
   const cNameElements = [
     document.getElementById('print-college-name'),
     document.querySelector('.cert-inst-name'),

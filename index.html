@@ -1060,6 +1060,97 @@ select:disabled{opacity:.4;cursor:not-allowed}
   /* Underline */
 }
 
+/* Settings Upload Boxes */
+.settings-upload-box {
+  border: 2px dashed var(--bdr);
+  border-radius: var(--rs);
+  padding: 16px;
+  text-align: center;
+  cursor: pointer;
+  transition: border-color .2s, background .2s;
+  background: var(--sp);
+  min-height: 120px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+.settings-upload-box:hover {
+  border-color: var(--a);
+  background: var(--bg);
+}
+.house-cfg-card {
+  background: var(--sp);
+  border: 1px solid var(--bdr);
+  border-radius: var(--rs);
+  padding: 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+/* Fixed upload queue badge (bottom-right) */
+#uploadQueueBadge {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  background: linear-gradient(135deg, #1a1a3a, #111827);
+  border: 1.5px solid #6366f1;
+  border-radius: 12px;
+  padding: 10px 16px;
+  display: none;
+  align-items: center;
+  gap: 10px;
+  z-index: 9999;
+  box-shadow: 0 8px 24px rgba(0,0,0,0.5);
+  font-size: 12px;
+  color: #a5b4fc;
+  font-weight: 700;
+  min-width: 220px;
+}
+#uploadQueueBadge .uq-count {
+  display: inline-block;
+  background: #6366f1;
+  color: #fff;
+  border-radius: 50%;
+  width: 22px;
+  height: 22px;
+  line-height: 22px;
+  text-align: center;
+  font-size: 11px;
+  font-weight: 800;
+  flex-shrink: 0;
+}
+/* A5 card print */
+@media print {
+  body.print-a5-active * {
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+  }
+  body.print-a5-active header,
+  body.print-a5-active .main-wrap {
+    display: none !important;
+  }
+  body.print-a5-active #print-container {
+    display: block !important;
+    width: 100%;
+    background: #0d0e19 !important;
+    padding: 0;
+  }
+  body.print-a5-active .a5-card {
+    width: 148mm !important;
+    height: 210mm !important;
+    page-break-after: always;
+    break-after: page;
+    margin: 0 auto;
+    box-sizing: border-box !important;
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+  }
+  body.print-a5-active .a5-card:last-child {
+    page-break-after: avoid;
+    break-after: avoid;
+  }
+}
 </style>
 </head>
 <body>
@@ -1081,6 +1172,7 @@ select:disabled{opacity:.4;cursor:not-allowed}
       <button class="mtab"        onclick="switchMain('admin',this)">📂 Admin &amp; Photos</button>
       <button class="mtab"        onclick="switchMain('report',this)">📊 Report &amp; Toppers</button>
       <button class="mtab"        onclick="switchMain('cert-generator',this)">🎓 Certificates</button>
+      <button class="mtab"        onclick="switchMain('settings',this)">⚙️ Settings</button>
     </div>
   </div>
 </header>
@@ -1175,18 +1267,11 @@ select:disabled{opacity:.4;cursor:not-allowed}
     </div>
 
     <canvas id="canvasEl"></canvas>
-    <div class="progbar" id="uploadBar" style="margin-top:12px"></div>
+    <div class="progbar" id="uploadBar" style="margin-top:12px;display:none;"></div>
     <button class="btn btn-pr btn-full" id="submitBtn" onclick="submitPhoto()" disabled style="margin-top:16px">
-      <span class="spin" id="uploadSpin"></span>🚀 Submit Photo
+      🚀 Submit &amp; Continue
     </button>
-    <!-- Background upload indicator -->
-    <div id="bgUploadBadge" style="display:none; margin-top:10px; background:linear-gradient(135deg,#1a1a3a,#0d1b2a); border:1px solid #6366f1; border-radius:8px; padding:10px 14px; display:none; align-items:center; gap:10px;">
-      <span class="spin" style="display:inline-block;"></span>
-      <div style="flex:1;">
-        <div style="font-size:12px; font-weight:700; color:#a5b4fc;">⬆️ Uploading in background…</div>
-        <div style="font-size:10px; color:var(--m); margin-top:2px;"><span id="bgUploadCount">0</span> upload(s) in progress — you can select the next student!</div>
-      </div>
-    </div>
+    <!-- Upload Queue Status (top-right fixed badge) -->
   </div>
 
 </div><!-- /tab-upload -->
@@ -1243,6 +1328,68 @@ select:disabled{opacity:.4;cursor:not-allowed}
 </div><!-- /tab-admin -->
 
 <!-- ╔═══════════════════════════════════════════════════════════
+     ║  TAB 5 — SETTINGS
+     ╚═══════════════════════════════════════════════════════════ -->
+<div id="tab-settings" class="tab-pane">
+
+  <div class="hero">
+    <div class="hero-badge">⚙️ Branding &amp; Configuration</div>
+    <h1>College Settings</h1>
+    <p>Upload your college logo, founder portrait, house logos, and configure house colours. All settings are saved in your browser.</p>
+  </div>
+
+  <!-- College Identity -->
+  <div class="panel" style="margin-bottom:24px;">
+    <div class="panel-hd">🏛️ College Identity</div>
+    <div style="display:flex;flex-direction:column;gap:14px;margin-top:16px;">
+      <div class="fg">
+        <label class="lbl">College Name</label>
+        <input type="text" id="s-college-name" placeholder="e.g. Don Bosco Institution" oninput="saveSettings()"/>
+      </div>
+      <div class="fg">
+        <label class="lbl">Affiliation / Tagline</label>
+        <input type="text" id="s-college-affil" placeholder="e.g. AFFILIATED TO UNIVERSITY &amp; ACCREDITED" oninput="saveSettings()"/>
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:20px;">
+        <!-- College Logo -->
+        <div>
+          <label class="lbl">🏠 College Logo</label>
+          <div class="settings-upload-box" onclick="document.getElementById('s-logo-input').click()">
+            <img id="s-logo-preview" src="./college_logo.png" alt="Logo" style="max-height:90px;max-width:100%;object-fit:contain;"/>
+            <div style="font-size:11px;color:var(--m);margin-top:8px;">Click to upload logo</div>
+          </div>
+          <input type="file" id="s-logo-input" accept="image/*" style="display:none" onchange="handleBrandingUpload(this,'app_college_logo','s-logo-preview')"/>
+        </div>
+        <!-- Founder Portrait -->
+        <div>
+          <label class="lbl">👤 Founder Portrait</label>
+          <div class="settings-upload-box" onclick="document.getElementById('s-founder-input').click()">
+            <img id="s-founder-preview" src="./founder_portrait.png" alt="Founder" style="max-height:90px;max-width:100%;object-fit:contain;"/>
+            <div style="font-size:11px;color:var(--m);margin-top:8px;">Click to upload portrait</div>
+          </div>
+          <input type="file" id="s-founder-input" accept="image/*" style="display:none" onchange="handleBrandingUpload(this,'app_founder_img','s-founder-preview')"/>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- House Configuration -->
+  <div class="panel" style="margin-bottom:24px;">
+    <div class="panel-hd">🏠 House Configuration</div>
+    <div id="house-config-panels" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:16px;margin-top:16px;">
+      <!-- Generated by JS -->
+    </div>
+    <button class="btn btn-ol" style="margin-top:16px;" onclick="addHousePanel()">➕ Add House</button>
+  </div>
+
+  <div style="display:flex;gap:12px;margin-top:4px;">
+    <button class="btn btn-pr" onclick="saveSettings()">💾 Save Settings</button>
+    <button class="btn btn-ol" onclick="resetSettings()">🔄 Reset to Defaults</button>
+  </div>
+
+</div><!-- /tab-settings -->
+
+<!-- ╔═══════════════════════════════════════════════════════════
      ║  TAB 3 — REPORT & TOPPERS
      ╚═══════════════════════════════════════════════════════════ -->
 <div id="tab-report" class="tab-pane">
@@ -1264,9 +1411,12 @@ select:disabled{opacity:.4;cursor:not-allowed}
   <div class="grid-report" id="report-dashboard">
     <!-- Left Column: House Standings -->
     <div class="panel">
-      <div class="panel-hd" style="display:flex; justify-content:space-between; align-items:center;">
+      <div class="panel-hd" style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:8px;">
         <span>🏆 House Standings</span>
-        <button class="btn btn-ol" onclick="printReport()" style="padding: 6px 12px; font-size: 12px;">🖨️ Print Report</button>
+        <div style="display:flex;gap:8px;flex-wrap:wrap;">
+          <button class="btn btn-pr" onclick="printReport()" style="padding:5px 12px;font-size:11px;">📄 Print Report</button>
+          <button class="btn btn-ol" onclick="printDeptCards('')" style="padding:5px 12px;font-size:11px;">🎴 All Dept Cards</button>
+        </div>
       </div>
       <div id="house-standings-container" style="margin-top: 15px;">
         <div class="state-box">
@@ -1304,9 +1454,13 @@ select:disabled{opacity:.4;cursor:not-allowed}
   <div class="panel" style="margin-top:24px">
     <div class="panel-hd" style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px;">
       <span>🌟 Weekly Toppers Cards</span>
-      <select id="r-dept" style="padding:6px 12px; font-size:13px; border-radius:var(--rs); border:1px solid var(--bdr); background:var(--bg); color:#fff; cursor:pointer;" onchange="onReportDeptChange()">
-        <option value="">— Select Department —</option>
-      </select>
+      <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap;">
+        <select id="r-dept" style="padding:6px 12px; font-size:13px; border-radius:var(--rs); border:1px solid var(--bdr); background:var(--bg); color:#fff; cursor:pointer;" onchange="onReportDeptChange()">
+          <option value="">— Select Department —</option>
+        </select>
+        <button class="btn btn-ol" id="printDeptCardsBtn" onclick="printDeptCards(document.getElementById('r-dept').value)" style="padding:5px 12px;font-size:11px;display:none;">🎴 Cards</button>
+        <button class="btn btn-pr"  id="printA5CardsBtn"  onclick="printA5Cards(document.getElementById('r-dept').value)" style="padding:5px 12px;font-size:11px;display:none;">A5 Print</button>
+      </div>
     </div>
     
     <div class="toppers-grid" id="toppersGrid" style="margin-top: 20px;">
@@ -1496,6 +1650,16 @@ select:disabled{opacity:.4;cursor:not-allowed}
 </div><!-- /main-wrap -->
 
 <!-- 🖨️ Isolated container for printing a single achievement card -->
+<!-- Fixed upload queue badge (bottom-right corner) -->
+<div id="uploadQueueBadge">
+  <span class="spin" style="display:inline-block;"></span>
+  <div>
+    <div>⬆️ Uploading photos…</div>
+    <div style="font-size:10px;font-weight:400;color:#818cf8;margin-top:2px;"><span class="uq-count" id="uqCount">0</span> in progress</div>
+  </div>
+</div>
+
+<!-- 🖨️ Isolated container for printing -->
 <div id="print-container"></div>
 
 <!-- ═══════════════════════════════════════════════════════════
@@ -2306,6 +2470,8 @@ async function loadReportData() {
 function onReportDeptChange() {
   const dept = document.getElementById('r-dept').value;
   const grid = document.getElementById('toppersGrid');
+  const printBtn = document.getElementById('printDeptCardsBtn');
+  if (printBtn) printBtn.style.display = dept ? 'inline-block' : 'none';
   
   if (!dept) {
     grid.innerHTML = `
@@ -2365,158 +2531,270 @@ function onReportDeptChange() {
   });
 }
 
+// ════════════════════════════════════════════════════════════════
+//  📄 PRINT PROFESSIONAL REPORT
+// ════════════════════════════════════════════════════════════════
 function printReport() {
-  if (!REPORT_DATA || !REPORT_DATA.toppers) {
-    toast('⚠️', 'Report data not loaded. Please wait for the report to load.');
-    return;
+  if (!REPORT_DATA || !REPORT_DATA.houses) {
+    toast('⚠️', 'Report data not loaded. Please wait.'); return;
   }
-  
-  const printContainer = document.getElementById('print-container');
-  printContainer.innerHTML = '';
-  
-  // ── College branding header ──
-  const collegeName = (REPORT_DATA.collegeName) || 'Don Bosco Institution';
-  const weekStart = formatDisplayDate(REPORT_DATA.weekStart);
-  const weekEnd   = formatDisplayDate(REPORT_DATA.weekEnd);
 
-  const brandHeader = document.createElement('div');
-  brandHeader.style.cssText = [
-    'width:100%',
-    'text-align:center',
-    'padding:20px 0 16px',
-    'border-bottom:3px double #bf953f',
-    'margin-bottom:28px',
-    'font-family:\'Cinzel\',\'Georgia\',serif',
-    'background:#0d0e19',
-    'color:#fff'
-  ].join(';');
-  brandHeader.innerHTML = `
-    <div style="display:flex;align-items:center;justify-content:center;gap:18px;">
-      <img src="./college_logo.png" alt="Logo" style="width:70px;height:70px;object-fit:contain;"/>
-      <div>
-        <div style="font-size:22px;font-weight:800;letter-spacing:0.08em;background:linear-gradient(135deg,#bf953f,#fcf6ba,#b38728,#fbf5b7);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;">${esc(collegeName)}</div>
-        <div style="font-size:9px;font-weight:700;letter-spacing:0.22em;color:#aaa;margin-top:4px;">WEEKLY TOPPERS ACHIEVEMENT REPORT</div>
-        <div style="font-size:10px;color:#ccc;margin-top:6px;">Week: ${weekStart} — ${weekEnd}</div>
+  const pc = document.getElementById('print-container');
+  pc.innerHTML = '';
+
+  const collegeName = REPORT_DATA.collegeName || 'Don Bosco Institution';
+  const weekStart   = formatDisplayDate(REPORT_DATA.weekStart);
+  const weekEnd     = formatDisplayDate(REPORT_DATA.weekEnd);
+  const todayStr    = new Date().toLocaleDateString('en-IN', { day:'numeric', month:'long', year:'numeric' });
+
+  // ── Helper: create a styled table ──────────────────────────────
+  function mkTable(headers, rows, colColors) {
+    let t = `<table style="width:100%;border-collapse:collapse;font-size:12px;margin-top:0;">`;
+    t += `<thead><tr>`;
+    headers.forEach(h => {
+      t += `<th style="background:#1a2744;color:#ffd700;padding:8px 10px;text-align:left;font-weight:700;letter-spacing:0.05em;border:1px solid #c8d3e0;">${h}</th>`;
+    });
+    t += `</tr></thead><tbody>`;
+    rows.forEach((row, ri) => {
+      const bg = ri % 2 === 0 ? '#f8faff' : '#eef2fc';
+      t += `<tr style="background:${bg};">` ;
+      row.forEach((cell, ci) => {
+        const extra = colColors && colColors[ci] ? `color:${colColors[ci]};font-weight:700;` : '';
+        t += `<td style="padding:7px 10px;border:1px solid #c8d3e0;${extra}">${cell}</td>`;
+      });
+      t += `</tr>`;
+    });
+    t += `</tbody></table>`;
+    return t;
+  }
+
+  // ── Helper: section heading ─────────────────────────────────────
+  function mkSection(icon, title) {
+    return `<div style="margin:28px 0 12px;padding:8px 14px;background:linear-gradient(90deg,#1a2744,#243060);border-left:5px solid #bf953f;border-radius:0 6px 6px 0;">
+      <span style="font-family:'Cinzel','Georgia',serif;font-size:14px;font-weight:800;color:#ffd700;letter-spacing:0.06em;text-transform:uppercase;">${icon} ${title}</span>
+    </div>`;
+  }
+
+  let html = `
+  <div style="background:#fff;color:#111;font-family:'Segoe UI','Arial',sans-serif;max-width:900px;margin:0 auto;padding:30px 40px;box-sizing:border-box;">
+
+    <!-- ── COLLEGE BRANDING HEADER ── -->
+    <div style="display:flex;align-items:center;gap:20px;padding-bottom:18px;border-bottom:3px solid #1a2744;margin-bottom:6px;">
+      <img src="./college_logo.png" alt="Logo" style="width:80px;height:80px;object-fit:contain;"/>
+      <div style="flex:1;">
+        <div style="font-family:'Cinzel','Georgia',serif;font-size:26px;font-weight:900;color:#1a2744;letter-spacing:0.05em;">${esc(collegeName)}</div>
+        <div style="font-size:11px;font-weight:700;letter-spacing:0.18em;color:#555;margin-top:4px;">AFFILIATED TO UNIVERSITY &amp; ACCREDITED</div>
+      </div>
+      <div style="text-align:right;">
+        <div style="font-size:18px;font-weight:800;color:#bf953f;font-family:'Cinzel','Georgia',serif;">WEEKLY REPORT</div>
+        <div style="font-size:11px;color:#555;margin-top:4px;">Period: ${weekStart} &mdash; ${weekEnd}</div>
+        <div style="font-size:10px;color:#888;margin-top:2px;">Printed: ${todayStr}</div>
       </div>
     </div>
+    <div style="text-align:center;font-family:'Cinzel','Georgia',serif;font-size:13px;font-weight:700;color:#1a2744;letter-spacing:0.15em;padding:6px 0 18px;border-bottom:1px solid #ddd;">WEEKLY ACHIEVEMENT &amp; PERFORMANCE REPORT</div>
   `;
-  printContainer.appendChild(brandHeader);
 
-  // ── Department cards — one section per dept ──
-  const depts = REPORT_DATA.departments || Object.keys(REPORT_DATA.toppers).sort();
+  // ── 1. HOUSE STANDINGS ──────────────────────────────────────────
+  html += mkSection('🏆', 'House Standings');
+  if (REPORT_DATA.houses && REPORT_DATA.houses.length > 0) {
+    const hRows = REPORT_DATA.houses.map((h, i) => {
+      const medals = ['🥇','🥈','🥉','4th'];
+      const bar = Math.round((h.overallPoints / Math.max(...REPORT_DATA.houses.map(x=>x.overallPoints),1)) * 100);
+      return [
+        `${medals[i]||''} <span style="font-weight:800;color:${h.color};">${esc(h.name.toUpperCase())}</span>`,
+        `<strong>${h.overallPoints}</strong>`,
+        `${h.weeklyPoints}`,
+        `<div style="background:#e5e7eb;border-radius:4px;height:10px;min-width:80px;"><div style="background:${h.color};height:10px;border-radius:4px;width:${bar}%;"></div></div>`
+      ];
+    });
+    html += mkTable(['House','Overall Points','This Week Points','Progress'], hRows);
+  } else {
+    html += '<p style="color:#888;font-style:italic;">No house data available.</p>';
+  }
+
+  // ── 2. ACTIVE DEPARTMENT ────────────────────────────────────────
+  html += mkSection('🔥', 'Active Department of the Week');
+  html += `<div style="background:linear-gradient(135deg,#f0f4ff,#e8edff);border:2px solid #6366f1;border-radius:10px;padding:16px 24px;display:inline-flex;align-items:center;gap:16px;">
+    <span style="font-size:36px;">⚡</span>
+    <div>
+      <div style="font-family:'Cinzel','Georgia',serif;font-size:20px;font-weight:900;color:#1a2744;">${esc(REPORT_DATA.activeDept || 'N/A')}</div>
+      <div style="font-size:10px;font-weight:700;color:#6366f1;letter-spacing:0.12em;margin-top:4px;">MOST POINTS EARNED THIS WEEK</div>
+    </div>
+  </div>`;
+
+  // ── 3. STAR TEACHERS ───────────────────────────────────────────
+  html += mkSection('⭐', 'Star Teachers of the Week');
+  if (REPORT_DATA.starTeachers && REPORT_DATA.starTeachers.length > 0) {
+    const tRows = REPORT_DATA.starTeachers.map((t, i) => {
+      const medals = ['🥇','🥈','🥉','4th','5th'];
+      return [`${medals[i]||''} ${i+1}`, esc(t.name), `${t.logs} entries`];
+    });
+    html += mkTable(['Rank','Teacher Name','Weekly Log Count'], tRows);
+  } else {
+    html += '<p style="color:#888;font-style:italic;">No teacher activity recorded this week.</p>';
+  }
+
+  // ── 4. DEPT-WISE TOP 5 STUDENTS (TABLES) ───────────────────────
+  html += mkSection('🎓', 'Department-Wise Top 5 Students of the Week');
+  const depts = REPORT_DATA.departments || Object.keys(REPORT_DATA.toppers || {}).sort();
+  if (depts.length === 0) {
+    html += '<p style="color:#888;font-style:italic;">No student data recorded this week.</p>';
+  } else {
+    depts.forEach(dept => {
+      const toppers = (REPORT_DATA.toppers || {})[dept] || [];
+      if (toppers.length === 0) return;
+      html += `<div style="margin-top:22px;page-break-inside:avoid;break-inside:avoid;">`;
+      html += `<div style="font-family:'Cinzel','Georgia',serif;font-size:13px;font-weight:800;color:#1a2744;border-bottom:2px solid #bf953f;padding-bottom:5px;margin-bottom:8px;text-transform:uppercase;letter-spacing:0.06em;">🏛️ Department of ${esc(dept)}</div>`;
+      const sRows = toppers.map((s, i) => {
+        const medals = ['🥇','🥈','🥉','4th','5th'];
+        const hc = getHouseColor(s.house);
+        return [
+          `${medals[i]||''} ${i+1}`,
+          `<strong>${esc(s.name)}</strong>`,
+          `<span style="display:inline-block;background:${hc};color:#fff;font-size:9px;font-weight:700;padding:2px 8px;border-radius:12px;">${esc((s.house||'').toUpperCase())}</span>`,
+          `<strong style="color:#1a2744;font-size:15px;">${s.points}</strong>`
+        ];
+      });
+      html += mkTable(['Rank','Student Name','House','Points'], sRows);
+      html += `</div>`;
+    });
+  }
+
+  // ── 5. DEPT-WISE HOUSE STANDING (which house dominates each dept) ─
+  html += mkSection('📊', 'Department-Wise House Performance');
+  if (depts.length > 0) {
+    const dhRows = depts.map(dept => {
+      const toppers = (REPORT_DATA.toppers || {})[dept] || [];
+      const housePts = {};
+      toppers.forEach(s => { if (s.house) housePts[s.house] = (housePts[s.house]||0) + s.points; });
+      const sorted  = Object.entries(housePts).sort((a,b)=>b[1]-a[1]);
+      const topHouse = sorted[0];
+      const hc = topHouse ? getHouseColor(topHouse[0]) : '#888';
+      const houseStr = topHouse
+        ? `<span style="display:inline-block;background:${hc};color:#fff;font-size:9px;font-weight:700;padding:2px 8px;border-radius:12px;">${esc(topHouse[0].toUpperCase())}</span> <span style="font-size:11px;">(${topHouse[1]} pts)</span>`
+        : 'N/A';
+      const total = toppers.reduce((a,s)=>a+s.points,0);
+      return [esc(dept), houseStr, `${toppers.length} students`, `${total}`];
+    }).filter(r => r !== null);
+    html += mkTable(['Department','Leading House','Toppers Count','Total Points'], dhRows);
+  } else {
+    html += '<p style="color:#888;font-style:italic;">No department data available.</p>';
+  }
+
+  // ── 6. PRINCIPAL SIGNATURE ─────────────────────────────────────
+  html += `
+    <div style="margin-top:60px;display:flex;justify-content:flex-end;page-break-inside:avoid;break-inside:avoid;">
+      <div style="text-align:center;width:200px;">
+        <div style="font-family:'Great Vibes','Brush Script MT',cursive;font-size:26px;color:#1a2744;height:50px;display:flex;align-items:center;justify-content:center;">Principal</div>
+        <div style="border-top:2px solid #1a2744;margin-top:2px;"></div>
+        <div style="font-size:9px;font-weight:700;color:#555;padding-top:4px;letter-spacing:0.12em;">PRINCIPAL SIGNATURE &amp; SEAL</div>
+      </div>
+    </div>
+  </div>`; // close main wrapper
+
+  pc.innerHTML = html;
+  document.body.classList.add('print-report-active');
+  window.print();
+  setTimeout(() => {
+    document.body.classList.remove('print-report-active');
+    pc.innerHTML = '';
+  }, 1500);
+}
+
+// ════════════════════════════════════════════════════════════════
+//  🎴 PRINT DEPT SOCIAL MEDIA CARDS
+// ════════════════════════════════════════════════════════════════
+function printDeptCards(deptFilter) {
+  if (!REPORT_DATA || !REPORT_DATA.toppers) {
+    toast('⚠️', 'Report data not loaded. Please wait.'); return;
+  }
+  const pc = document.getElementById('print-container');
+  pc.innerHTML = '';
+
+  const collegeName = REPORT_DATA.collegeName || 'Don Bosco Institution';
+  const depts = deptFilter
+    ? [deptFilter]
+    : (REPORT_DATA.departments || Object.keys(REPORT_DATA.toppers).sort());
+
+  let hasAny = false;
   depts.forEach((dept, deptIdx) => {
-    const toppers = REPORT_DATA.toppers[dept] || [];
+    const toppers = (REPORT_DATA.toppers || {})[dept] || [];
     if (toppers.length === 0) return;
+    hasAny = true;
 
-    const deptSection = document.createElement('div');
-    deptSection.className = 'print-dept-section';
-    deptSection.style.cssText = [
-      'background:#0d0e19',
-      'padding:24px 20px',
-      'margin-bottom:0',
-      'min-height:100%'
-    ].join(';');
+    const section = document.createElement('div');
+    section.className = 'print-dept-section';
+    section.style.cssText = 'background:#0d0e19;padding:28px 24px;min-height:100%;';
 
-    // Dept heading
-    const heading = document.createElement('div');
-    heading.style.cssText = [
-      'display:flex',
-      'align-items:center',
-      'gap:12px',
-      'margin-bottom:20px',
-      'padding-bottom:10px',
-      'border-bottom:2px solid #bf953f'
-    ].join(';');
-    heading.innerHTML = `
-      <span style="font-size:20px;">🏆</span>
-      <span style="font-family:'Cinzel','Georgia',serif;font-size:16px;font-weight:700;color:#ffd700;letter-spacing:0.08em;text-transform:uppercase;">Department of ${esc(dept)} — Weekly Toppers</span>
+    // Section heading with college name
+    section.innerHTML = `
+      <div style="display:flex;align-items:center;gap:14px;margin-bottom:24px;padding-bottom:12px;border-bottom:2px solid #bf953f;">
+        <img src="./college_logo.png" alt="Logo" style="width:50px;height:50px;object-fit:contain;"/>
+        <div>
+          <div style="font-family:'Cinzel','Georgia',serif;font-size:14px;font-weight:800;color:#ffd700;letter-spacing:0.06em;">${esc(collegeName)}</div>
+          <div style="font-size:10px;font-weight:700;letter-spacing:0.15em;color:#aaa;margin-top:2px;">WEEKLY TOPPERS — DEPT. OF ${esc(dept.toUpperCase())}</div>
+        </div>
+      </div>
+      <div class="print-cards-grid" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(190px,1fr));gap:18px;"></div>
     `;
-    deptSection.appendChild(heading);
 
-    // Cards grid
-    const grid = document.createElement('div');
-    grid.style.cssText = [
-      'display:grid',
-      'grid-template-columns:repeat(auto-fill,minmax(210px,1fr))',
-      'gap:16px'
-    ].join(';');
+    const grid = section.querySelector('.print-cards-grid');
+    const rankLabels = ['🥇 1ST','🥈 2ND','🥉 3RD','4TH','5TH'];
 
     toppers.forEach((s, idx) => {
-      const houseColor = getHouseColor(s.house);
-      const houseGlow  = getHouseGlow(s.house);
-      const photoHtml  = s.fileId
-        ? `<img src="https://drive.google.com/thumbnail?id=${s.fileId}&sz=w600" alt="${esc(s.name)}" style="width:100%;height:100%;object-fit:cover;"/>`
-        : `<div style="font-size:40px;display:flex;align-items:center;justify-content:center;width:100%;height:100%;opacity:0.4;">👤</div>`;
-
-      // Rank medal label
-      const rankLabels = ['🥇 1st', '🥈 2nd', '🥉 3rd', '4th', '5th'];
-      const rankLabel  = rankLabels[idx] || `${idx+1}th`;
+      const hc   = getHouseColor(s.house);
+      const hg   = getHouseGlow(s.house);
+      const photo = s.fileId
+        ? `<img src="https://drive.google.com/thumbnail?id=${s.fileId}&sz=w600" style="width:100%;height:100%;object-fit:cover;"/>`
+        : `<div style="font-size:36px;display:flex;align-items:center;justify-content:center;width:100%;height:100%;opacity:.35;">👤</div>`;
 
       const card = document.createElement('div');
-      card.className = 'ach-card';
       card.style.cssText = [
-        `background:linear-gradient(145deg,#111122 0%,${houseGlow} 100%)`,
-        `border:2px solid ${houseColor}`,
-        `box-shadow:0 0 12px ${houseColor}44`,
-        'border-radius:14px',
-        'padding:18px 14px',
-        'color:#fff',
-        'text-align:center',
-        'page-break-inside:avoid',
-        'break-inside:avoid',
-        `--house-color:${houseColor}`,
-        `--house-glow:${houseGlow}`
+        `background:linear-gradient(145deg,#111122 0%,${hg} 100%)`,
+        `border:2.5px solid ${hc}`,
+        `box-shadow:0 0 16px ${hc}44`,
+        'border-radius:14px','padding:18px 12px','color:#fff','text-align:center',
+        'page-break-inside:avoid','break-inside:avoid'
       ].join(';');
-      card.style.setProperty('--house-color', houseColor);
-      card.style.setProperty('--house-glow', houseGlow);
-
       card.innerHTML = `
-        <div style="font-size:9px;font-weight:700;letter-spacing:0.15em;color:${houseColor};margin-bottom:6px;text-transform:uppercase;">${rankLabel} — Topper of the Week</div>
-        <div style="width:90px;height:90px;border-radius:50%;border:3px solid ${houseColor};overflow:hidden;margin:0 auto 8px;box-shadow:0 0 12px ${houseColor}66;">${photoHtml}</div>
-        <div style="font-size:15px;font-weight:800;color:#fff;margin-bottom:4px;font-family:'Cinzel','Georgia',serif;">${esc(s.name)}</div>
-        <div style="display:inline-block;background:${houseColor};color:#000;font-size:8px;font-weight:700;padding:2px 10px;border-radius:20px;letter-spacing:0.1em;margin-bottom:8px;">${s.house ? s.house.toUpperCase() : 'N/A'}</div>
-        <div style="font-size:9px;font-weight:600;color:#aaa;text-transform:uppercase;letter-spacing:0.06em;margin-bottom:10px;">Dept. of ${esc(s.department)}</div>
-        <div style="font-family:'Georgia',serif;font-style:italic;font-size:9px;color:#c8d3e0;margin-bottom:10px;">
-          for securing <span style="color:#ffd700;font-weight:700;font-style:normal;">TOP PERFORMANCE</span> in the weekly standing.
-        </div>
-        <div style="font-size:28px;font-weight:900;color:${houseColor};text-shadow:0 0 8px ${houseColor}66;">${s.points}</div>
-        <div style="font-size:8px;color:#aaa;text-transform:uppercase;letter-spacing:0.1em;">Points Earned</div>
+        <div style="font-size:8px;font-weight:800;letter-spacing:0.18em;color:${hc};margin-bottom:8px;text-transform:uppercase;">${rankLabels[idx]||idx+1+'TH'} &bull; TOPPER OF THE WEEK</div>
+        <div style="width:88px;height:88px;border-radius:50%;border:3px solid ${hc};overflow:hidden;margin:0 auto 10px;box-shadow:0 0 14px ${hc}66;">${photo}</div>
+        <div style="font-size:15px;font-weight:900;color:#fff;font-family:'Cinzel','Georgia',serif;margin-bottom:4px;">${esc(s.name)}</div>
+        <div style="display:inline-block;background:${hc};color:#000;font-size:8px;font-weight:800;padding:2px 10px;border-radius:20px;letter-spacing:0.1em;margin-bottom:8px;">${(s.house||'').toUpperCase()}</div>
+        <div style="font-size:8px;font-weight:600;color:#bbb;text-transform:uppercase;letter-spacing:0.06em;margin-bottom:10px;">Dept. of ${esc(s.department)}</div>
+        <div style="font-family:'Georgia',serif;font-style:italic;font-size:8.5px;color:#c8d3e0;margin-bottom:10px;">for securing <span style="color:#ffd700;font-weight:700;font-style:normal;">TOP PERFORMANCE</span> this week.</div>
+        <div style="font-size:30px;font-weight:900;color:${hc};text-shadow:0 0 8px ${hc}66;">${s.points}</div>
+        <div style="font-size:7px;color:#aaa;text-transform:uppercase;letter-spacing:0.12em;">Points Earned</div>
       `;
       grid.appendChild(card);
     });
 
-    deptSection.appendChild(grid);
-
-    // Principal signature at the bottom of last dept
+    // Footer with college name on last section
     if (deptIdx === depts.length - 1) {
-      const sig = document.createElement('div');
-      sig.style.cssText = [
-        'display:flex',
-        'justify-content:flex-end',
-        'margin-top:50px',
-        'padding-top:20px',
-        'border-top:1px solid #333'
-      ].join(';');
-      sig.innerHTML = `
-        <div style="text-align:center;width:180px;">
-          <div style="font-family:'Great Vibes','Brush Script MT',cursive;font-size:22px;color:#d4af37;height:45px;display:flex;align-items:center;justify-content:center;">Principal</div>
-          <div style="border-top:1.5px solid #666;margin-top:2px;"></div>
-          <div style="font-size:9px;font-weight:700;color:#aaa;padding-top:4px;letter-spacing:0.1em;">PRINCIPAL SIGNATURE</div>
-        </div>
-      `;
-      deptSection.appendChild(sig);
+      const foot = document.createElement('div');
+      foot.style.cssText = 'display:flex;justify-content:flex-end;margin-top:40px;padding-top:16px;border-top:1px solid #333;';
+      foot.innerHTML = `<div style="text-align:center;width:180px;">
+        <div style="font-family:'Great Vibes','Brush Script MT',cursive;font-size:22px;color:#d4af37;height:40px;display:flex;align-items:center;justify-content:center;">Principal</div>
+        <div style="border-top:1.5px solid #555;margin-top:2px;"></div>
+        <div style="font-size:8px;font-weight:700;color:#aaa;padding-top:3px;letter-spacing:0.1em;">PRINCIPAL SIGNATURE</div>
+      </div>`;
+      section.appendChild(foot);
     }
 
-    printContainer.appendChild(deptSection);
+    pc.appendChild(section);
   });
+
+  if (!hasAny) { toast('⚠️', 'No topper data available for the selected department.'); return; }
 
   document.body.classList.add('print-report-active');
   window.print();
   setTimeout(() => {
     document.body.classList.remove('print-report-active');
-    printContainer.innerHTML = '';
-  }, 1200);
+    pc.innerHTML = '';
+  }, 1500);
 }
+  
+
 
 function printCard(cardId) {
   const card = document.getElementById(cardId);

@@ -617,7 +617,7 @@ select:disabled{opacity:.4;cursor:not-allowed}
   z-index: 2;
 }
 
-.toppers-grid .ach-card::before {
+.report-toppers-grid .ach-card::before {
   top: 4px;
   left: 4px;
   right: 4px;
@@ -625,7 +625,7 @@ select:disabled{opacity:.4;cursor:not-allowed}
   border-width: 1px;
 }
 
-.toppers-grid .ach-card-photo-frame {
+.report-toppers-grid .ach-card-photo-frame {
   width: 85px !important;
   height: 85px !important;
   border-radius: 50% !important;
@@ -2760,7 +2760,7 @@ function onReportDeptChange() {
     const houseColor = getHouseColor(s.house);
     const houseGlow = getHouseGlow(s.house);
     const photoHtml = s.fileId 
-      ? `<img src="https://drive.google.com/thumbnail?id=${s.fileId}&sz=w600" alt="${esc(s.name)}" crossorigin="anonymous" />`
+      ? `<img src="https://drive.google.com/thumbnail?id=${s.fileId}&sz=w600" alt="${esc(s.name)}" />`
       : `<div class="ach-card-photo-fallback">👤</div>`;
       
     const card = document.createElement('div');
@@ -2776,7 +2776,7 @@ function onReportDeptChange() {
     card.innerHTML = `
       <div class="ach-card-top-row">
         <div class="ach-card-logo-circle">
-          <img src="${BRANDING_DATA.collegeLogo}" alt="Logo" crossorigin="anonymous" />
+          <img src="${BRANDING_DATA.collegeLogo}" alt="Logo" />
         </div>
         <div class="ach-card-header-titles">
           <div class="ach-card-inst-name">${BRANDING_DATA.collegeName}</div>
@@ -2785,7 +2785,7 @@ function onReportDeptChange() {
           <div class="ach-card-award-sub" style="color:${houseColor};">OF THE WEEK</div>
         </div>
         <div class="ach-card-founder-circle">
-          <img src="${BRANDING_DATA.founderPortrait}" alt="Founder" crossorigin="anonymous" />
+          <img src="${BRANDING_DATA.founderPortrait}" alt="Founder" />
         </div>
       </div>
       
@@ -2984,8 +2984,39 @@ async function downloadSingleCard(cardElement, studentName) {
   toast('⏳', 'Generating high-res card image...');
   try {
     await loadHtml2Canvas();
+    
+    // Find student photo element inside card
+    const imgEl = cardElement.querySelector('.ach-card-photo-frame img');
+    let originalSrc = '';
+    let fetchedBase64 = null;
+    
+    if (imgEl) {
+      originalSrc = imgEl.src;
+      if (originalSrc.startsWith('data:')) {
+        fetchedBase64 = originalSrc;
+      } else {
+        const match = originalSrc.match(/[?&]id=([^&]+)/);
+        if (match && match[1]) {
+          const fileId = match[1];
+          toast('⏳', 'Fetching high-resolution image data from backend...');
+          const res = await callAPI('getStudentPhotoBase64', { fileId });
+          if (res && res.base64Data) {
+            fetchedBase64 = res.base64Data;
+          }
+        }
+      }
+    }
+    
+    // Hide action buttons temporarily
     const actions = cardElement.querySelector('.ach-card-actions');
     if (actions) actions.style.display = 'none';
+    
+    // Temporarily swap image source to base64
+    if (imgEl && fetchedBase64) {
+      imgEl.src = fetchedBase64;
+      // Wait a short moment to ensure the browser repaints the new src
+      await new Promise(resolve => setTimeout(resolve, 100));
+    }
     
     // Render
     const canvas = await html2canvas(cardElement, {
@@ -2995,6 +3026,10 @@ async function downloadSingleCard(cardElement, studentName) {
       logging: false
     });
     
+    // Restore original image source and actions
+    if (imgEl && originalSrc) {
+      imgEl.src = originalSrc;
+    }
     if (actions) actions.style.display = 'flex';
     
     canvas.toBlob((blob) => {
@@ -3030,6 +3065,24 @@ async function downloadBulkTopperCards() {
   try {
     await Promise.all([loadHtml2Canvas(), loadJSZip()]);
     
+    // Batch prefetch all student photos in base64 format to bypass CORS issues
+    toast('⏳', 'Prefetching student photos from backend...');
+    const base64Cache = {};
+    const fileIds = toppers.map(s => s.fileId).filter(id => id);
+    const uniqueIds = [...new Set(fileIds)];
+    
+    for (let i = 0; i < uniqueIds.length; i += 6) {
+      const batchIds = uniqueIds.slice(i, i + 6);
+      try {
+        const res = await callAPI('getPhotosBatch', { fileIds: batchIds });
+        if (res && res.success !== false) {
+          Object.assign(base64Cache, res);
+        }
+      } catch (batchErr) {
+        console.error('Batch fetch error:', batchErr);
+      }
+    }
+    
     // Create hidden container in DOM
     const tempContainer = document.createElement('div');
     tempContainer.style.position = 'fixed';
@@ -3045,8 +3098,19 @@ async function downloadBulkTopperCards() {
       
       const houseColor = getHouseColor(s.house);
       const houseGlow = getHouseGlow(s.house);
-      const photoHtml = s.fileId 
-        ? `<img src="https://drive.google.com/thumbnail?id=${s.fileId}&sz=w600" alt="${esc(s.name)}" crossorigin="anonymous" />`
+      
+      // Determine student photo source (prefer base64, fallback to direct thumbnail URL)
+      let photoSrc = '';
+      if (s.fileId) {
+        if (base64Cache[s.fileId]) {
+          photoSrc = base64Cache[s.fileId];
+        } else {
+          photoSrc = `https://drive.google.com/thumbnail?id=${s.fileId}&sz=w600`;
+        }
+      }
+      
+      const photoHtml = photoSrc
+        ? `<img src="${photoSrc}" alt="${esc(s.name)}" />`
         : `<div class="ach-card-photo-fallback">👤</div>`;
         
       const card = document.createElement('div');
@@ -3077,7 +3141,7 @@ async function downloadBulkTopperCards() {
       card.innerHTML = `
         <div class="ach-card-top-row" style="display:flex; width:100%; align-items:center; justify-content:space-between; gap:8px;">
           <div class="ach-card-logo-circle" style="width:46px; height:46px; border-radius:50%; border:1.5px solid #bf953f; overflow:hidden; background:#000; display:flex; align-items:center; justify-content:center;">
-            <img src="${BRANDING_DATA.collegeLogo}" style="width:100%; height:100%; object-fit:cover;" crossorigin="anonymous"/>
+            <img src="${BRANDING_DATA.collegeLogo}" style="width:100%; height:100%; object-fit:cover;"/>
           </div>
           <div class="ach-card-header-titles" style="text-align:center; flex:1;">
             <div class="ach-card-inst-name" style="font-size:11.5px; font-weight:800; letter-spacing:0.05em; color:#fff;">${BRANDING_DATA.collegeName}</div>
@@ -3086,7 +3150,7 @@ async function downloadBulkTopperCards() {
             <div class="ach-card-award-sub" style="font-size:9px; font-weight:700; color:${houseColor}; letter-spacing:0.18em; margin-top:1px;">OF THE WEEK</div>
           </div>
           <div class="ach-card-founder-circle" style="width:46px; height:46px; border-radius:50%; border:1.5px solid #bf953f; overflow:hidden; background:#000; display:flex; align-items:center; justify-content:center;">
-            <img src="${BRANDING_DATA.founderPortrait}" style="width:100%; height:100%; object-fit:cover;" crossorigin="anonymous"/>
+            <img src="${BRANDING_DATA.founderPortrait}" style="width:100%; height:100%; object-fit:cover;"/>
           </div>
         </div>
         
@@ -3765,12 +3829,12 @@ function renderPrintReportToppers(res) {
       <h3 style="border-bottom: 2px solid #bf953f; color: #000; padding-bottom: 6px; margin-bottom: 15px; font-family: 'Cinzel', serif; font-size: 16px; text-transform: uppercase; font-weight: 700;">
         🏆 Department of ${dept} Toppers
       </h3>
-      <div class="toppers-grid" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 15px;">
+      <div class="report-toppers-grid" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 15px;">
         <!-- Toppers cards -->
       </div>
     `;
     
-    const grid = deptDiv.querySelector('.toppers-grid');
+    const grid = deptDiv.querySelector('.report-toppers-grid');
     
     toppers.forEach(s => {
       const houseColor = getHouseColor(s.house);

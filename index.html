@@ -604,10 +604,10 @@ select:disabled{opacity:.4;cursor:not-allowed}
 }
 
 .ach-card-photo-frame {
-  width: 190px;
-  height: 190px;
-  border-radius: 50%;
-  border: 5px solid #bf953f !important;
+  width: 380px;
+  height: 250px;
+  border-radius: 12px;
+  border: 4px solid #bf953f !important;
   overflow: hidden;
   box-shadow: 0 0 25px var(--house-glow, rgba(212,175,55,0.4)), 0 8px 20px rgba(0,0,0,0.7);
   background: #111;
@@ -628,6 +628,7 @@ select:disabled{opacity:.4;cursor:not-allowed}
 .toppers-grid .ach-card-photo-frame {
   width: 85px !important;
   height: 85px !important;
+  border-radius: 50% !important;
   border-width: 3px !important;
   border-color: var(--house-color, #bf953f) !important;
   box-shadow: 0 4px 10px rgba(0,0,0,0.4), 0 0 8px var(--house-glow) !important;
@@ -765,17 +766,20 @@ select:disabled{opacity:.4;cursor:not-allowed}
     display: none !important;
   }
   body.print-card-active #print-container {
-    display: flex !important;
-    justify-content: center;
-    align-items: center;
-    min-height: 100vh;
-    width: 100vw;
+    display: block !important;
     background: #0d0e19 !important;
+    width: 100%;
+    height: auto;
+    margin: 0 auto;
+    padding: 0;
   }
   body.print-card-active .ach-card {
     width: 440px !important;
     height: 590px !important;
     box-shadow: none !important;
+    margin: 0 auto 30px auto !important;
+    page-break-after: always !important;
+    break-after: page !important;
     -webkit-print-color-adjust: exact !important;
     print-color-adjust: exact !important;
   }
@@ -1493,6 +1497,7 @@ body.print-cert-active .cert-page-break:last-child {
           <option value="">— Select Department —</option>
         </select>
         <button class="btn btn-ol" id="bulk-print-cards-btn" onclick="printBulkTopperCards()" style="padding:6px 12px; font-size:12px; display:none;">🗂️ Bulk Print Cards</button>
+        <button class="btn btn-pr" id="bulk-download-cards-btn" onclick="downloadBulkTopperCards()" style="padding:6px 12px; font-size:12px; display:none;">⬇️ Download All PNGs</button>
       </div>
     </div>
     
@@ -2716,11 +2721,14 @@ function onReportDeptChange() {
   const dept = document.getElementById('r-dept').value;
   const grid = document.getElementById('toppersGrid');
   const bulkBtn = document.getElementById('bulk-print-cards-btn');
+  const bulkDlBtn = document.getElementById('bulk-download-cards-btn');
   
   if (dept) {
     if (bulkBtn) bulkBtn.style.display = 'inline-flex';
+    if (bulkDlBtn) bulkDlBtn.style.display = 'inline-flex';
   } else {
     if (bulkBtn) bulkBtn.style.display = 'none';
+    if (bulkDlBtn) bulkDlBtn.style.display = 'none';
   }
 
   if (!dept) {
@@ -2752,7 +2760,7 @@ function onReportDeptChange() {
     const houseColor = getHouseColor(s.house);
     const houseGlow = getHouseGlow(s.house);
     const photoHtml = s.fileId 
-      ? `<img src="https://drive.google.com/thumbnail?id=${s.fileId}&sz=w600" alt="${esc(s.name)}" />`
+      ? `<img src="https://drive.google.com/thumbnail?id=${s.fileId}&sz=w600" alt="${esc(s.name)}" crossorigin="anonymous" />`
       : `<div class="ach-card-photo-fallback">👤</div>`;
       
     const card = document.createElement('div');
@@ -2768,7 +2776,7 @@ function onReportDeptChange() {
     card.innerHTML = `
       <div class="ach-card-top-row">
         <div class="ach-card-logo-circle">
-          <img src="${BRANDING_DATA.collegeLogo}" alt="Logo"/>
+          <img src="${BRANDING_DATA.collegeLogo}" alt="Logo" crossorigin="anonymous" />
         </div>
         <div class="ach-card-header-titles">
           <div class="ach-card-inst-name">${BRANDING_DATA.collegeName}</div>
@@ -2777,7 +2785,7 @@ function onReportDeptChange() {
           <div class="ach-card-award-sub" style="color:${houseColor};">OF THE WEEK</div>
         </div>
         <div class="ach-card-founder-circle">
-          <img src="${BRANDING_DATA.founderPortrait}" alt="Founder"/>
+          <img src="${BRANDING_DATA.founderPortrait}" alt="Founder" crossorigin="anonymous" />
         </div>
       </div>
       
@@ -2804,8 +2812,9 @@ function onReportDeptChange() {
         ${congratsWording}
       </div>
       
-      <div class="ach-card-actions" style="width:100%; display:flex; justify-content:center; margin-top:6px;">
-        <button class="btn btn-pr btn-full" style="font-size:11px; padding:6px 12px;" onclick="printCard('${cardId}')">🖨️ Print Card</button>
+      <div class="ach-card-actions" style="width:100%; display:flex; justify-content:center; gap:8px; margin-top:6px;">
+        <button class="btn btn-pr" style="font-size:11px; padding:6px 12px; flex:1;" onclick="downloadSingleCard(document.getElementById('${cardId}'), '${esc(s.name)}')">⬇️ Download PNG</button>
+        <button class="btn btn-sec" style="font-size:11px; padding:6px 12px; flex:1;" onclick="printCard('${cardId}')">🖨️ Print</button>
       </div>
     `;
     grid.appendChild(card);
@@ -2907,7 +2916,7 @@ function printBulkTopperCards() {
         </div>
       </div>
       
-      <div class="ach-card-photo-frame" style="width:190px; height:190px; border-radius:50%; border:5px solid #bf953f; overflow:hidden; box-shadow:0 0 25px ${houseGlow}, 0 8px 16px rgba(0,0,0,0.5); background:#111; display:flex; align-items:center; justify-content:center; margin:10px 0;">
+      <div class="ach-card-photo-frame" style="width:380px; height:250px; border-radius:12px; border:4px solid #bf953f; overflow:hidden; box-shadow:0 0 25px ${houseGlow}, 0 8px 20px rgba(0,0,0,0.7); background:#111; display:flex; align-items:center; justify-content:center; margin:10px 0;">
         ${photoHtml}
       </div>
       
@@ -2945,6 +2954,197 @@ function printBulkTopperCards() {
     document.body.classList.remove('print-card-active');
     printContainer.innerHTML = '';
   }, 1000);
+}
+
+// --- DYNAMIC LIBRARIES LOADERS ---
+function loadHtml2Canvas() {
+  return new Promise((resolve, reject) => {
+    if (window.html2canvas) return resolve(window.html2canvas);
+    const script = document.createElement('script');
+    script.src = 'https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js';
+    script.onload = () => resolve(window.html2canvas);
+    script.onerror = () => reject(new Error('Failed to load html2canvas library'));
+    document.head.appendChild(script);
+  });
+}
+
+function loadJSZip() {
+  return new Promise((resolve, reject) => {
+    if (window.JSZip) return resolve(window.JSZip);
+    const script = document.createElement('script');
+    script.src = 'https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js';
+    script.onload = () => resolve(window.JSZip);
+    script.onerror = () => reject(new Error('Failed to load JSZip library'));
+    document.head.appendChild(script);
+  });
+}
+
+// --- SINGLE CARD IMAGE DOWNLOAD ---
+async function downloadSingleCard(cardElement, studentName) {
+  toast('⏳', 'Generating high-res card image...');
+  try {
+    await loadHtml2Canvas();
+    const actions = cardElement.querySelector('.ach-card-actions');
+    if (actions) actions.style.display = 'none';
+    
+    // Render
+    const canvas = await html2canvas(cardElement, {
+      scale: 2, // Double scale for social media post quality
+      backgroundColor: '#05060f',
+      useCORS: true,
+      logging: false
+    });
+    
+    if (actions) actions.style.display = 'flex';
+    
+    canvas.toBlob((blob) => {
+      const a = document.createElement('a');
+      a.download = `GOAT_Award_${studentName.replace(/ /g, '_')}.png`;
+      a.href = URL.createObjectURL(blob);
+      a.click();
+      toast('✅', 'Image downloaded successfully!');
+    }, 'image/png');
+  } catch (err) {
+    console.error(err);
+    toast('❌', 'Download failed: ' + err.message);
+  }
+}
+
+// --- BULK CARDS IMAGE DOWNLOAD (ZIP) ---
+async function downloadBulkTopperCards() {
+  const dept = document.getElementById('r-dept').value;
+  if (!dept) {
+    toast('⚠️', 'Please select a department first');
+    return;
+  }
+  
+  if (!REPORT_DATA || !REPORT_DATA.toppers || !REPORT_DATA.toppers[dept]) {
+    toast('⚠️', 'No toppers found for this department');
+    return;
+  }
+  
+  const toppers = REPORT_DATA.toppers[dept];
+  
+  toast('⏳', 'Loading libraries and preparing bulk render...');
+  
+  try {
+    await Promise.all([loadHtml2Canvas(), loadJSZip()]);
+    
+    // Create hidden container in DOM
+    const tempContainer = document.createElement('div');
+    tempContainer.style.position = 'fixed';
+    tempContainer.style.top = '-9999px';
+    tempContainer.style.left = '-9999px';
+    document.body.appendChild(tempContainer);
+    
+    const zip = new JSZip();
+    
+    for (let i = 0; i < toppers.length; i++) {
+      const s = toppers[i];
+      toast('⏳', `Rendering card ${i + 1} of ${toppers.length}: ${s.name}...`);
+      
+      const houseColor = getHouseColor(s.house);
+      const houseGlow = getHouseGlow(s.house);
+      const photoHtml = s.fileId 
+        ? `<img src="https://drive.google.com/thumbnail?id=${s.fileId}&sz=w600" alt="${esc(s.name)}" crossorigin="anonymous" />`
+        : `<div class="ach-card-photo-fallback">👤</div>`;
+        
+      const card = document.createElement('div');
+      card.className = 'ach-card ' + s.house.toLowerCase();
+      card.style.cssText = `
+        width: 440px !important;
+        height: 590px !important;
+        background: ${getHouseBgGradient(s.house)} !important;
+        border: 4px solid #bf953f !important;
+        border-radius: 16px !important;
+        padding: 22px !important;
+        display: flex !important;
+        flex-direction: column !important;
+        align-items: center !important;
+        justify-content: space-between !important;
+        box-sizing: border-box !important;
+        color: #fff !important;
+        font-family: 'Poppins', 'Inter', sans-serif !important;
+        box-shadow: none !important;
+        position: relative !important;
+        overflow: hidden !important;
+      `;
+      card.style.setProperty('--house-color', houseColor);
+      card.style.setProperty('--house-glow', houseGlow);
+      
+      const congratsWording = `Congratulations on your brilliant achievement! Securing a massive <span class="highlight">${s.points} POINTS</span> validates you as a true G.O.A.T. of our institution.`;
+      
+      card.innerHTML = `
+        <div class="ach-card-top-row" style="display:flex; width:100%; align-items:center; justify-content:space-between; gap:8px;">
+          <div class="ach-card-logo-circle" style="width:46px; height:46px; border-radius:50%; border:1.5px solid #bf953f; overflow:hidden; background:#000; display:flex; align-items:center; justify-content:center;">
+            <img src="${BRANDING_DATA.collegeLogo}" style="width:100%; height:100%; object-fit:cover;" crossorigin="anonymous"/>
+          </div>
+          <div class="ach-card-header-titles" style="text-align:center; flex:1;">
+            <div class="ach-card-inst-name" style="font-size:11.5px; font-weight:800; letter-spacing:0.05em; color:#fff;">${BRANDING_DATA.collegeName}</div>
+            <div class="ach-card-inst-sub" style="font-size:7.5px; font-weight:700; color:${houseColor}; letter-spacing:0.08em; margin-top:1px; text-transform:uppercase;">GIVERS OF ALL TALENTS STUDENTS</div>
+            <div class="ach-card-award-title" style="font-size:17px; font-weight:900; letter-spacing:0.05em; color:#fbbf24; margin-top:4px; text-shadow: 0 2px 8px rgba(0,0,0,0.8), 0 0 12px rgba(251,191,36,0.4);">BEST G.O.A.T. AWARD</div>
+            <div class="ach-card-award-sub" style="font-size:9px; font-weight:700; color:${houseColor}; letter-spacing:0.18em; margin-top:1px;">OF THE WEEK</div>
+          </div>
+          <div class="ach-card-founder-circle" style="width:46px; height:46px; border-radius:50%; border:1.5px solid #bf953f; overflow:hidden; background:#000; display:flex; align-items:center; justify-content:center;">
+            <img src="${BRANDING_DATA.founderPortrait}" style="width:100%; height:100%; object-fit:cover;" crossorigin="anonymous"/>
+          </div>
+        </div>
+        
+        <div class="ach-card-photo-frame" style="width:380px; height:250px; border-radius:12px; border:4px solid #bf953f; overflow:hidden; box-shadow:0 0 25px ${houseGlow}, 0 8px 16px rgba(0,0,0,0.5); background:#111; display:flex; align-items:center; justify-content:center; margin:10px 0;">
+          ${photoHtml}
+        </div>
+        
+        <div class="ach-card-ribbon">
+          <div class="ach-card-capsule">WEEKLY CHAMPION</div>
+          <div class="ach-card-winner-name">${esc(s.name)}</div>
+        </div>
+        
+        <div style="display: flex; gap: 8px; justify-content: center; width: 90%; margin-top: 4px; z-index: 2;">
+          <span style="background: rgba(0,0,0,0.4); border: 1.5px solid ${houseColor}; border-radius: 20px; padding: 4px 12px; font-size: 10px; font-weight: 800; color: ${houseColor}; text-shadow: 0 0 5px ${houseColor}; text-transform: uppercase; white-space: nowrap;">
+            🏛️ ${s.department.toUpperCase()}
+          </span>
+          <span style="background: rgba(0,0,0,0.4); border: 1.5px solid ${houseColor}; border-radius: 20px; padding: 4px 12px; font-size: 10px; font-weight: 800; color: ${houseColor}; text-shadow: 0 0 5px ${houseColor}; text-transform: uppercase; white-space: nowrap;">
+            🏰 ${s.house.toUpperCase()} HOUSE
+          </span>
+        </div>
+        
+        <div class="ach-card-congrats">
+          ${congratsWording}
+        </div>
+      `;
+      
+      tempContainer.appendChild(card);
+      
+      // Wait briefly for images to load/paint in DOM
+      await new Promise(r => setTimeout(r, 150));
+      
+      const canvas = await html2canvas(card, {
+        scale: 2,
+        backgroundColor: '#05060f',
+        useCORS: true,
+        logging: false
+      });
+      
+      const blob = await new Promise(resolve => canvas.toBlob(resolve, 'image/png'));
+      const filename = `GOAT_Award_${s.name.replace(/ /g, '_')}.png`;
+      zip.file(filename, blob);
+    }
+    
+    document.body.removeChild(tempContainer);
+    
+    toast('⏳', 'Compressing files into ZIP archive...');
+    const zipBlob = await zip.generateAsync({ type: 'blob' });
+    
+    const a = document.createElement('a');
+    a.download = `GOAT_Awards_${dept.toUpperCase()}_${new Date().toISOString().split('T')[0]}.zip`;
+    a.href = URL.createObjectURL(zipBlob);
+    a.click();
+    
+    toast('✅', 'ZIP archive downloaded successfully!');
+  } catch (err) {
+    console.error(err);
+    toast('❌', 'Bulk download failed: ' + err.message);
+  }
 }
 
 function printReport() {

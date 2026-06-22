@@ -2919,28 +2919,19 @@ function printReport() {
   // ─── Shared header builder ────────────────────────────────────
   function makeHeader(subtitle) {
     return `
-      <div style="display:flex;align-items:center;border-bottom:2.5px double #000;padding-bottom:8px;margin-bottom:10px;gap:10px;">
-        <img src="${BRANDING_DATA.collegeLogo}" alt="Logo" style="width:56px;height:56px;object-fit:contain;flex-shrink:0;"/>
+      <div style="display:flex;align-items:center;border-bottom:2.5px double #000;padding-bottom:6px;margin-bottom:8px;gap:10px;">
+        <img src="${BRANDING_DATA.collegeLogo}" alt="Logo" style="width:50px;height:50px;object-fit:contain;flex-shrink:0;"/>
         <div style="flex:1;text-align:center;">
-          <div style="font-size:15px;font-weight:900;font-family:'Cinzel',serif;text-transform:uppercase;letter-spacing:0.04em;color:#000;line-height:1.1;">${esc(BRANDING_DATA.collegeName)}</div>
-          <div style="font-size:8px;letter-spacing:0.18em;color:#444;text-transform:uppercase;margin-top:2px;">GIVERS OF ALL TALENTS STUDENTS</div>
-          <div style="font-size:9px;font-weight:700;color:#222;text-transform:uppercase;margin-top:3px;letter-spacing:0.06em;">${subtitle}</div>
+          <div style="font-size:14px;font-weight:900;font-family:'Cinzel',serif;text-transform:uppercase;letter-spacing:0.04em;color:#000;line-height:1.1;">${esc(BRANDING_DATA.collegeName)}</div>
+          <div style="font-size:7.5px;letter-spacing:0.18em;color:#444;text-transform:uppercase;margin-top:1px;">GIVERS OF ALL TALENTS STUDENTS</div>
+          <div style="font-size:8.5px;font-weight:700;color:#222;text-transform:uppercase;margin-top:2px;letter-spacing:0.06em;">${subtitle}</div>
         </div>
-        <img src="${BRANDING_DATA.founderPortrait}" alt="Founder" style="width:46px;height:56px;object-fit:cover;border:1.5px solid #000;border-radius:3px;flex-shrink:0;"/>
+        <img src="${BRANDING_DATA.founderPortrait}" alt="Founder" style="width:40px;height:50px;object-fit:cover;border:1px solid #000;border-radius:2px;flex-shrink:0;"/>
       </div>
-      <div style="font-size:8.5px;color:#666;font-style:italic;text-align:right;margin-bottom:8px;">
+      <div style="font-size:8px;color:#555;font-style:italic;text-align:right;margin-bottom:6px;">
         Report Period: ${formatDisplayDate(REPORT_DATA.weekStart)} — ${formatDisplayDate(REPORT_DATA.weekEnd)}
       </div>`;
   }
-
-  // ─── A4 page wrapper style ─────────────────────────────────────
-  const PAGE = 'background:#fff;color:#000;padding:18px 20px;width:794px;box-sizing:border-box;margin:0 auto;page-break-after:always;break-after:page;';
-
-  // ══════════════════════════════════════════════════════════════
-  //  PAGE 1 — SUMMARY: Standings + Highlights + Incharges Table
-  // ══════════════════════════════════════════════════════════════
-  const page1 = document.createElement('div');
-  page1.style.cssText = PAGE;
 
   // House rows — weekly & annual
   const weeklyHouses = [...REPORT_DATA.houses].sort((a,b) => b.weeklyPoints - a.weeklyPoints);
@@ -2949,23 +2940,23 @@ function printReport() {
   let wRows = '', aRows = '';
   weeklyHouses.forEach((h,i) => {
     wRows += `<tr>
-      <td style="border:1px solid #000;padding:3px 5px;text-align:center;font-weight:700;font-size:10px;">${i+1}</td>
-      <td style="border:1px solid #000;padding:3px 5px;font-weight:700;font-size:10px;color:${h.color};">${h.name.toUpperCase()}</td>
-      <td style="border:1px solid #000;padding:3px 5px;text-align:right;font-weight:700;font-size:10px;">${h.weeklyPoints}</td>
+      <td style="border:1px solid #000;padding:2px 4px;text-align:center;font-weight:700;font-size:9.5px;color:#000;">${i+1}</td>
+      <td style="border:1px solid #000;padding:2px 4px;font-weight:700;font-size:9.5px;color:#000;">${h.name.toUpperCase()}</td>
+      <td style="border:1px solid #000;padding:2px 4px;text-align:right;font-weight:700;font-size:9.5px;color:#000;">${h.weeklyPoints}</td>
     </tr>`;
   });
   annualHouses.forEach((h,i) => {
     aRows += `<tr>
-      <td style="border:1px solid #000;padding:3px 5px;text-align:center;font-weight:700;font-size:10px;">${i+1}</td>
-      <td style="border:1px solid #000;padding:3px 5px;font-weight:700;font-size:10px;color:${h.color};">${h.name.toUpperCase()}</td>
-      <td style="border:1px solid #000;padding:3px 5px;text-align:right;font-weight:700;font-size:10px;">${h.overallPoints}</td>
+      <td style="border:1px solid #000;padding:2px 4px;text-align:center;font-weight:700;font-size:9.5px;color:#000;">${i+1}</td>
+      <td style="border:1px solid #000;padding:2px 4px;font-weight:700;font-size:9.5px;color:#000;">${h.name.toUpperCase()}</td>
+      <td style="border:1px solid #000;padding:2px 4px;text-align:right;font-weight:700;font-size:9.5px;color:#000;">${h.overallPoints}</td>
     </tr>`;
   });
 
   // Star teachers
   let teacherRows = '';
   (REPORT_DATA.starTeachers || []).forEach((t,i) => {
-    teacherRows += `<div style="display:flex;justify-content:space-between;padding:2.5px 0;border-bottom:1px dashed #ccc;font-size:10px;">
+    teacherRows += `<div style="display:flex;justify-content:space-between;padding:2px 0;border-bottom:1px dashed #999;font-size:9.5px;color:#000;">
       <span>${i+1}. <b>${esc(t.name)}</b></span><span>${t.logs} logs</span>
     </div>`;
   });
@@ -2978,34 +2969,83 @@ function printReport() {
     { sl: 4, role: 'VERTEX House Incharge', name: 'Mrs. IMMACULATE NANCY MARY G' },
     { sl: 5, role: 'DYNAMOS House Incharge', name: 'Mr. PRAKASH' },
   ].map(r => `<tr>
-    <td style="border:1px solid #000;padding:4px 8px;text-align:center;font-size:10px;font-weight:700;">${r.sl}</td>
-    <td style="border:1px solid #000;padding:4px 8px;font-size:10px;font-weight:700;">${r.role}</td>
-    <td style="border:1px solid #000;padding:4px 8px;font-size:10px;">${r.name}</td>
-    <td style="border:1px solid #000;padding:4px 8px;height:36px;"></td>
+    <td style="border:1px solid #000;padding:3px 5px;text-align:center;font-size:9.5px;font-weight:700;color:#000;">${r.sl}</td>
+    <td style="border:1px solid #000;padding:3px 5px;font-size:9.5px;font-weight:700;color:#000;">${r.role}</td>
+    <td style="border:1px solid #000;padding:3px 5px;font-size:9.5px;color:#000;">${r.name}</td>
+    <td style="border:1px solid #000;padding:3px 5px;height:24px;"></td>
   </tr>`).join('');
 
-  page1.innerHTML = makeHeader('Weekly Performance & Activity Report') + `
+  // Build department tables
+  const depts = REPORT_DATA.departments || Object.keys(REPORT_DATA.toppers).sort();
+  const activeDepts = depts.filter(d => (REPORT_DATA.toppers[d] || []).length > 0);
+  let deptGridHTML = '';
 
+  if (activeDepts.length > 0) {
+    const deptBlocks = [];
+    activeDepts.forEach((dept) => {
+      const toppers = REPORT_DATA.toppers[dept] || [];
+      let topperRows = '';
+      toppers.forEach((s, idx) => {
+        topperRows += `<tr style="${idx % 2 === 1 ? 'background:#f5f5f5;' : ''}">
+          <td style="border:1px solid #000;padding:2px 4px;text-align:center;font-weight:700;font-size:8.5px;color:#000;">${idx+1}</td>
+          <td style="border:1px solid #000;padding:2px 4px;font-size:8.5px;font-weight:600;color:#000;">${esc(s.name)}</td>
+          <td style="border:1px solid #000;padding:2px 4px;font-size:8px;text-align:center;color:#000;">${esc(dept)}</td>
+          <td style="border:1px solid #000;padding:2px 4px;font-size:8px;text-align:center;font-weight:600;color:#000;">${s.house ? s.house.toUpperCase() : '—'}</td>
+          <td style="border:1px solid #000;padding:2px 4px;text-align:right;font-weight:800;font-size:8.5px;color:#000;">${s.points}</td>
+        </tr>`;
+      });
+
+      deptBlocks.push(`
+        <div style="flex:0 0 48%;max-width:48%;page-break-inside:avoid;break-inside:avoid;margin-bottom:8px;">
+          <div style="font-size:9px;font-weight:800;background:#e5e7eb;color:#000;padding:3px 6px;text-transform:uppercase;border:1px solid #000;border-bottom:none;border-radius:3px 3px 0 0;letter-spacing:0.04em;">
+            🏆 ${esc(dept)}
+          </div>
+          <table style="width:100%;border-collapse:collapse;">
+            <thead><tr style="background:#f3f4f6;">
+              <th style="border:1px solid #000;padding:2px 4px;font-size:8px;width:20px;text-align:center;color:#000;">#</th>
+              <th style="border:1px solid #000;padding:2px 4px;font-size:8px;text-align:left;color:#000;">Student Name</th>
+              <th style="border:1px solid #000;padding:2px 4px;font-size:7.5px;text-align:center;width:60px;color:#000;">Department</th>
+              <th style="border:1px solid #000;padding:2px 4px;font-size:7.5px;text-align:center;width:50px;color:#000;">House</th>
+              <th style="border:1px solid #000;padding:2px 4px;font-size:8px;text-align:right;width:28px;color:#000;">Pts</th>
+            </tr></thead>
+            <tbody>${topperRows}</tbody>
+          </table>
+        </div>`);
+    });
+
+    for (let i = 0; i < deptBlocks.length; i += 2) {
+      deptGridHTML += `<div style="display:flex;gap:4%;justify-content:flex-start;margin-bottom:4px;page-break-inside:avoid;break-inside:avoid;">
+        ${deptBlocks[i]}
+        ${deptBlocks[i + 1] || ''}
+      </div>`;
+    }
+  }
+
+  // Create single continuous report page
+  const reportPage = document.createElement('div');
+  reportPage.style.cssText = 'background:#fff;color:#000;padding:12px 15px;width:794px;box-sizing:border-box;margin:0 auto;position:relative;font-family:sans-serif;';
+
+  reportPage.innerHTML = makeHeader('Weekly Performance & Topper Standings') + `
     <!-- House Standings: 2 tables side by side -->
-    <div style="display:flex;gap:16px;margin-bottom:10px;">
+    <div style="display:flex;gap:16px;margin-bottom:8px;page-break-inside:avoid;break-inside:avoid;">
       <div style="flex:1;">
-        <div style="font-size:10px;font-weight:800;border-bottom:1.5px solid #000;padding-bottom:3px;margin-bottom:5px;text-transform:uppercase;">🏆 Weekly House Standings</div>
+        <div style="font-size:9.5px;font-weight:800;border-bottom:1.5px solid #000;padding-bottom:2px;margin-bottom:4px;text-transform:uppercase;color:#000;">🏆 Weekly House Standings</div>
         <table style="width:100%;border-collapse:collapse;">
-          <thead><tr style="background:#f0f0f0;">
-            <th style="border:1px solid #000;padding:3px 5px;font-size:9px;width:36px;text-align:center;">Rank</th>
-            <th style="border:1px solid #000;padding:3px 5px;font-size:9px;text-align:left;">House</th>
-            <th style="border:1px solid #000;padding:3px 5px;font-size:9px;text-align:right;width:64px;">Wkly Pts</th>
+          <thead><tr style="background:#e5e7eb;">
+            <th style="border:1px solid #000;padding:2px 4px;font-size:8.5px;width:36px;text-align:center;color:#000;">Rank</th>
+            <th style="border:1px solid #000;padding:2px 4px;font-size:8.5px;text-align:left;color:#000;">House</th>
+            <th style="border:1px solid #000;padding:2px 4px;font-size:8.5px;text-align:right;width:64px;color:#000;">Wkly Pts</th>
           </tr></thead>
           <tbody>${wRows}</tbody>
         </table>
       </div>
       <div style="flex:1;">
-        <div style="font-size:10px;font-weight:800;border-bottom:1.5px solid #000;padding-bottom:3px;margin-bottom:5px;text-transform:uppercase;">🏅 Annual House Standings</div>
+        <div style="font-size:9.5px;font-weight:800;border-bottom:1.5px solid #000;padding-bottom:2px;margin-bottom:4px;text-transform:uppercase;color:#000;">🏅 Annual House Standings</div>
         <table style="width:100%;border-collapse:collapse;">
-          <thead><tr style="background:#f0f0f0;">
-            <th style="border:1px solid #000;padding:3px 5px;font-size:9px;width:36px;text-align:center;">Rank</th>
-            <th style="border:1px solid #000;padding:3px 5px;font-size:9px;text-align:left;">House</th>
-            <th style="border:1px solid #000;padding:3px 5px;font-size:9px;text-align:right;width:64px;">Total Pts</th>
+          <thead><tr style="background:#e5e7eb;">
+            <th style="border:1px solid #000;padding:2px 4px;font-size:8.5px;width:36px;text-align:center;color:#000;">Rank</th>
+            <th style="border:1px solid #000;padding:2px 4px;font-size:8.5px;text-align:left;color:#000;">House</th>
+            <th style="border:1px solid #000;padding:2px 4px;font-size:8.5px;text-align:right;width:64px;color:#000;">Total Pts</th>
           </tr></thead>
           <tbody>${aRows}</tbody>
         </table>
@@ -3013,163 +3053,78 @@ function printReport() {
     </div>
 
     <!-- Highlights: Active Dept + Star Teachers -->
-    <div style="display:flex;gap:16px;margin-bottom:10px;">
-      <div style="flex:1;background:#f9f9f9;border:1px solid #ccc;border-radius:5px;padding:8px 12px;box-sizing:border-box;">
-        <div style="font-size:9px;font-weight:800;text-transform:uppercase;color:#c0202a;margin-bottom:4px;">🔥 Active Department of the Week</div>
-        <div style="font-size:17px;font-weight:900;color:#000;text-transform:uppercase;line-height:1.1;">${esc(REPORT_DATA.activeDept || 'N/A')}</div>
-        <div style="font-size:8px;color:#888;margin-top:2px;">MOST POINTS EARNED THIS WEEK</div>
+    <div style="display:flex;gap:16px;margin-bottom:8px;page-break-inside:avoid;break-inside:avoid;">
+      <div style="flex:1;background:#fafafa;border:1px solid #666;border-radius:4px;padding:6px 10px;box-sizing:border-box;">
+        <div style="font-size:9px;font-weight:800;text-transform:uppercase;color:#000;margin-bottom:3px;">🔥 Active Department of the Week</div>
+        <div style="font-size:16px;font-weight:900;color:#000;text-transform:uppercase;line-height:1.1;">${esc(REPORT_DATA.activeDept || 'N/A')}</div>
+        <div style="font-size:8px;color:#555;margin-top:2px;font-weight:600;">MOST POINTS EARNED THIS WEEK</div>
       </div>
-      <div style="flex:1;background:#f9f9f9;border:1px solid #ccc;border-radius:5px;padding:8px 12px;box-sizing:border-box;">
-        <div style="font-size:9px;font-weight:800;text-transform:uppercase;color:#b8860b;margin-bottom:4px;">⭐ Star Teachers of the Week</div>
-        ${teacherRows || '<div style="font-size:10px;color:#999;">No activity logged this week</div>'}
+      <div style="flex:1;background:#fafafa;border:1px solid #666;border-radius:4px;padding:6px 10px;box-sizing:border-box;">
+        <div style="font-size:9px;font-weight:800;text-transform:uppercase;color:#000;margin-bottom:3px;">⭐ Star Teachers of the Week</div>
+        ${teacherRows || '<div style="font-size:9.5px;color:#666;">No activity logged this week</div>'}
       </div>
     </div>
 
     <!-- Incharges Signature Table -->
-    <div style="margin-bottom:10px;">
-      <div style="font-size:10px;font-weight:800;border-bottom:1.5px solid #000;padding-bottom:3px;margin-bottom:6px;text-transform:uppercase;">📋 House & G.O.A.T. Incharges</div>
+    <div style="margin-bottom:8px;page-break-inside:avoid;break-inside:avoid;">
+      <div style="font-size:9.5px;font-weight:800;border-bottom:1.5px solid #000;padding-bottom:2px;margin-bottom:4px;text-transform:uppercase;color:#000;">📋 House & G.O.A.T. Incharges</div>
       <table style="width:100%;border-collapse:collapse;">
-        <thead><tr style="background:#f0f0f0;">
-          <th style="border:1px solid #000;padding:4px 8px;font-size:9px;width:40px;text-align:center;">Sl.No.</th>
-          <th style="border:1px solid #000;padding:4px 8px;font-size:9px;text-align:left;width:38%;">House / Role</th>
-          <th style="border:1px solid #000;padding:4px 8px;font-size:9px;text-align:left;">Incharge Name</th>
-          <th style="border:1px solid #000;padding:4px 8px;font-size:9px;text-align:center;width:26%;">Signature</th>
+        <thead><tr style="background:#e5e7eb;">
+          <th style="border:1px solid #000;padding:3px 6px;font-size:8.5px;width:40px;text-align:center;color:#000;">Sl.No.</th>
+          <th style="border:1px solid #000;padding:3px 6px;font-size:8.5px;text-align:left;width:38%;color:#000;">House / Role</th>
+          <th style="border:1px solid #000;padding:3px 6px;font-size:8.5px;text-align:left;color:#000;">Incharge Name</th>
+          <th style="border:1px solid #000;padding:3px 6px;font-size:8.5px;text-align:center;width:26%;color:#000;">Signature</th>
         </tr></thead>
         <tbody>${inchargeRows}</tbody>
       </table>
     </div>
 
-    <!-- ═══ SIGNATURE BLOCK — PAGE 1 ════════════════════════════ -->
-    <!-- Row A: 4 House Incharges -->
-    <div style="display:flex;justify-content:space-between;margin-top:14px;">
-      ${['NEXUS — Mr. BOOBALAN S','NOVAS — Mr. HARIKRISHNAN D','VERTEX — Mrs. IMMACULATE NANCY MARY G','DYNAMOS — Mr. PRAKASH'].map(label => {
-        const [role, name] = label.split(' — ');
-        return `<div style="text-align:center;width:23%;">
-          <div style="height:40px;"></div>
-          <div style="border-top:1px solid #000;"></div>
-          <div style="font-size:8px;font-weight:800;text-transform:uppercase;padding-top:3px;letter-spacing:0.04em;">${role} INCHARGE</div>
-          <div style="font-size:7.5px;color:#444;margin-top:1px;">${name}</div>
-        </div>`;
-      }).join('')}
-    </div>
-
-    <!-- Row B: G.O.A.T. Incharge — SEPARATE ROW, centred alone -->
-    <div style="display:flex;justify-content:center;margin-top:18px;">
-      <div style="text-align:center;width:40%;border:1px dashed #bbb;border-radius:6px;padding:6px 12px;">
-        <div style="height:40px;"></div>
-        <div style="border-top:1.5px solid #000;"></div>
-        <div style="font-size:9.5px;font-weight:900;text-transform:uppercase;padding-top:4px;letter-spacing:0.08em;color:#000;">G.O.A.T. INCHARGE</div>
-        <div style="font-size:8.5px;color:#333;margin-top:2px;font-weight:700;">Mr. BALAJI R</div>
+    ${deptGridHTML ? `
+      <!-- Department Toppers Section -->
+      <div style="margin-bottom:8px;page-break-inside:avoid;break-inside:avoid;">
+        <div style="font-size:9.5px;font-weight:800;border-bottom:1.5px solid #000;padding-bottom:2px;margin-bottom:6px;text-transform:uppercase;color:#000;">🏆 Department Topper Standings (Top 5 Unique Marks)</div>
+        ${deptGridHTML}
       </div>
-    </div>
+    ` : ''}
 
-    <!-- Row C: Principal — SEPARATE ROW, centred alone, clearly distinguished -->
-    <div style="display:flex;justify-content:flex-end;margin-top:18px;">
-      <div style="text-align:center;width:40%;border:2px solid #000;border-radius:6px;padding:6px 12px;">
-        <div style="height:40px;"></div>
-        <div style="border-top:2px solid #000;"></div>
-        <div style="font-size:10px;font-weight:900;text-transform:uppercase;padding-top:4px;letter-spacing:0.1em;color:#000;">PRINCIPAL</div>
-        <div style="font-size:8.5px;color:#333;margin-top:2px;">${esc(BRANDING_DATA.collegeName)}</div>
+    <!-- ═══ SIGNATURE BLOCK (ONLY ONCE AT THE END) ═══════════════════ -->
+    <div style="margin-top:12px;border-top:1.5px solid #000;padding-top:6px;page-break-inside:avoid;break-inside:avoid;">
+      <!-- Row A: 4 House Incharges -->
+      <div style="display:flex;justify-content:space-between;margin-bottom:10px;">
+        ${['NEXUS — Mr. BOOBALAN S','NOVAS — Mr. HARIKRISHNAN D','VERTEX — Mrs. IMMACULATE NANCY MARY G','DYNAMOS — Mr. PRAKASH'].map(label => {
+          const [role, name] = label.split(' — ');
+          return `<div style="text-align:center;width:23%;">
+            <div style="height:25px;"></div>
+            <div style="border-top:1px solid #000;"></div>
+            <div style="font-size:7.5px;font-weight:800;text-transform:uppercase;padding-top:2px;letter-spacing:0.04em;color:#000;">${role} INCHARGE</div>
+            <div style="font-size:7px;color:#333;margin-top:1px;">${name}</div>
+          </div>`;
+        }).join('')}
+      </div>
+
+      <!-- Row B: G.O.A.T. Incharge -->
+      <div style="display:flex;justify-content:center;margin-bottom:8px;">
+        <div style="text-align:center;width:38%;border:1px dashed #666;border-radius:4px;padding:4px 8px;box-sizing:border-box;">
+          <div style="height:25px;"></div>
+          <div style="border-top:1.2px solid #000;"></div>
+          <div style="font-size:8.5px;font-weight:900;text-transform:uppercase;padding-top:2px;letter-spacing:0.06em;color:#000;">G.O.A.T. INCHARGE</div>
+          <div style="font-size:7.5px;color:#333;margin-top:1px;font-weight:700;">Mr. BALAJI R</div>
+        </div>
+      </div>
+
+      <!-- Row C: Principal -->
+      <div style="display:flex;justify-content:flex-end;">
+        <div style="text-align:center;width:38%;border:1.5px solid #000;border-radius:4px;padding:4px 8px;box-sizing:border-box;">
+          <div style="height:25px;"></div>
+          <div style="border-top:1.5px solid #000;"></div>
+          <div style="font-size:9px;font-weight:900;text-transform:uppercase;padding-top:2px;letter-spacing:0.08em;color:#000;">PRINCIPAL</div>
+          <div style="font-size:7.5px;color:#333;margin-top:1px;">${esc(BRANDING_DATA.collegeName)}</div>
+        </div>
       </div>
     </div>
   `;
-  printContainer.appendChild(page1);
 
-  // ══════════════════════════════════════════════════════════════
-  //  PAGE 2+ — DEPARTMENT TOPPERS (2-column A4, 2 depts per row)
-  // ══════════════════════════════════════════════════════════════
-  const depts = REPORT_DATA.departments || Object.keys(REPORT_DATA.toppers).sort();
-  const activeDepts = depts.filter(d => (REPORT_DATA.toppers[d] || []).length > 0);
-
-  if (activeDepts.length > 0) {
-    // Build all dept tables as individual HTML blocks
-    const deptBlocks = [];
-    activeDepts.forEach((dept) => {
-      const toppers = REPORT_DATA.toppers[dept] || [];
-      let topperRows = '';
-      toppers.forEach((s, idx) => {
-        topperRows += `<tr style="${idx % 2 === 1 ? 'background:#f5f5f5;' : ''}">
-          <td style="border:1px solid #999;padding:2px 4px;text-align:center;font-weight:700;font-size:8.5px;">${idx+1}</td>
-          <td style="border:1px solid #999;padding:2px 4px;font-size:8.5px;font-weight:600;">${esc(s.name)}</td>
-          <td style="border:1px solid #999;padding:2px 4px;font-size:8px;text-align:center;">${esc(dept)}</td>
-          <td style="border:1px solid #999;padding:2px 4px;font-size:8px;text-align:center;font-weight:600;">${s.house ? s.house.toUpperCase() : '—'}</td>
-          <td style="border:1px solid #999;padding:2px 4px;text-align:right;font-weight:800;font-size:8.5px;color:#c0202a;">${s.points}</td>
-        </tr>`;
-      });
-
-      deptBlocks.push(`
-        <div style="flex:0 0 48%;max-width:48%;page-break-inside:avoid;break-inside:avoid;margin-bottom:10px;">
-          <div style="font-size:9px;font-weight:800;background:#1a1a2e;color:#fff;padding:4px 8px;text-transform:uppercase;border-radius:3px 3px 0 0;letter-spacing:0.04em;">
-            🏆 ${esc(dept)}
-          </div>
-          <table style="width:100%;border-collapse:collapse;">
-            <thead><tr style="background:#e8e8e8;">
-              <th style="border:1px solid #999;padding:2px 4px;font-size:7.5px;width:20px;text-align:center;">#</th>
-              <th style="border:1px solid #999;padding:2px 4px;font-size:7.5px;text-align:left;">Student Name</th>
-              <th style="border:1px solid #999;padding:2px 4px;font-size:7.5px;text-align:center;width:60px;">Department</th>
-              <th style="border:1px solid #999;padding:2px 4px;font-size:7.5px;text-align:center;width:50px;">House</th>
-              <th style="border:1px solid #999;padding:2px 4px;font-size:7.5px;text-align:right;width:28px;">Pts</th>
-            </tr></thead>
-            <tbody>${topperRows}</tbody>
-          </table>
-        </div>`);
-    });
-
-    // Pair departments into rows of 2
-    let deptGridHTML = '';
-    for (let i = 0; i < deptBlocks.length; i += 2) {
-      deptGridHTML += `<div style="display:flex;gap:4%;justify-content:flex-start;margin-bottom:4px;">
-        ${deptBlocks[i]}
-        ${deptBlocks[i + 1] || ''}
-      </div>`;
-    }
-
-    const page2 = document.createElement('div');
-    page2.style.cssText = PAGE + 'page-break-after:always;break-after:page;';
-
-    page2.innerHTML = makeHeader('Department Topper Standings — Top 5 Unique Marks') + `
-      ${deptGridHTML}
-
-      <!-- ═══ SIGNATURE BLOCK — TOPPERS PAGE ═══════════════════ -->
-      <div style="margin-top:16px;border-top:2px solid #000;padding-top:10px;">
-
-        <!-- Row A: 4 House Incharges -->
-        <div style="display:flex;justify-content:space-between;margin-bottom:16px;">
-          ${['NEXUS — Mr. BOOBALAN S','NOVAS — Mr. HARIKRISHNAN D','VERTEX — Mrs. IMMACULATE NANCY MARY G','DYNAMOS — Mr. PRAKASH'].map(label => {
-            const [role, name] = label.split(' — ');
-            return `<div style="text-align:center;width:23%;">
-              <div style="height:32px;"></div>
-              <div style="border-top:1px solid #000;"></div>
-              <div style="font-size:7.5px;font-weight:800;text-transform:uppercase;padding-top:3px;letter-spacing:0.04em;">${role} INCHARGE</div>
-              <div style="font-size:7px;color:#444;margin-top:1px;">${name}</div>
-            </div>`;
-          }).join('')}
-        </div>
-
-        <!-- Row B: G.O.A.T. Incharge — SEPARATE ROW centred alone -->
-        <div style="display:flex;justify-content:center;margin-bottom:16px;">
-          <div style="text-align:center;width:38%;border:1px dashed #bbb;border-radius:5px;padding:5px 12px;">
-            <div style="height:32px;"></div>
-            <div style="border-top:1.5px solid #000;"></div>
-            <div style="font-size:9px;font-weight:900;text-transform:uppercase;padding-top:3px;letter-spacing:0.08em;">G.O.A.T. INCHARGE</div>
-            <div style="font-size:8px;color:#333;margin-top:1px;font-weight:700;">Mr. BALAJI R</div>
-          </div>
-        </div>
-
-        <!-- Row C: Principal — SEPARATE ROW flush-right -->
-        <div style="display:flex;justify-content:flex-end;">
-          <div style="text-align:center;width:38%;border:2px solid #000;border-radius:5px;padding:5px 12px;">
-            <div style="height:32px;"></div>
-            <div style="border-top:2px solid #000;"></div>
-            <div style="font-size:9.5px;font-weight:900;text-transform:uppercase;padding-top:3px;letter-spacing:0.1em;">PRINCIPAL</div>
-            <div style="font-size:8px;color:#333;margin-top:1px;">${esc(BRANDING_DATA.collegeName)}</div>
-          </div>
-        </div>
-
-      </div>
-    `;
-    printContainer.appendChild(page2);
-  }
+  printContainer.appendChild(reportPage);
 
   document.body.classList.add('print-report-active');
   window.print();

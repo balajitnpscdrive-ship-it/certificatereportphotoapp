@@ -1090,6 +1090,7 @@ select:disabled{opacity:.4;cursor:not-allowed}
   width: 100%;
   height: 100%;
   object-fit: cover;
+  object-position: center 20%; /* Keep head/face visible by default */
 }
 
 .cert-corner {
@@ -1580,6 +1581,13 @@ body.print-cert-active .cert-page-break:last-child {
         <div class="fg">
           <label class="lbl">Certificate Date</label>
           <input type="date" id="cert-date" onchange="updateCertPreview()"/>
+        </div>
+        <div class="fg" style="margin-top: 10px; background: rgba(0,0,0,0.03); padding: 8px 10px; border-radius: 6px; border: 1px solid var(--bdr);">
+          <label class="lbl" style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 4px;">
+            <span>↕️ Photo Vertical Alignment:</span>
+            <span id="cert-photo-pos-val" style="font-weight:bold; color:var(--p);">20%</span>
+          </label>
+          <input type="range" id="cert-photo-pos-slider" min="0" max="100" value="20" style="width: 100%; height: 4px; accent-color: var(--p); cursor:pointer;" oninput="adjustCertPhotoPosition(this)" />
         </div>
         <div style="display:flex; flex-direction:column; gap:8px; margin-top:10px;">
           <button class="btn btn-pr btn-full" onclick="printCertificate()">
@@ -2125,20 +2133,47 @@ function compressImage(dataUrl, maxW, maxH, quality, callback) {
   img.onload = function() {
     var w = img.width;
     var h = img.height;
-    if (w > maxW || h > maxH) {
-      if (w > h) {
-        h = Math.round((h * maxW) / w);
-        w = maxW;
+    
+    // Auto-crop to 3:4 portrait ratio centered
+    var targetRatio = 3 / 4;
+    var cropW = w;
+    var cropH = h;
+    
+    if (w / h > targetRatio) {
+      // Image is wider than 3:4 — crop sides
+      cropW = Math.round(h * targetRatio);
+    } else {
+      // Image is taller than 3:4 — crop top/bottom
+      cropH = Math.round(w / targetRatio);
+    }
+    
+    var sx = Math.round((w - cropW) / 2);
+    var sy = Math.round((h - cropH) / 2);
+    
+    // Shift crop area 15% upwards since faces are in the upper portion of portrait photos
+    if (h > cropH) {
+      sy = Math.max(0, sy - Math.round((h - cropH) * 0.15));
+    }
+    
+    // Resize the cropped area to target dimensions
+    var destW = cropW;
+    var destH = cropH;
+    if (destW > maxW || destH > maxH) {
+      if (maxW / maxH > targetRatio) {
+        destH = maxH;
+        destW = Math.round(maxH * targetRatio);
       } else {
-        w = Math.round((w * maxH) / h);
-        h = maxH;
+        destW = maxW;
+        destH = Math.round(maxW / targetRatio);
       }
     }
+    
     var canvas = document.createElement('canvas');
-    canvas.width = w;
-    canvas.height = h;
+    canvas.width = destW;
+    canvas.height = destH;
     var ctx = canvas.getContext('2d');
-    ctx.drawImage(img, 0, 0, w, h);
+    
+    ctx.drawImage(img, sx, sy, cropW, cropH, 0, 0, destW, destH);
     var compressedDataUrl = canvas.toDataURL('image/jpeg', quality);
     callback(compressedDataUrl);
   };
@@ -2843,6 +2878,14 @@ function adjustPhotoPosition(slider, cardId) {
   const card = document.getElementById(cardId);
   if (!card) return;
   const img = card.querySelector('.ach-card-photo-frame img');
+  if (img) {
+    img.style.objectPosition = 'center ' + slider.value + '%';
+  }
+}
+
+function adjustCertPhotoPosition(slider) {
+  document.getElementById('cert-photo-pos-val').textContent = slider.value + '%';
+  const img = document.querySelector('.cert-photo-frame img');
   if (img) {
     img.style.objectPosition = 'center ' + slider.value + '%';
   }
@@ -3637,6 +3680,15 @@ function updateCertPreview() {
     quote = "Showcasing remarkable leadership, active engagement, and versatile talents, your dedication and participation have greatly contributed to the success of this event.";
   }
   document.getElementById('cert-view-quote').textContent = quote;
+  
+  // Apply photo position slider value dynamically
+  const posSlider = document.getElementById('cert-photo-pos-slider');
+  if (posSlider) {
+    const img = document.querySelector('.cert-photo-frame img');
+    if (img) {
+      img.style.objectPosition = 'center ' + posSlider.value + '%';
+    }
+  }
 }
 
 function printCertificate() {

@@ -504,7 +504,7 @@ select:disabled{opacity:.4;cursor:not-allowed}
 .ach-card {
   width: 440px;
   height: 590px;
-  border: 4px solid var(--house-color, #bf953f) !important;
+  border: 4px solid #bf953f !important;
   border-radius: 16px;
   padding: 22px;
   display: flex;
@@ -519,6 +519,21 @@ select:disabled{opacity:.4;cursor:not-allowed}
   page-break-inside: avoid;
   break-inside: avoid;
   overflow: hidden;
+  background: #05060f !important;
+}
+
+.ach-card::before {
+  content: '';
+  position: absolute;
+  top: 6px;
+  left: 6px;
+  right: 6px;
+  bottom: 6px;
+  border: 1.5px solid var(--house-color, #bf953f);
+  border-radius: 10px;
+  pointer-events: none;
+  z-index: 1;
+  opacity: 0.8;
 }
 
 .ach-card-top-row {
@@ -534,7 +549,7 @@ select:disabled{opacity:.4;cursor:not-allowed}
   width: 46px;
   height: 46px;
   border-radius: 50%;
-  border: 1.5px solid var(--house-color, #d4af37);
+  border: 1.5px solid #bf953f;
   overflow: hidden;
   background: #000;
   display: flex;
@@ -574,9 +589,9 @@ select:disabled{opacity:.4;cursor:not-allowed}
   font-size: 17px;
   font-weight: 900;
   letter-spacing: 0.05em;
-  color: #fff;
+  color: #fbbf24 !important;
   margin-top: 4px;
-  text-shadow: 0 2px 8px rgba(0,0,0,0.8), 0 0 10px rgba(255,255,255,0.2);
+  text-shadow: 0 2px 8px rgba(0,0,0,0.8), 0 0 12px rgba(251,191,36,0.4);
 }
 
 .ach-card-award-sub {
@@ -589,10 +604,10 @@ select:disabled{opacity:.4;cursor:not-allowed}
 }
 
 .ach-card-photo-frame {
-  width: 170px;
-  height: 170px;
+  width: 190px;
+  height: 190px;
   border-radius: 50%;
-  border: 5px solid var(--house-color, #d4af37) !important;
+  border: 5px solid #bf953f !important;
   overflow: hidden;
   box-shadow: 0 0 25px var(--house-glow, rgba(212,175,55,0.4)), 0 8px 20px rgba(0,0,0,0.7);
   background: #111;
@@ -600,6 +615,22 @@ select:disabled{opacity:.4;cursor:not-allowed}
   align-items: center;
   justify-content: center;
   z-index: 2;
+}
+
+.toppers-grid .ach-card::before {
+  top: 4px;
+  left: 4px;
+  right: 4px;
+  bottom: 4px;
+  border-width: 1px;
+}
+
+.toppers-grid .ach-card-photo-frame {
+  width: 85px !important;
+  height: 85px !important;
+  border-width: 3px !important;
+  border-color: var(--house-color, #bf953f) !important;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.4), 0 0 8px var(--house-glow) !important;
 }
 
 .ach-card-photo-frame img {
@@ -614,22 +645,22 @@ select:disabled{opacity:.4;cursor:not-allowed}
 }
 
 .ach-card-ribbon {
-  width: 85%;
-  background: rgba(15, 23, 42, 0.75) !important;
-  backdrop-filter: blur(8px);
-  -webkit-backdrop-filter: blur(8px);
-  border: 2px solid var(--house-color, #ffd700);
-  box-shadow: 0 0 15px var(--house-glow, rgba(255, 215, 0, 0.3));
-  border-radius: 12px;
-  padding: 10px 16px;
+  width: 90%;
+  background: linear-gradient(135deg, #bf953f 0%, #fcf6ba 25%, #b38728 50%, #fbf5b7 75%, #aa771c 100%) !important;
+  clip-path: polygon(4% 0%, 96% 0%, 100% 50%, 96% 100%, 4% 100%, 0% 50%);
+  border: 1px solid #bf953f !important;
+  box-shadow: 0 4px 15px rgba(251, 191, 36, 0.35), inset 0 1px 0 rgba(255, 255, 255, 0.4);
+  padding: 8px 16px;
   text-align: center;
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 4px;
+  gap: 2px;
   margin: 12px 0;
   z-index: 5;
   position: relative;
+  -webkit-print-color-adjust: exact !important;
+  print-color-adjust: exact !important;
 }
 
 .ach-card-ribbon::before, .ach-card-ribbon::after {
@@ -637,8 +668,8 @@ select:disabled{opacity:.4;cursor:not-allowed}
 }
 
 .ach-card-capsule {
-  background: var(--house-color, #ffd700);
-  color: #000 !important;
+  background: #0f172a !important;
+  color: #fbbf24 !important;
   font-size: 9px;
   font-weight: 800;
   letter-spacing: 0.1em;
@@ -646,16 +677,17 @@ select:disabled{opacity:.4;cursor:not-allowed}
   border-radius: 50px;
   text-transform: uppercase;
   box-shadow: 0 2px 5px rgba(0,0,0,0.3);
+  border: 1px solid #fbbf24;
 }
 
 .ach-card-winner-name {
-  color: #fff !important;
+  color: #0d0e19 !important;
   font-family: 'Poppins', sans-serif;
   font-size: 20px;
   font-weight: 900;
   letter-spacing: 0.05em;
   text-transform: uppercase;
-  text-shadow: 0 0 8px var(--house-color, #ffd700), 0 0 20px var(--house-color, #ffd700);
+  text-shadow: 0 1px 0px rgba(255, 255, 255, 0.6);
 }
 
 .ach-card-congrats {
@@ -671,9 +703,9 @@ select:disabled{opacity:.4;cursor:not-allowed}
 }
 
 .ach-card-congrats .highlight {
-  color: var(--house-color, #ffd700);
+  color: #fbbf24 !important;
   font-weight: 800;
-  text-shadow: 0 0 6px var(--house-glow);
+  text-shadow: 0 0 6px rgba(251,191,36,0.4);
 }
 
 /* 🖨️ Document branding header for printed reports */
@@ -2566,18 +2598,18 @@ function getHouseGlow(houseName) {
 }
 
 function getHouseBgGradient(houseName) {
-  if (!houseName) return 'radial-gradient(circle at 50% 30%, #1a1a24 0%, #0c0905 100%)';
+  if (!houseName) return 'radial-gradient(circle at 50% 35%, rgba(26, 26, 36, 0.25) 0%, rgba(12, 9, 5, 0.1) 60%, #05060f 100%)';
   const key = houseName.trim().toLowerCase();
   if (key === 'nexus') {
-    return 'radial-gradient(circle at 50% 30%, #00d4ff 0%, #002b5c 50%, #001229 100%)';
+    return 'radial-gradient(circle at 50% 35%, rgba(0, 212, 255, 0.25) 0%, rgba(0, 43, 92, 0.1) 60%, #05060f 100%)';
   } else if (key === 'novas') {
-    return 'radial-gradient(circle at 50% 30%, #ff0055 0%, #5c001e 50%, #29000d 100%)';
+    return 'radial-gradient(circle at 50% 35%, rgba(255, 0, 85, 0.25) 0%, rgba(92, 0, 30, 0.1) 60%, #05060f 100%)';
   } else if (key === 'vertex') {
-    return 'radial-gradient(circle at 50% 30%, #10b981 0%, #05402a 50%, #021c12 100%)';
+    return 'radial-gradient(circle at 50% 35%, rgba(16, 185, 129, 0.25) 0%, rgba(5, 64, 42, 0.1) 60%, #05060f 100%)';
   } else if (key === 'dynamos') {
-    return 'radial-gradient(circle at 50% 30%, #ffd700 0%, #5c4d00 50%, #292200 100%)';
+    return 'radial-gradient(circle at 50% 35%, rgba(251, 191, 36, 0.25) 0%, rgba(92, 77, 0, 0.1) 60%, #05060f 100%)';
   }
-  return 'radial-gradient(circle at 50% 30%, #1a1a24 0%, #0c0905 100%)';
+  return 'radial-gradient(circle at 50% 35%, rgba(26, 26, 36, 0.25) 0%, rgba(12, 9, 5, 0.1) 60%, #05060f 100%)';
 }
 
 async function loadReportData() {
@@ -2729,7 +2761,7 @@ function onReportDeptChange() {
     card.style.setProperty('--house-color', houseColor);
     card.style.setProperty('--house-glow', houseGlow);
     card.style.background = getHouseBgGradient(s.house);
-    card.style.borderColor = houseColor;
+    card.style.borderColor = '#bf953f';
     
     const congratsWording = `Congratulations on your brilliant achievement! Securing a massive <span class="highlight">${s.points} POINTS</span> validates you as a true G.O.A.T. of our institution.`;
     
@@ -2749,7 +2781,7 @@ function onReportDeptChange() {
         </div>
       </div>
       
-      <div class="ach-card-photo-frame" style="border-color: ${houseColor}; box-shadow: 0 0 20px ${houseColor}66, 0 8px 16px rgba(0,0,0,0.5);">
+      <div class="ach-card-photo-frame" style="border-color: #bf953f; box-shadow: 0 0 25px ${houseGlow}, 0 8px 20px rgba(0,0,0,0.7);">
         ${photoHtml}
       </div>
       
@@ -2837,7 +2869,7 @@ function printBulkTopperCards() {
       width: 440px !important;
       height: 590px !important;
       background: ${getHouseBgGradient(s.house)} !important;
-      border: 4px solid ${houseColor} !important;
+      border: 4px solid #bf953f !important;
       border-radius: 16px !important;
       padding: 22px !important;
       display: flex !important;
@@ -2854,26 +2886,28 @@ function printBulkTopperCards() {
       -webkit-print-color-adjust: exact !important;
       print-color-adjust: exact !important;
     `;
+    card.style.setProperty('--house-color', houseColor);
+    card.style.setProperty('--house-glow', houseGlow);
     
     const congratsWording = `Congratulations on your brilliant achievement! Securing a massive <span class="highlight">${s.points} POINTS</span> validates you as a true G.O.A.T. of our institution.`;
     
     card.innerHTML = `
       <div class="ach-card-top-row" style="display:flex; width:100%; align-items:center; justify-content:space-between; gap:8px;">
-        <div class="ach-card-logo-circle" style="width:46px; height:46px; border-radius:50%; border:1.5px solid ${houseColor}; overflow:hidden; background:#000; display:flex; align-items:center; justify-content:center;">
+        <div class="ach-card-logo-circle" style="width:46px; height:46px; border-radius:50%; border:1.5px solid #bf953f; overflow:hidden; background:#000; display:flex; align-items:center; justify-content:center;">
           <img src="${BRANDING_DATA.collegeLogo}" style="width:100%; height:100%; object-fit:cover;"/>
         </div>
         <div class="ach-card-header-titles" style="text-align:center; flex:1;">
           <div class="ach-card-inst-name" style="font-size:11.5px; font-weight:800; letter-spacing:0.05em; color:#fff;">${BRANDING_DATA.collegeName}</div>
           <div class="ach-card-inst-sub" style="font-size:7.5px; font-weight:700; color:${houseColor}; letter-spacing:0.08em; margin-top:1px; text-transform:uppercase;">GIVERS OF ALL TALENTS STUDENTS</div>
-          <div class="ach-card-award-title" style="font-size:17px; font-weight:900; letter-spacing:0.05em; color:#fff; margin-top:4px;">BEST G.O.A.T. AWARD</div>
+          <div class="ach-card-award-title" style="font-size:17px; font-weight:900; letter-spacing:0.05em; color:#fbbf24; margin-top:4px; text-shadow: 0 2px 8px rgba(0,0,0,0.8), 0 0 12px rgba(251,191,36,0.4);">BEST G.O.A.T. AWARD</div>
           <div class="ach-card-award-sub" style="font-size:9px; font-weight:700; color:${houseColor}; letter-spacing:0.18em; margin-top:1px;">OF THE WEEK</div>
         </div>
-        <div class="ach-card-founder-circle" style="width:46px; height:46px; border-radius:50%; border:1.5px solid ${houseColor}; overflow:hidden; background:#000; display:flex; align-items:center; justify-content:center;">
+        <div class="ach-card-founder-circle" style="width:46px; height:46px; border-radius:50%; border:1.5px solid #bf953f; overflow:hidden; background:#000; display:flex; align-items:center; justify-content:center;">
           <img src="${BRANDING_DATA.founderPortrait}" style="width:100%; height:100%; object-fit:cover;"/>
         </div>
       </div>
       
-      <div class="ach-card-photo-frame" style="width:170px; height:170px; border-radius:50%; border:5px solid ${houseColor}; overflow:hidden; box-shadow:0 0 20px ${houseColor}66, 0 8px 16px rgba(0,0,0,0.5); background:#111; display:flex; align-items:center; justify-content:center; margin:10px 0;">
+      <div class="ach-card-photo-frame" style="width:190px; height:190px; border-radius:50%; border:5px solid #bf953f; overflow:hidden; box-shadow:0 0 25px ${houseGlow}, 0 8px 16px rgba(0,0,0,0.5); background:#111; display:flex; align-items:center; justify-content:center; margin:10px 0;">
         ${photoHtml}
       </div>
       

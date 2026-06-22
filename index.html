@@ -1208,10 +1208,10 @@ select:disabled{opacity:.4;cursor:not-allowed}
   width: 100% !important;
   height: 100% !important;
   max-width: none !important;
-  border: 3.5px solid #fbbf24 !important;
+  border: 6px double #bf953f !important;
   box-shadow: none !important;
-  background: linear-gradient(135deg, #05060f 0%, #0d0f26 50%, #170a2b 100%) !important;
-  padding: 10mm 10mm 8mm 10mm !important;
+  background: #ffffff !important;
+  padding: 10mm !important;
   box-sizing: border-box !important;
   -webkit-print-color-adjust: exact !important;
   print-color-adjust: exact !important;
@@ -1605,10 +1605,10 @@ body.print-cert-active .cert-page-break:last-child {
           <div class="cert-watermark" id="cert-watermark-logo-el"></div>
           
           <!-- Vector Ornamental Corners -->
-          <svg class="cert-corner top-left" viewBox="0 0 100 100" width="32" height="32"><path d="M 0 0 L 0 30 L 2 30 L 2 2 L 30 2 L 30 0 Z M 6 6 L 6 22 L 8 22 L 8 8 L 22 8 L 22 6 Z" fill="#fbbf24"/></svg>
-          <svg class="cert-corner top-right" viewBox="0 0 100 100" width="32" height="32" style="transform: scaleX(-1);"><path d="M 0 0 L 0 30 L 2 30 L 2 2 L 30 2 L 30 0 Z M 6 6 L 6 22 L 8 22 L 8 8 L 22 8 L 22 6 Z" fill="#fbbf24"/></svg>
-          <svg class="cert-corner bottom-left" viewBox="0 0 100 100" width="32" height="32" style="transform: scaleY(-1);"><path d="M 0 0 L 0 30 L 2 30 L 2 2 L 30 2 L 30 0 Z M 6 6 L 6 22 L 8 22 L 8 8 L 22 8 L 22 6 Z" fill="#fbbf24"/></svg>
-          <svg class="cert-corner bottom-right" viewBox="0 0 100 100" width="32" height="32" style="transform: scale(-1);"><path d="M 0 0 L 0 30 L 2 30 L 2 2 L 30 2 L 30 0 Z M 6 6 L 6 22 L 8 22 L 8 8 L 22 8 L 22 6 Z" fill="#fbbf24"/></svg>
+          <svg class="cert-corner top-left" viewBox="0 0 100 100" width="32" height="32"><path d="M 0 0 L 0 30 L 2 30 L 2 2 L 30 2 L 30 0 Z M 6 6 L 6 22 L 8 22 L 8 8 L 22 8 L 22 6 Z" fill="#bf953f"/></svg>
+          <svg class="cert-corner top-right" viewBox="0 0 100 100" width="32" height="32" style="transform: scaleX(-1);"><path d="M 0 0 L 0 30 L 2 30 L 2 2 L 30 2 L 30 0 Z M 6 6 L 6 22 L 8 22 L 8 8 L 22 8 L 22 6 Z" fill="#bf953f"/></svg>
+          <svg class="cert-corner bottom-left" viewBox="0 0 100 100" width="32" height="32" style="transform: scaleY(-1);"><path d="M 0 0 L 0 30 L 2 30 L 2 2 L 30 2 L 30 0 Z M 6 6 L 6 22 L 8 22 L 8 8 L 22 8 L 22 6 Z" fill="#bf953f"/></svg>
+          <svg class="cert-corner bottom-right" viewBox="0 0 100 100" width="32" height="32" style="transform: scale(-1);"><path d="M 0 0 L 0 30 L 2 30 L 2 2 L 30 2 L 30 0 Z M 6 6 L 6 22 L 8 22 L 8 8 L 22 8 L 22 6 Z" fill="#bf953f"/></svg>
 
           <!-- Header -->
           <div class="cert-header">
@@ -1618,8 +1618,7 @@ body.print-cert-active .cert-page-break:last-child {
               </div>
             </div>
             <div class="cert-header-title">
-              <h2 id="cert-display-college-name">DON BOSCO POLYTECHNIC COLLEGE</h2>
-              <div class="cert-inst-sub">GIVERS OF ALL TALENTS STUDENTS</div>
+              <h2 id="cert-display-college-name">DON BOSCO<br/>POLYTECHNIC COLLEGE</h2>
             </div>
             <div class="cert-header-side">
               <div class="cert-founder-wrap">
@@ -3584,7 +3583,15 @@ function updateCertPreview() {
   document.getElementById('cert-watermark-logo-el').style.backgroundImage = 'url("' + BRANDING_DATA.collegeLogo + '")';
   document.getElementById('cert-logo-img').src = BRANDING_DATA.collegeLogo;
   document.getElementById('cert-founder-img').src = BRANDING_DATA.founderPortrait;
-  document.getElementById('cert-display-college-name').textContent = BRANDING_DATA.collegeName;
+  const collegeNameVal = BRANDING_DATA.collegeName;
+  let formattedCollegeName = collegeNameVal;
+  if (collegeNameVal.toUpperCase().startsWith('DON BOSCO')) {
+    formattedCollegeName = 'DON BOSCO<br/>' + collegeNameVal.substring(9).trim();
+  } else if (collegeNameVal.toUpperCase().includes('POLYTECHNIC COLLEGE')) {
+    const idx = collegeNameVal.toUpperCase().indexOf('POLYTECHNIC COLLEGE');
+    formattedCollegeName = collegeNameVal.substring(0, idx).trim() + '<br/>' + collegeNameVal.substring(idx).trim();
+  }
+  document.getElementById('cert-display-college-name').innerHTML = formattedCollegeName;
   
   // Update signature sub-labels
   document.getElementById('cert-sig-sub-secretary').textContent = BRANDING_DATA.collegeName;
@@ -3750,14 +3757,22 @@ async function printBulkCertificates() {
     certDiv.style.setProperty('background', '#ffffff', 'important');
     
     const darkerHouseColor = getDarkerHouseColor(house);
+    const bulkNameVal = BRANDING_DATA.collegeName;
+    let formattedBulkName = bulkNameVal;
+    if (bulkNameVal.toUpperCase().startsWith('DON BOSCO')) {
+      formattedBulkName = 'DON BOSCO<br/>' + bulkNameVal.substring(9).trim();
+    } else if (bulkNameVal.toUpperCase().includes('POLYTECHNIC COLLEGE')) {
+      const idx = bulkNameVal.toUpperCase().indexOf('POLYTECHNIC COLLEGE');
+      formattedBulkName = bulkNameVal.substring(0, idx).trim() + '<br/>' + bulkNameVal.substring(idx).trim();
+    }
     
     certDiv.innerHTML = `
       <div class="cert-watermark" style="background-image: url('${BRANDING_DATA.collegeLogo}');"></div>
       
-      <svg class="cert-corner top-left" viewBox="0 0 100 100" width="32" height="32"><path d="M 0 0 L 0 30 L 2 30 L 2 2 L 30 2 L 30 0 Z M 6 6 L 6 22 L 8 22 L 8 8 L 22 8 L 22 6 Z" fill="#fbbf24"/></svg>
-      <svg class="cert-corner top-right" viewBox="0 0 100 100" width="32" height="32" style="transform: scaleX(-1);"><path d="M 0 0 L 0 30 L 2 30 L 2 2 L 30 2 L 30 0 Z M 6 6 L 6 22 L 8 22 L 8 8 L 22 8 L 22 6 Z" fill="#fbbf24"/></svg>
-      <svg class="cert-corner bottom-left" viewBox="0 0 100 100" width="32" height="32" style="transform: scaleY(-1);"><path d="M 0 0 L 0 30 L 2 30 L 2 2 L 30 2 L 30 0 Z M 6 6 L 6 22 L 8 22 L 8 8 L 22 8 L 22 6 Z" fill="#fbbf24"/></svg>
-      <svg class="cert-corner bottom-right" viewBox="0 0 100 100" width="32" height="32" style="transform: scale(-1);"><path d="M 0 0 L 0 30 L 2 30 L 2 2 L 30 2 L 30 0 Z M 6 6 L 6 22 L 8 22 L 8 8 L 22 8 L 22 6 Z" fill="#fbbf24"/></svg>
+      <svg class="cert-corner top-left" viewBox="0 0 100 100" width="32" height="32"><path d="M 0 0 L 0 30 L 2 30 L 2 2 L 30 2 L 30 0 Z M 6 6 L 6 22 L 8 22 L 8 8 L 22 8 L 22 6 Z" fill="#bf953f"/></svg>
+      <svg class="cert-corner top-right" viewBox="0 0 100 100" width="32" height="32" style="transform: scaleX(-1);"><path d="M 0 0 L 0 30 L 2 30 L 2 2 L 30 2 L 30 0 Z M 6 6 L 6 22 L 8 22 L 8 8 L 22 8 L 22 6 Z" fill="#bf953f"/></svg>
+      <svg class="cert-corner bottom-left" viewBox="0 0 100 100" width="32" height="32" style="transform: scaleY(-1);"><path d="M 0 0 L 0 30 L 2 30 L 2 2 L 30 2 L 30 0 Z M 6 6 L 6 22 L 8 22 L 8 8 L 22 8 L 22 6 Z" fill="#bf953f"/></svg>
+      <svg class="cert-corner bottom-right" viewBox="0 0 100 100" width="32" height="32" style="transform: scale(-1);"><path d="M 0 0 L 0 30 L 2 30 L 2 2 L 30 2 L 30 0 Z M 6 6 L 6 22 L 8 22 L 8 8 L 22 8 L 22 6 Z" fill="#bf953f"/></svg>
 
       <div class="cert-header">
         <div class="cert-header-side">
@@ -3766,8 +3781,7 @@ async function printBulkCertificates() {
           </div>
         </div>
         <div class="cert-header-title">
-          <h2>${BRANDING_DATA.collegeName}</h2>
-          <div class="cert-inst-sub">GIVERS OF ALL TALENTS STUDENTS</div>
+          <h2>${formattedBulkName}</h2>
         </div>
         <div class="cert-header-side">
           <div class="cert-founder-wrap">

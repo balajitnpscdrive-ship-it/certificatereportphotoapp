@@ -3292,17 +3292,20 @@ function printReport() {
 
   // ─── Shared header builder ────────────────────────────────────
   function makeHeader(subtitle) {
+    let collegeNameHtml = esc(BRANDING_DATA.collegeName);
+    if (collegeNameHtml.toUpperCase().includes('DON BOSCO POLYTECHNIC COLLEGE')) {
+      collegeNameHtml = 'DON BOSCO<br>POLYTECHNIC COLLEGE';
+    }
     return `
       <div style="display:flex;align-items:center;border-bottom:2px solid #000;padding-bottom:6px;margin-bottom:8px;gap:10px;">
         <img src="${BRANDING_DATA.collegeLogo}" alt="Logo" style="width:48px;height:48px;object-fit:contain;flex-shrink:0;"/>
         <div style="flex:1;text-align:center;">
-          <div style="font-size:14px;font-weight:900;font-family:'Cinzel',serif;text-transform:uppercase;letter-spacing:0.04em;color:#000;line-height:1.1;">${esc(BRANDING_DATA.collegeName)}</div>
-          <div style="font-size:8px;letter-spacing:0.18em;color:#444;text-transform:uppercase;margin-top:2px;">GIVERS OF ALL TALENTS STUDENTS</div>
-          <div style="font-size:9.5px;font-weight:700;color:#000;text-transform:uppercase;margin-top:3px;letter-spacing:0.06em;">${subtitle}</div>
+          <div style="font-size:18px;font-weight:900;font-family:'Cinzel',serif;text-transform:uppercase;letter-spacing:0.04em;color:#000;line-height:1.1;">${collegeNameHtml}</div>
+          <div style="font-size:12px;font-weight:700;color:#000;text-transform:uppercase;margin-top:5px;letter-spacing:0.06em;">${subtitle}</div>
         </div>
         <img src="${BRANDING_DATA.founderPortrait}" alt="Founder" style="width:38px;height:48px;object-fit:cover;border:1px solid #000;border-radius:3px;flex-shrink:0;"/>
       </div>
-      <div style="font-size:8.5px;color:#000;font-style:italic;text-align:right;margin-bottom:6px;font-weight:bold;">
+      <div style="font-size:11px;color:#000;font-style:italic;text-align:right;margin-bottom:6px;font-weight:bold;">
         Report Period: ${formatDisplayDate(REPORT_DATA.weekStart)} — ${formatDisplayDate(REPORT_DATA.weekEnd)}
       </div>`;
   }
@@ -3318,23 +3321,23 @@ function printReport() {
   let wRows = '', aRows = '';
   weeklyHouses.forEach((h,i) => {
     wRows += `<tr>
-      <td style="border:1px solid #000;padding:3px 5px;text-align:center;font-weight:700;font-size:10px;">${i+1}</td>
-      <td style="border:1px solid #000;padding:3px 5px;font-weight:700;font-size:10px;color:${h.color};">${h.name.toUpperCase()}</td>
-      <td style="border:1px solid #000;padding:3px 5px;text-align:right;font-weight:700;font-size:10px;">${h.weeklyPoints}</td>
+      <td style="border:1px solid #000;padding:4px 6px;text-align:center;font-weight:700;font-size:11px;color:#000;">${i+1}</td>
+      <td style="border:1px solid #000;padding:4px 6px;font-weight:700;font-size:11.5px;color:#000;">${h.name.toUpperCase()}</td>
+      <td style="border:1px solid #000;padding:4px 6px;text-align:right;font-weight:700;font-size:11.5px;color:#000;">${h.weeklyPoints}</td>
     </tr>`;
   });
   annualHouses.forEach((h,i) => {
     aRows += `<tr>
-      <td style="border:1px solid #000;padding:3px 5px;text-align:center;font-weight:700;font-size:10px;">${i+1}</td>
-      <td style="border:1px solid #000;padding:3px 5px;font-weight:700;font-size:10px;color:${h.color};">${h.name.toUpperCase()}</td>
-      <td style="border:1px solid #000;padding:3px 5px;text-align:right;font-weight:700;font-size:10px;">${h.overallPoints}</td>
+      <td style="border:1px solid #000;padding:4px 6px;text-align:center;font-weight:700;font-size:11px;color:#000;">${i+1}</td>
+      <td style="border:1px solid #000;padding:4px 6px;font-weight:700;font-size:11.5px;color:#000;">${h.name.toUpperCase()}</td>
+      <td style="border:1px solid #000;padding:4px 6px;text-align:right;font-weight:700;font-size:11.5px;color:#000;">${h.overallPoints}</td>
     </tr>`;
   });
 
   // Star teachers
   let teacherRows = '';
   (REPORT_DATA.starTeachers || []).forEach((t,i) => {
-    teacherRows += `<div style="display:flex;justify-content:space-between;padding:2px 0;border-bottom:1px dashed #ccc;font-size:10px;color:#000;">
+    teacherRows += `<div style="display:flex;justify-content:space-between;padding:3px 0;border-bottom:1px dashed #000;font-size:11px;color:#000;">
       <span>${i+1}. <b>${esc(t.name)}</b></span><span>${t.logs} logs</span>
     </div>`;
   });
@@ -3385,14 +3388,14 @@ function printReport() {
   let topperTableRows = '';
   allToppers.forEach((s, idx) => {
     topperTableRows += `
-      <tr style="${idx % 2 === 1 ? 'background:#f9f9f9;' : ''}">
-        <td style="border:1px solid #000;padding:4px 6px;font-size:9px;text-align:center;font-weight:700;">${idx+1}</td>
-        <td style="border:1px solid #000;padding:4px 6px;font-size:9px;font-weight:bold;text-transform:uppercase;">${esc(s.department)}</td>
-        <td style="border:1px solid #000;padding:4px 6px;font-size:9px;font-weight:bold;">${esc(s.name)}</td>
-        <td style="border:1px solid #000;padding:4px 6px;font-size:9px;text-align:center;text-transform:uppercase;">${esc(s.house)}</td>
-        <td style="border:1px solid #000;padding:4px 6px;font-size:9px;text-align:right;font-weight:bold;color:#000;">${s.points}</td>
-        <td style="border:1px solid #000;padding:4px 6px;font-size:9px;text-align:center;font-weight:bold;">${s.place}</td>
-        <td style="border:1px solid #000;padding:4px 6px;font-size:9px;text-align:center;">${s.position}</td>
+      <tr>
+        <td style="border:1px solid #000;padding:5px 6px;font-size:11px;text-align:center;font-weight:700;color:#000;">${idx+1}</td>
+        <td style="border:1px solid #000;padding:5px 6px;font-size:11px;font-weight:bold;text-transform:uppercase;color:#000;">${esc(s.department)}</td>
+        <td style="border:1px solid #000;padding:5px 6px;font-size:11.5px;font-weight:bold;color:#000;">${esc(s.name)}</td>
+        <td style="border:1px solid #000;padding:5px 6px;font-size:11px;text-align:center;text-transform:uppercase;color:#000;">${esc(s.house)}</td>
+        <td style="border:1px solid #000;padding:5px 6px;font-size:11.5px;text-align:right;font-weight:bold;color:#000;">${s.points}</td>
+        <td style="border:1px solid #000;padding:5px 6px;font-size:11px;text-align:center;font-weight:bold;color:#000;">${s.place}</td>
+        <td style="border:1px solid #000;padding:5px 6px;font-size:11px;text-align:center;color:#000;">${s.position}</td>
       </tr>`;
   });
 
@@ -3401,23 +3404,23 @@ function printReport() {
     <!-- House Standings: 2 tables side by side -->
     <div style="display:flex;gap:16px;margin-bottom:10px;">
       <div style="flex:1;">
-        <div style="font-size:9.5px;font-weight:800;border-bottom:1.5px solid #000;padding-bottom:2px;margin-bottom:4px;text-transform:uppercase;">🏆 Weekly House Standings</div>
+        <div style="font-size:13px;font-weight:800;border-bottom:1.5px solid #000;padding-bottom:2px;margin-bottom:4px;text-transform:uppercase;color:#000;">🏆 Weekly House Standings</div>
         <table style="width:100%;border-collapse:collapse;">
-          <thead><tr style="background:#e6e6e6;">
-            <th style="border:1px solid #000;padding:3px 5px;font-size:8.5px;width:36px;text-align:center;">Rank</th>
-            <th style="border:1px solid #000;padding:3px 5px;font-size:8.5px;text-align:left;">House</th>
-            <th style="border:1px solid #000;padding:3px 5px;font-size:8.5px;text-align:right;width:64px;">Wkly Pts</th>
+          <thead><tr style="background:transparent;">
+            <th style="border:1px solid #000;padding:4px 5px;font-size:11px;width:36px;text-align:center;color:#000;">Rank</th>
+            <th style="border:1px solid #000;padding:4px 5px;font-size:11px;text-align:left;color:#000;">House</th>
+            <th style="border:1px solid #000;padding:4px 5px;font-size:11px;text-align:right;width:64px;color:#000;">Wkly Pts</th>
           </tr></thead>
           <tbody>${wRows}</tbody>
         </table>
       </div>
       <div style="flex:1;">
-        <div style="font-size:9.5px;font-weight:800;border-bottom:1.5px solid #000;padding-bottom:2px;margin-bottom:4px;text-transform:uppercase;">🏅 Annual House Standings</div>
+        <div style="font-size:13px;font-weight:800;border-bottom:1.5px solid #000;padding-bottom:2px;margin-bottom:4px;text-transform:uppercase;color:#000;">🏅 Annual House Standings</div>
         <table style="width:100%;border-collapse:collapse;">
-          <thead><tr style="background:#e6e6e6;">
-            <th style="border:1px solid #000;padding:3px 5px;font-size:8.5px;width:36px;text-align:center;">Rank</th>
-            <th style="border:1px solid #000;padding:3px 5px;font-size:8.5px;text-align:left;">House</th>
-            <th style="border:1px solid #000;padding:3px 5px;font-size:8.5px;text-align:right;width:64px;">Total Pts</th>
+          <thead><tr style="background:transparent;">
+            <th style="border:1px solid #000;padding:4px 5px;font-size:11px;width:36px;text-align:center;color:#000;">Rank</th>
+            <th style="border:1px solid #000;padding:4px 5px;font-size:11px;text-align:left;color:#000;">House</th>
+            <th style="border:1px solid #000;padding:4px 5px;font-size:11px;text-align:right;width:64px;color:#000;">Total Pts</th>
           </tr></thead>
           <tbody>${aRows}</tbody>
         </table>
@@ -3426,34 +3429,34 @@ function printReport() {
 
     <!-- Highlights: Active Dept + Star Teachers -->
     <div style="display:flex;gap:16px;margin-bottom:10px;">
-      <div style="flex:1;background:#f5f5f5;border:1px solid #000;border-radius:3px;padding:6px 10px;box-sizing:border-box;">
-        <div style="font-size:8.5px;font-weight:800;text-transform:uppercase;color:#000;margin-bottom:2px;">🔥 Active Department of the Week</div>
-        <div style="font-size:15px;font-weight:900;color:#000;text-transform:uppercase;line-height:1.1;">${esc(REPORT_DATA.activeDept || 'N/A')}</div>
-        <div style="font-size:7.5px;color:#555;margin-top:2px;">MOST POINTS EARNED THIS WEEK</div>
+      <div style="flex:1;background:transparent;border:1px solid #000;border-radius:3px;padding:6px 10px;box-sizing:border-box;">
+        <div style="font-size:10px;font-weight:800;text-transform:uppercase;color:#000;margin-bottom:2px;">🔥 Active Department of the Week</div>
+        <div style="font-size:18px;font-weight:900;color:#000;text-transform:uppercase;line-height:1.1;">${esc(REPORT_DATA.activeDept || 'N/A')}</div>
+        <div style="font-size:10px;color:#000;margin-top:4px;font-weight:bold;">
+          Avg: ${(REPORT_DATA.activeDeptAvgPoints || 0).toFixed(2)} pts/student (${REPORT_DATA.activeDeptPoints || 0} pts total, ${REPORT_DATA.activeDeptStudentCount || 0} students)
+        </div>
       </div>
-      <div style="flex:1;background:#f5f5f5;border:1px solid #000;border-radius:3px;padding:6px 10px;box-sizing:border-box;">
-        <div style="font-size:8.5px;font-weight:800;text-transform:uppercase;color:#000;margin-bottom:2px;">⭐ Star Teachers of the Week</div>
-        ${teacherRows || '<div style="font-size:9px;color:#666;">No activity logged this week</div>'}
+      <div style="flex:1;background:transparent;border:1px solid #000;border-radius:3px;padding:6px 10px;box-sizing:border-box;">
+        <div style="font-size:10px;font-weight:800;text-transform:uppercase;color:#000;margin-bottom:2px;">⭐ Star Teachers of the Week</div>
+        ${teacherRows || '<div style="font-size:11px;color:#000;">No activity logged this week</div>'}
       </div>
     </div>
 
-
-
     <!-- Department Toppers Table (Single Unified Table) -->
     <div style="margin-bottom:15px;page-break-before:auto;">
-      <div style="font-size:10px;font-weight:900;border-bottom:1.5px solid #000;padding-bottom:2px;margin-bottom:5px;text-transform:uppercase;">🏆 Department Topper Standings (Top 5 Unique Marks)</div>
+      <div style="font-size:13px;font-weight:900;border-bottom:1.5px solid #000;padding-bottom:2px;margin-bottom:5px;text-transform:uppercase;color:#000;">🏆 Department Topper Standings (Top 5 Unique Marks)</div>
       <table style="width:100%;border-collapse:collapse;">
-        <thead><tr style="background:#e6e6e6;">
-          <th style="border:1px solid #000;padding:4px 6px;font-size:8.5px;width:30px;text-align:center;">#</th>
-          <th style="border:1px solid #000;padding:4px 6px;font-size:8.5px;text-align:left;width:25%;">Department</th>
-          <th style="border:1px solid #000;padding:4px 6px;font-size:8.5px;text-align:left;width:22%;">Student Name</th>
-          <th style="border:1px solid #000;padding:4px 6px;font-size:8.5px;text-align:center;width:15%;">House</th>
-          <th style="border:1px solid #000;padding:4px 6px;font-size:8.5px;text-align:right;width:50px;">Points</th>
-          <th style="border:1px solid #000;padding:4px 6px;font-size:8.5px;text-align:center;width:12%;">Place</th>
-          <th style="border:1px solid #000;padding:4px 6px;font-size:8.5px;text-align:center;width:15%;">Position</th>
+        <thead><tr style="background:transparent;">
+          <th style="border:1px solid #000;padding:5px 6px;font-size:11px;width:30px;text-align:center;color:#000;">#</th>
+          <th style="border:1px solid #000;padding:5px 6px;font-size:11px;text-align:left;width:25%;color:#000;">Department</th>
+          <th style="border:1px solid #000;padding:5px 6px;font-size:11px;text-align:left;width:22%;color:#000;">Student Name</th>
+          <th style="border:1px solid #000;padding:5px 6px;font-size:11px;text-align:center;width:15%;color:#000;">House</th>
+          <th style="border:1px solid #000;padding:5px 6px;font-size:11px;text-align:right;width:50px;color:#000;">Points</th>
+          <th style="border:1px solid #000;padding:5px 6px;font-size:11px;text-align:center;width:12%;color:#000;">Place</th>
+          <th style="border:1px solid #000;padding:5px 6px;font-size:11px;text-align:center;width:15%;color:#000;">Position</th>
         </tr></thead>
         <tbody>
-          ${topperTableRows || '<tr><td colspan="7" style="border:1px solid #000;padding:10px;text-align:center;color:#666;font-size:9.5px;">No toppers registered this week.</td></tr>'}
+          ${topperTableRows || '<tr><td colspan="7" style="border:1px solid #000;padding:10px;text-align:center;color:#000;font-size:11px;">No toppers registered this week.</td></tr>'}
         </tbody>
       </table>
     </div>
@@ -3467,19 +3470,19 @@ function printReport() {
           return `<div style="text-align:center;width:23%;">
             <div style="height:32px;"></div>
             <div style="border-top:1px solid #000;"></div>
-            <div style="font-size:7.5px;font-weight:800;text-transform:uppercase;padding-top:3px;letter-spacing:0.04em;">${role} INCHARGE</div>
-            <div style="font-size:7px;color:#444;margin-top:1px;">${name}</div>
+            <div style="font-size:10px;font-weight:800;text-transform:uppercase;padding-top:3px;letter-spacing:0.04em;color:#000;">${role} INCHARGE</div>
+            <div style="font-size:9px;color:#000;margin-top:1px;">${name}</div>
           </div>`;
         }).join('')}
       </div>
 
       <!-- Row B: G.O.A.T. Incharge — Centered alone -->
       <div style="display:flex;justify-content:center;margin-top:12px;">
-        <div style="text-align:center;width:40%;border:1px dashed #bbb;border-radius:5px;padding:5px 12px;box-sizing:border-box;">
+        <div style="text-align:center;width:40%;border:1px dashed #000;border-radius:5px;padding:5px 12px;box-sizing:border-box;">
           <div style="height:32px;"></div>
           <div style="border-top:1.5px solid #000;"></div>
-          <div style="font-size:9px;font-weight:900;text-transform:uppercase;padding-top:3px;letter-spacing:0.08em;color:#000;">G.O.A.T. INCHARGE</div>
-          <div style="font-size:8px;color:#333;margin-top:1px;font-weight:700;">Mr. BALAJI R</div>
+          <div style="font-size:10px;font-weight:900;text-transform:uppercase;padding-top:3px;letter-spacing:0.08em;color:#000;">G.O.A.T. INCHARGE</div>
+          <div style="font-size:9px;color:#000;margin-top:1px;font-weight:700;">Mr. BALAJI R</div>
         </div>
       </div>
 
@@ -3488,8 +3491,8 @@ function printReport() {
         <div style="text-align:center;width:40%;border:1.5px solid #000;border-radius:5px;padding:5px 12px;box-sizing:border-box;">
           <div style="height:32px;"></div>
           <div style="border-top:2px solid #000;"></div>
-          <div style="font-size:9.5px;font-weight:900;text-transform:uppercase;padding-top:3px;letter-spacing:0.1em;color:#000;">PRINCIPAL</div>
-          <div style="font-size:8px;color:#333;margin-top:1px;">${esc(BRANDING_DATA.collegeName)}</div>
+          <div style="font-size:10.5px;font-weight:900;text-transform:uppercase;padding-top:3px;letter-spacing:0.1em;color:#000;">PRINCIPAL</div>
+          <div style="font-size:9px;color:#000;margin-top:1px;">${esc(BRANDING_DATA.collegeName)}</div>
         </div>
       </div>
     </div>`;
